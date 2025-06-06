@@ -1,18 +1,18 @@
 {
     "BranchAndCutParams": {
-        "ActivateHeuristic": true,
-        "ActivateIntraRouteImprovement": true,
-        "ActivateMemoryManagement": true,
-        "ActivateSetPartHeur": true,
-        "CutSeparationMaxNodes": 2147483647,
-        "CutSeparationStartNodes": 200,
+        "ActivateHeuristic": false,
+        "ActivateIntraRouteImprovement": false,
+        "ActivateMemoryManagement": false,
+        "ActivateSetPartHeur": false,
+        "CutSeparationMaxNodes": -1,
+        "CutSeparationStartNodes": 0,
         "CutSeparationThreshold": 100,
-        "EnableMinVehicleLifting": true,
+        "EnableMinVehicleLifting": false,
         "IntraRouteFullEnumThreshold": 6,
         "MinVehicleLiftingThreshold": 0.5,
         "SetPartHeurThreshold": 20,
-        "SimpleVersion": false,
-        "StartSolution": "ModifiedSavings",
+        "SimpleVersion": true,
+        "StartSolution": "None",
         "TimeLimit": [
             [
                 "Exact",
@@ -76,8 +76,8 @@
         "SortingHeuristic": "Zhang2015"
     },
     "LoadingProblemParams": {
-        "ProblemVariant": "LoadingOnly",
-        "SupportArea": 0.0
+        "ProblemVariant": "AllConstraints",
+        "SupportArea": 0.75
     },
     "MIPSolverParams": {
         "CutGeneration": -1,
@@ -114,11 +114,11 @@
             ],
             [
                 "MSTAR",
-                12
+                50
             ],
             [
                 "RCC",
-                25
+                100
             ],
             [
                 "SCI",
@@ -148,11 +148,11 @@
             ],
             [
                 "MSTAR",
-                25
+                100
             ],
             [
                 "RCC",
-                50
+                200
             ],
             [
                 "SCI",

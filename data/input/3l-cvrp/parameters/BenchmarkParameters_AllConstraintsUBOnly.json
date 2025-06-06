@@ -1,9 +1,9 @@
 {
     "BranchAndCutParams": {
         "ActivateHeuristic": true,
-        "ActivateIntraRouteImprovement": true,
+        "ActivateIntraRouteImprovement": false,
         "ActivateMemoryManagement": true,
-        "ActivateSetPartHeur": true,
+        "ActivateSetPartHeur": false,
         "CutSeparationMaxNodes": 2147483647,
         "CutSeparationStartNodes": 200,
         "CutSeparationThreshold": 100,
@@ -12,7 +12,7 @@
         "MinVehicleLiftingThreshold": 0.5,
         "SetPartHeurThreshold": 20,
         "SimpleVersion": false,
-        "StartSolution": "ModifiedSavings",
+        "StartSolution": "None",
         "TimeLimit": [
             [
                 "Exact",
@@ -76,8 +76,8 @@
         "SortingHeuristic": "Zhang2015"
     },
     "LoadingProblemParams": {
-        "ProblemVariant": "LoadingOnly",
-        "SupportArea": 0.0
+        "ProblemVariant": "AllConstraints",
+        "SupportArea": 0.75
     },
     "MIPSolverParams": {
         "CutGeneration": -1,

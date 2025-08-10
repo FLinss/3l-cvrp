@@ -40,12 +40,16 @@ void IteratedLocalSearch::Initialize()
     {
         case LoadingCheckerTypes::Filter:          
             mLoadingChecker = std::make_unique<FilterLoadingChecker>(mInputParameters.ContainerLoading, mInputParameters.DetermineMaxRuntime(IteratedLocalSearchParams::CallType::ExactLimit));
+            break;
         case LoadingCheckerTypes::NoClassifier:       
             mLoadingChecker = std::make_unique<NoClassifierLoadingChecker>(mInputParameters.ContainerLoading, mInputParameters.DetermineMaxRuntime(IteratedLocalSearchParams::CallType::ExactLimit));
+            break;
         case LoadingCheckerTypes::SpeedUp:       
             mLoadingChecker = std::make_unique<SpeedUpLoadingChecker>(mInputParameters.ContainerLoading, mInputParameters.DetermineMaxRuntime(IteratedLocalSearchParams::CallType::ExactLimit));
+            break;
         case LoadingCheckerTypes::Hybrid:       
-            mLoadingChecker = std::make_unique<HybridLoadingChecker>(mInputParameters.ContainerLoading, mInputParameters.DetermineMaxRuntime(IteratedLocalSearchParams::CallType::ExactLimit));                    
+            mLoadingChecker = std::make_unique<HybridLoadingChecker>(mInputParameters.ContainerLoading, mInputParameters.DetermineMaxRuntime(IteratedLocalSearchParams::CallType::ExactLimit));     
+            break;               
     }
     mLoadingChecker->SetBinPackingModel(mEnv, containers, customerNodes, mOutputPath);
 
@@ -532,21 +536,21 @@ size_t IteratedLocalSearch::DetermineLowerBoundVehicles()
 
     return lowerBound1D;
 }
-/*
-bool IteratedLocalSearch::IsCurrentSolutionCPValid(const Solution& solution, double time_limit) {
+
+bool IteratedLocalSearch::IsCurrentSolutionCPValid(const Solution& solution) {
+
+    const auto& container = mInstance->Vehicles.front().Containers.front();
+    const auto& nodeSize = mInstance->Nodes.size();
+
     for(const auto& route : solution.Routes) {
 
         if(route.Sequence.size() > 0){
 
             auto items = InterfaceConversions::SelectItems(route.Sequence, mInstance->Nodes, false);
-            auto status =
-                mLoadingChecker->CompleteCheck(mInstance->Vehicles.front().Containers.front(),
-                                                        mLoadingChecker->MakeBitset(mInstance->Nodes.size(), route.Sequence),
-                                                        route.Sequence,
-                                                        items,
-                                                        time_limit);
-
-            if(status != LoadingStatus::FeasOpt) {
+            if(!(mLoadingChecker->ExactCheckNoClassifier(container,
+                                                    mLoadingChecker->MakeBitset(nodeSize, route.Sequence),
+                                                    route.Sequence,
+                                                    items))){
                 //std::cout << "Route was rejected by CPSolver" << std::endl;
                 ++mSolutionTracker.rejections;
                 return false;
@@ -555,7 +559,7 @@ bool IteratedLocalSearch::IsCurrentSolutionCPValid(const Solution& solution, dou
     }
     return true;
 }
-*/
+
 
 
 void IteratedLocalSearch::Solve()
@@ -583,6 +587,8 @@ void IteratedLocalSearch::Solve()
     mTimer.calculateStartSolutionTime();
     int iterations_without_improvement{0};
 
+    Solution lastValidSolution = mCurrentSolution;
+
     double maxRuntime = mInputParameters.IteratedLocalSearch.TimeLimits[IteratedLocalSearchParams::CallType::ILS];
     if(mInputParameters.IteratedLocalSearch.RunILS){
         while(mTimer.getElapsedTime() < maxRuntime && iterations_without_improvement < mInputParameters.IteratedLocalSearch.MaxIterationsWithoutImprovement){
@@ -599,6 +605,13 @@ void IteratedLocalSearch::Solve()
             ++mSolutionTracker.iterations;
 
             mTimer.calculateElapsedTime();
+
+            if(mInputParameters.IteratedLocalSearch.CP_Check){
+                if(!(IsCurrentSolutionCPValid(mCurrentSolution))){
+                    mCurrentSolution = lastValidSolution;
+                    --mSolutionTracker.NoImpr;
+                }
+            }
     
             if(mCurrentSolution.Costs < mBestSolution.Costs - 1e-2){
                 mSolutionTracker.UpdateBothSolutions(mTimer.getElapsedTime(), mCurrentSolution.Costs);
@@ -606,6 +619,7 @@ void IteratedLocalSearch::Solve()
                 mSolutionTracker.NoImpr = 0;
                 iterations_without_improvement = 0;
                 mSolutionTracker.RoundsWithNoImpr = 0;
+                lastValidSolution = mCurrentSolution;
                 continue;
             }
 
@@ -618,6 +632,7 @@ void IteratedLocalSearch::Solve()
 
             ++mSolutionTracker.NoImpr;
             ++iterations_without_improvement;
+            lastValidSolution = mCurrentSolution;
 
         }
     }

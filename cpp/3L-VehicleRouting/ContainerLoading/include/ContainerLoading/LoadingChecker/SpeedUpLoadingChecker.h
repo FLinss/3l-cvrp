@@ -26,8 +26,10 @@ class SpeedUpLoadingChecker : public BaseLoadingChecker
                                     const std::vector<Cuboid>& items,
                                     const  VehicleRouting::Improvement::ImprovementTypes& localsearchtype) override;
 
-    [[nodiscard]] bool RejectCurrentSolution(const VehicleRouting::Model::Solution& currentSolution,
-                                              const Container& container) override;
+    [[nodiscard]] bool ExactCheckNoClassifier(const Container& container,
+                                        const boost::dynamic_bitset<>& set,
+                                        const Collections::IdVector& stopIds,
+                                        const std::vector<Cuboid>& items) override;
 
   private:
     std::unique_ptr<Classifier> mClassifier;

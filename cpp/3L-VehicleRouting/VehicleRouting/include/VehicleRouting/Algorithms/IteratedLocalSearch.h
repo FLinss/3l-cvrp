@@ -110,32 +110,7 @@ class IteratedLocalSearch
     void GenerateStartSolutionSavings();
     void GenerateStartSolutionModifiedSavings();
     void GenerateStartSolutionSPHeuristic();
-      /*
-    bool IsCurrentSolutionCPValid(const Solution& solution, double time_limit);
-
-    bool IteratedLocalSearch::IsCurrentSolutionCPValid(const Solution& solution, double time_limit) {
-        for(const auto& route : solution.Routes) {
-
-            if(route.Sequence.size() > 0){
-
-                auto items = InterfaceConversions::SelectItems(route.Sequence, mInstance->Nodes, false);
-                auto status =
-                    mLoadingChecker->HeuristicCompleteCheck(mInstance->Vehicles.front().Containers.front(),
-                                                            mLoadingChecker->MakeBitset(mInstance->Nodes.size(), route.Sequence),
-                                                            route.Sequence,
-                                                            items,
-                                                            time_limit);
-
-                if(status != LoadingStatus::FeasOpt) {
-                    //std::cout << "Route was rejected by CPSolver" << std::endl;
-                    ++mSolutionTracker.rejections;
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-    */
+    bool IsCurrentSolutionCPValid(const Solution& solution);
 
 
 };

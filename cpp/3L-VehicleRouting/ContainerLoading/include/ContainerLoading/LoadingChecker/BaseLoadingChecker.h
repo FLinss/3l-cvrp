@@ -6,20 +6,9 @@
 
 #include "Algorithms/MultiContainer/BP_MIP_1D.h"
 #include "Model/ContainerLoadingInstance.h"
-#include "Classifier.h"
-
-#include "Solution.h"
 
 #include <boost/dynamic_bitset.hpp>
 #include <boost/functional/hash.hpp>
-
-// forward declaration OK
-namespace VehicleRouting {
-namespace Model {
-    class Solution; 
-}
-}
-
 
 namespace ContainerLoading
 {
@@ -60,8 +49,10 @@ class BaseLoadingChecker
                             const Collections::IdVector& stopIds,
                             const std::vector<Cuboid>& items) = 0;
 
-    virtual bool RejectCurrentSolution(const VehicleRouting::Model::Solution& currentSolution,
-                                       const Container& container) = 0;
+    virtual bool ExactCheckNoClassifier(const Container& container,
+                                        const boost::dynamic_bitset<>& set,
+                                        const Collections::IdVector& stopIds,
+                                        const std::vector<Cuboid>& items) = 0;
 
     [[nodiscard]] std::vector<Cuboid>
         SelectItems(const Collections::IdVector& nodeIds, std::vector<Group>& nodes, bool reversedDirection) const;
@@ -110,9 +101,7 @@ class BaseLoadingChecker
     [[nodiscard]] boost::dynamic_bitset<> MakeBitset(size_t size, const Collections::IdVector& sequence) const;
 
   private:
-    std::chrono::high_resolution_clock::time_point mStartTime;
     std::unique_ptr<BinPacking1D> mBinPacking1D;
-    std::unique_ptr<Classifier> mClassifier;
     const double maxRunTime_CPSolver;
 
     Collections::SequenceVector mCompleteFeasSeq;

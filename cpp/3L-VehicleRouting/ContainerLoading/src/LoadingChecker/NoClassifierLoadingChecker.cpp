@@ -60,10 +60,12 @@ bool NoClassifierLoadingChecker::CompleteCheck(const Container& container,
 
 }
 
-bool NoClassifierLoadingChecker::RejectCurrentSolution(const VehicleRouting::Model::Solution& currentSolution,
-                                              const Container& container){
-
-    return false;
+bool NoClassifierLoadingChecker::ExactCheckNoClassifier(const Container& container,
+                                        const boost::dynamic_bitset<>& set,
+                                        const Collections::IdVector& stopIds,
+                                        const std::vector<Cuboid>& items){
+    
+    return true;
 }
 
 }

@@ -82,10 +82,12 @@ bool FilterLoadingChecker::CompleteCheck(const Container& container,
     }
 }
 
-bool FilterLoadingChecker::RejectCurrentSolution(const VehicleRouting::Model::Solution& currentSolution,
-                                              const Container& container){
-
-    return false;
+bool FilterLoadingChecker::ExactCheckNoClassifier(const Container& container,
+                                        const boost::dynamic_bitset<>& set,
+                                        const Collections::IdVector& stopIds,
+                                        const std::vector<Cuboid>& items){
+    
+    return true;
 }
 
 }

@@ -6,23 +6,20 @@
 
 #include "Algorithms/MultiContainer/BP_MIP_1D.h"
 #include "Model/ContainerLoadingInstance.h"
-#include "Classifier.h"
 
 #include <boost/dynamic_bitset.hpp>
 #include <boost/functional/hash.hpp>
-
-#include <chrono>
 
 namespace ContainerLoading
 {
 using namespace Algorithms;
 
-class LoadingChecker
+class BaseLoadingChecker
 {
   public:
     const ContainerLoadingParams Parameters;
 
-    explicit LoadingChecker(const ContainerLoadingParams& parameters, const double maxruntime) : Parameters(parameters), maxRunTime_CPSolver(maxruntime)
+    explicit BaseLoadingChecker(const ContainerLoadingParams& parameters, const double maxruntime) : Parameters(parameters), maxRunTime_CPSolver(maxruntime)
     {
         using enum LoadingFlag;
 
@@ -31,22 +28,31 @@ class LoadingChecker
         constexpr size_t reservedSize = 1000;
         for (const auto flag: usedLoadingFlags)
         {
-            mFeasSequences[flag & Parameters.LoadingProblem.LoadingFlags].reserve(reservedSize);
-            mInfSequences[flag & Parameters.LoadingProblem.LoadingFlags].reserve(reservedSize);
-            mUnkSequences[flag & Parameters.LoadingProblem.LoadingFlags].reserve(reservedSize);
+            mFeasSequences[flag & Parameters.LoadingFlags].reserve(reservedSize);
+            mInfSequences[flag & Parameters.LoadingFlags].reserve(reservedSize);
+            mUnkSequences[flag & Parameters.LoadingFlags].reserve(reservedSize);
 
-            mFeasibleSets[flag & Parameters.LoadingProblem.LoadingFlags].reserve(reservedSize);
-            mInfSets[flag & Parameters.LoadingProblem.LoadingFlags].reserve(reservedSize);
-            mUnknownSets[flag & Parameters.LoadingProblem.LoadingFlags].reserve(reservedSize);
-        }
-
-        mStartTime = std::chrono::high_resolution_clock::now();
-
-         //Initialize Classifier: 
-        if(Parameters.classifierParams.UseClassifier){
-            mClassifier = std::make_unique<Classifier>(Parameters.classifierParams);
+            mFeasibleSets[flag & Parameters.LoadingFlags].reserve(reservedSize);
+            mInfSets[flag & Parameters.LoadingFlags].reserve(reservedSize);
+            mUnknownSets[flag & Parameters.LoadingFlags].reserve(reservedSize);
         }
     }
+
+    virtual bool CompleteCheck(const Container& container,
+                                const boost::dynamic_bitset<>& set,
+                                const Collections::IdVector& stopIds,
+                                const std::vector<Cuboid>& items,
+                                const VehicleRouting::Improvement::ImprovementTypes& localsearchtype) = 0;
+
+    virtual bool CompleteCheckStartSolution(const Container& container,
+                            const boost::dynamic_bitset<>& set,
+                            const Collections::IdVector& stopIds,
+                            const std::vector<Cuboid>& items) = 0;
+
+    virtual bool ExactCheckNoClassifier(const Container& container,
+                                        const boost::dynamic_bitset<>& set,
+                                        const Collections::IdVector& stopIds,
+                                        const std::vector<Cuboid>& items) = 0;
 
     [[nodiscard]] std::vector<Cuboid>
         SelectItems(const Collections::IdVector& nodeIds, std::vector<Group>& nodes, bool reversedDirection) const;
@@ -63,11 +69,6 @@ class LoadingChecker
                                                                       const Collections::IdVector& stopIds,
                                                                       std::vector<Cuboid>& items,
                                                                       double maxRuntime) const;
-
-    [[nodiscard]] bool CompleteCheck(const Container& container,
-                                    const boost::dynamic_bitset<>& set,
-                                    const Collections::IdVector& stopIds,
-                                    const std::vector<Cuboid>& items);
 
     void SetBinPackingModel(GRBEnv* env,
                             std::vector<Container>& containers,
@@ -100,9 +101,7 @@ class LoadingChecker
     [[nodiscard]] boost::dynamic_bitset<> MakeBitset(size_t size, const Collections::IdVector& sequence) const;
 
   private:
-    std::chrono::high_resolution_clock::time_point mStartTime;
     std::unique_ptr<BinPacking1D> mBinPacking1D;
-    std::unique_ptr<Classifier> mClassifier;
     const double maxRunTime_CPSolver;
 
     Collections::SequenceVector mCompleteFeasSeq;

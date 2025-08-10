@@ -18,13 +18,16 @@ class InterLocalSearchOperator : public LocalSearchOperatorBase
   public:
     void Run(const Instance* instance,
                     const InputParameters& inputParameters,
-                    LoadingChecker* loadingChecker,
+                    BaseLoadingChecker* loadingChecker,
                     Solution& currentSolution) override;
+
+  private:
+    ImprovementTypes mType = ImprovementTypes::Inter;
 
   protected:
     std::optional<double> GetBestMove(const Instance* instance,
                                 const InputParameters& inputParameters,
-                                LoadingChecker* loadingChecker,
+                                BaseLoadingChecker* loadingChecker,
                                 std::vector<Route>& routes,
                                 std::vector<InterMove>& moves);
 

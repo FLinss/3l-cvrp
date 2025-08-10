@@ -1,7 +1,6 @@
 #pragma once
 
-#include "ContainerLoading/LoadingChecker.h"
-#include "ContainerLoading/Classifier.h"
+#include "ContainerLoading/LoadingChecker/BaseLoadingChecker.h"
 #include "Algorithms/LoadingInterfaceServices.h"
 #include "Model/Instance.h"
 #include "Model/Solution.h"
@@ -25,9 +24,13 @@ public:
 
     void Run(const Model::Instance*            instance,
             const InputParameters&            params,
-            ContainerLoading::LoadingChecker* loadingChecker,
+            ContainerLoading::BaseLoadingChecker* loadingChecker,
             Model::Solution&                  solution,
             std::mt19937&                     rng);
+
+
+  private:
+    ImprovementTypes mType = ImprovementTypes::Perturbation;
 
   protected:
     virtual std::optional<PerturbationMove> DetermineMoves(const Instance* instance,

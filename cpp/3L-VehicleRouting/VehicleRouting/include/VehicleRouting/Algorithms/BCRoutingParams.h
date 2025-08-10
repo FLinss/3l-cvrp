@@ -12,7 +12,6 @@ namespace Algorithms
 using namespace ContainerLoading;
 using namespace ContainerLoading::Algorithms;
 
-
 enum class LocalSearchTypes
 {
     None,
@@ -23,6 +22,13 @@ enum class LocalSearchTypes
     IntraInsertion,
     FullEnumeration,
     DeleteEmptyRoutes
+};
+
+enum class LoadingCheckerTypes{
+    Filter,
+    NoClassifier,
+    SpeedUp,
+    Hybrid
 };
 
 enum class PerturbationTypes
@@ -57,7 +63,11 @@ struct IteratedLocalSearchParams
     bool RunLS = true;
     int NoImprLimit = 100;
     int K_RandomMoves = 1;
+    int MaxIterationsWithoutImprovement = 10000;
+    int RoundsWithNoImprovement = 3;
+    LoadingCheckerTypes LoadingCheckerType = LoadingCheckerTypes::NoClassifier;
     StartSolutionType StartSolution = StartSolutionType::ModifiedSavings;
+    bool CP_Check = false;
 
     std::vector<PerturbationTypes> perturbationTypes = {PerturbationTypes::None};
     std::vector<LocalSearchTypes> localSearchTypes = {LocalSearchTypes::None};
@@ -77,7 +87,7 @@ class InputParameters
     IteratedLocalSearchParams IteratedLocalSearch;
     ContainerLoadingParams ContainerLoading;
 
-    void SetLoadingFlags() { ContainerLoading.LoadingProblem.SetFlags(); };
+    void SetLoadingFlags() { ContainerLoading.SetFlags(); };
 
     [[nodiscard]] double DetermineMaxRuntime(IteratedLocalSearchParams::CallType callType,
                                              double residualTime = std::numeric_limits<double>::max()) const

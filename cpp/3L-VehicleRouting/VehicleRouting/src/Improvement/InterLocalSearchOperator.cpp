@@ -11,7 +11,7 @@ using namespace ContainerLoading;
 
 void InterLocalSearchOperator::Run(const Instance* instance,
                     const InputParameters& inputParameters,
-                    LoadingChecker* loadingChecker,
+                    BaseLoadingChecker* loadingChecker,
                     Solution& currentSolution){
 
   std::vector<Route>& routes = currentSolution.Routes;
@@ -39,7 +39,7 @@ void InterLocalSearchOperator::Run(const Instance* instance,
 
 std::optional<double> InterLocalSearchOperator::GetBestMove(const Instance* instance,
                                 const InputParameters& inputParameters,
-                                LoadingChecker* loadingChecker,
+                                BaseLoadingChecker* loadingChecker,
                                 std::vector<Route>& routes,
                                 std::vector<InterMove>& moves){
   if (moves.size() == 0)
@@ -62,7 +62,7 @@ std::optional<double> InterLocalSearchOperator::GetBestMove(const Instance* inst
       bool controlFlag = true;
       
 
-      if (loadingChecker->Parameters.LoadingProblem.LoadingFlags == LoadingFlag::NoneSet)
+      if (loadingChecker->Parameters.LoadingFlags == LoadingFlag::NoneSet)
       {
           UpdateRouteVolumeWeight(routes, move);
           return std::get<0>(move);
@@ -76,21 +76,13 @@ std::optional<double> InterLocalSearchOperator::GetBestMove(const Instance* inst
         auto& route = routes[route_index];
         if(route.Sequence.empty()){
             continue;
-        }
-
-        // If lifo is disabled, feasibility of route is independent from actual sequence
-        // -> move is always feasible if route is feasible
-        
-        if (!loadingChecker->Parameters.LoadingProblem.EnableLifo && loadingChecker->RouteIsInFeasSequences(route.Sequence))
-        {
-            continue;
-        }
+        }        
         
         auto set = loadingChecker->MakeBitset(instance->Nodes.size(), route.Sequence);
         auto selectedItems = Algorithms::InterfaceConversions::SelectItems(route.Sequence, instance->Nodes, false);
 
-        if (!loadingChecker->CompleteCheck(container,  set, route.Sequence, selectedItems)){
-            controlFlag = false;
+        if (!loadingChecker->CompleteCheck(container,  set, route.Sequence, selectedItems, mType)){
+            controlFlag = false; 
             break;
         }
 

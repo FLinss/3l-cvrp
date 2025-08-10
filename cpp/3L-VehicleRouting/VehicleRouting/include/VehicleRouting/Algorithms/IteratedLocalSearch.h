@@ -1,9 +1,19 @@
 #pragma once
 
-#include "ContainerLoading/LoadingChecker.h"
-#include "ContainerLoading/Classifier.h"
+#include "ContainerLoading/LoadingChecker/BaseLoadingChecker.h"
+#include "ContainerLoading/LoadingChecker/FilterLoadingChecker.h"
+#include "ContainerLoading/LoadingChecker/HybridLoadingChecker.h"
+#include "ContainerLoading/LoadingChecker/NoClassifierLoadingChecker.h"
+#include "ContainerLoading/LoadingChecker/SpeedUpLoadingChecker.h"
+#include "ContainerLoading/Algorithms/LoadingStatus.h"
+#include "ContainerLoading/Helper/HelperIO.h"
 #include "Improvement/LocalSearch.h"
-
+#include "Algorithms/Evaluation.h"
+#include "Algorithms/LoadingInterfaceServices.h"
+#include "Algorithms/Constructive.h"
+#include "CommonBasics/Helper/ModelServices.h"
+#include "Helper/HelperIO.h"
+#include "Helper/Serialization.h"
 #include "Helper/Timer.h"
 #include "Model/Instance.h"
 #include "Model/Solution.h"
@@ -11,6 +21,10 @@
 #include <fstream>
 #include <iostream>
 #include <random>
+#include <cstdint>
+#include <memory>
+
+
 
 namespace VehicleRouting
 {
@@ -71,7 +85,7 @@ class IteratedLocalSearch
 
     std::mt19937 mRNG;
 
-    std::unique_ptr<LoadingChecker> mLoadingChecker;
+    std::unique_ptr<BaseLoadingChecker> mLoadingChecker;
     std::unique_ptr<Improvement::LocalSearch> mLocalSearch;
 
     void InfeasibleArcProcedure();
@@ -96,32 +110,7 @@ class IteratedLocalSearch
     void GenerateStartSolutionSavings();
     void GenerateStartSolutionModifiedSavings();
     void GenerateStartSolutionSPHeuristic();
-      /*
-    bool IsCurrentSolutionCPValid(const Solution& solution, double time_limit);
-
-    bool IteratedLocalSearch::IsCurrentSolutionCPValid(const Solution& solution, double time_limit) {
-        for(const auto& route : solution.Routes) {
-
-            if(route.Sequence.size() > 0){
-
-                auto items = InterfaceConversions::SelectItems(route.Sequence, mInstance->Nodes, false);
-                auto status =
-                    mLoadingChecker->HeuristicCompleteCheck(mInstance->Vehicles.front().Containers.front(),
-                                                            mLoadingChecker->MakeBitset(mInstance->Nodes.size(), route.Sequence),
-                                                            route.Sequence,
-                                                            items,
-                                                            time_limit);
-
-                if(status != LoadingStatus::FeasOpt) {
-                    //std::cout << "Route was rejected by CPSolver" << std::endl;
-                    ++mSolutionTracker.rejections;
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-    */
+    bool IsCurrentSolutionCPValid(const Solution& solution);
 
 
 };

@@ -27,7 +27,7 @@ LocalSearch::LocalSearch(const InputParameters& params,
 
 // Run all local‑search moves in order
 void LocalSearch::RunLocalSearch(Model::Solution& sol,
-                                ContainerLoading::LoadingChecker* checker)
+                                ContainerLoading::BaseLoadingChecker* checker)
 {
     for (auto& op : lsOperators){
         op->Run(mInstance, mInputParameters, checker, sol);
@@ -36,7 +36,7 @@ void LocalSearch::RunLocalSearch(Model::Solution& sol,
 
 // Run all perturbations in order
 void LocalSearch::RunPerturbation(Model::Solution&                  sol,
-                                  ContainerLoading::LoadingChecker* checker,
+                                  ContainerLoading::BaseLoadingChecker* checker,
                                   std::mt19937&                     rng)
 {
     for (auto& op : pertOperators){
@@ -50,7 +50,7 @@ void LocalSearch::RunPerturbation(Model::Solution&                  sol,
 
 // Run all perturbations in order
 void LocalSearch::RunBigPerturbation(Model::Solution&                  sol,
-                                  ContainerLoading::LoadingChecker* checker,
+                                  ContainerLoading::BaseLoadingChecker* checker,
                                   std::mt19937&                     rng)
 {
     for (auto& op : pertOperators)
@@ -76,8 +76,6 @@ std::unique_ptr<LocalSearchOperatorBase> LocalSearch::CreateLocalSearchOperator(
             return std::make_unique<InterInsertion>();
         case LocalSearchTypes::DeleteEmptyRoutes:       
             return std::make_unique<DeleteEmptyRoutes>();
-        //case LocalSearchTypes::FullEnumeration: 
-        //    return std::make_unique<FullEnumerationSearch>();
         default:                                
             return nullptr;                       
     }

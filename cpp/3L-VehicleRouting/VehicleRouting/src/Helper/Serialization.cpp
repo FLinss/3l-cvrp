@@ -38,80 +38,77 @@ NLOHMANN_JSON_SERIALIZE_ENUM(PerturbationTypes,
     {{PerturbationTypes::None, "None"},
     {PerturbationTypes::K_RandomSwaps, "K_RandomSwaps"},
     {PerturbationTypes::K_RandomInsertions, "K_RandomInsertions"}});
+
+NLOHMANN_JSON_SERIALIZE_ENUM(LoadingCheckerTypes,
+    {{LoadingCheckerTypes::Filter, "Filter"},
+    {LoadingCheckerTypes::NoClassifier, "NoClassifier"},
+    {LoadingCheckerTypes::SpeedUp, "SpeedUp"},
+    {LoadingCheckerTypes::Hybrid, "Hybrid"}});
+
 }
+
+namespace Improvement{
+
+    NLOHMANN_JSON_SERIALIZE_ENUM(ImprovementTypes,
+        {{ImprovementTypes::Intra, "Intra"},
+        {ImprovementTypes::Inter, "Inter"},
+        {ImprovementTypes::Perturbation, "Perturbation"}});
+}
+
 }
 
 namespace ContainerLoading
 {
-NLOHMANN_JSON_SERIALIZE_ENUM(LoadingProblemParams::VariantType,
-                             {{LoadingProblemParams::VariantType::None, "None"},
-                              {LoadingProblemParams::VariantType::AllConstraints, "AllConstraints"},
-                              {LoadingProblemParams::VariantType::NoFragility, "NoFragility"},
-                              {LoadingProblemParams::VariantType::NoSupport, "NoSupport"},
-                              {LoadingProblemParams::VariantType::NoLifo, "NoLifo"},
-                              {LoadingProblemParams::VariantType::LoadingOnly, "LoadingOnly"},
-                              {LoadingProblemParams::VariantType::VolumeWeightApproximation,
+NLOHMANN_JSON_SERIALIZE_ENUM(ContainerLoadingParams::VariantType,
+                             {{ContainerLoadingParams::VariantType::None, "None"},
+                              {ContainerLoadingParams::VariantType::AllConstraints, "AllConstraints"},
+                              {ContainerLoadingParams::VariantType::NoFragility, "NoFragility"},
+                              {ContainerLoadingParams::VariantType::NoSupport, "NoSupport"},
+                              {ContainerLoadingParams::VariantType::NoLifo, "NoLifo"},
+                              {ContainerLoadingParams::VariantType::LoadingOnly, "LoadingOnly"},
+                              {ContainerLoadingParams::VariantType::VolumeWeightApproximation,
                                "VolumeWeightApproximation"},
-                              {LoadingProblemParams::VariantType::Volume, "Volume"},
-                              {LoadingProblemParams::VariantType::Weight, "Weight"}});
+                              {ContainerLoadingParams::VariantType::Volume, "Volume"},
+                              {ContainerLoadingParams::VariantType::Weight, "Weight"}});
 }
 namespace ContainerLoading
 {
-namespace Algorithms
-{
 
-void from_json(const json& j, CPSolverParams& params)
+
+void from_json(const json& j, ContainerLoadingParams& params)
 {
+    j.at("TracedModelPath").get_to(params.TracedModelPath);
+    j.at("SerializeJson_MeanStd").get_to(params.SerializeJson_MeanStd);
+    j.at("SaveTensorData").get_to(params.SaveTensorData);
+    j.at("TensorDataFilePath").get_to(params.TensorDataFilePath);
+    j.at("AcceptanceThreshold").get_to(params.AcceptanceThreshold);
     j.at("EnableCumulativeDimensions").get_to(params.EnableCumulativeDimensions);
     j.at("EnableNoOverlap2DFloor").get_to(params.EnableNoOverlap2DFloor);
     j.at("LogFlag").get_to(params.LogFlag);
     j.at("Threads").get_to(params.Threads);
     j.at("Seed").get_to(params.Seed);
+    j.at("ProblemVariant").get_to(params.Variant);
+    j.at("SupportArea").get_to(params.SupportArea);
+    j.at("UseFilterStartSolution").get_to(params.UseFilterStartSolution);
+    j.at("UseClassifierLocalSearch").get_to(params.UseClassifierLocalSearch);
 }
 
-void to_json(json& j, const CPSolverParams& params)
+void to_json(json& j, const ContainerLoadingParams& params)
 {
     j = json{{"EnableCumulativeDimensions", params.EnableCumulativeDimensions},
              {"EnableNoOverlap2DFloor", params.EnableNoOverlap2DFloor},
              {"LogFlag", params.LogFlag},
              {"Threads", params.Threads},
-             {"Seed", params.Seed}};
-}
-
-void from_json(const json& j, ClassifierParams& params)
-{
-    j.at("TracedModelPath").get_to(params.TracedModelPath);
-    j.at("SerializeJson_MeanStd").get_to(params.SerializeJson_MeanStd);
-    j.at("UseClassifier").get_to(params.UseClassifier);
-    j.at("SaveTensorData").get_to(params.SaveTensorData);
-    j.at("TensorDataFilePath").get_to(params.TensorDataFilePath);
-    j.at("AcceptanceThreshold").get_to(params.AcceptanceThreshold);
-}
-
-void to_json(json& j, const ClassifierParams& params)
-{
-    j = json{{"TracedModelPath", params.TracedModelPath},
+             {"Seed", params.Seed},
+             {"TracedModelPath", params.TracedModelPath},
              {"SerializeJson_MeanStd", params.SerializeJson_MeanStd},
-             {"UseClassifier", params.UseClassifier},
              {"SaveTensorData", params.SaveTensorData},
              {"TensorDataFilePath", params.TensorDataFilePath},
-             {"AcceptanceThreshold", params.AcceptanceThreshold}};
-}
-
-}
-}
-
-namespace ContainerLoading
-{
-void from_json(const json& j, LoadingProblemParams& params)
-{
-    j.at("ProblemVariant").get_to(params.Variant);
-    j.at("SupportArea").get_to(params.SupportArea);
-}
-
-void to_json(json& j, const LoadingProblemParams& params)
-{
-    j = json{{"ProblemVariant", params.Variant}, {"SupportArea", params.SupportArea}};
+             {"AcceptanceThreshold", params.AcceptanceThreshold},
+             {"ProblemVariant", params.Variant},
+             {"SupportArea", params.SupportArea},
+             {"UseFilterStartSolution", params.UseFilterStartSolution},
+             {"UseClassifierLocalSearch", params.UseClassifierLocalSearch}};
 }
 }
 
@@ -128,8 +125,12 @@ void from_json(const json& j, IteratedLocalSearchParams& params)
     j.at("K_RandomMoves").get_to(params.K_RandomMoves);
     j.at("StartSolution").get_to(params.StartSolution);
     j.at("TimeLimit").get_to(params.TimeLimits);
+    j.at("LoadingCheckerType").get_to(params.LoadingCheckerType); 
+    j.at("CP_Check").get_to(params.CP_Check);
     j.at("LocalSearchTypes").get_to(params.localSearchTypes);
     j.at("PerturbationTypes").get_to(params.perturbationTypes);
+    j.at("MaxIterationsWithoutImprovement").get_to(params.MaxIterationsWithoutImprovement);
+    j.at("RoundsWithNoImprovement").get_to(params.RoundsWithNoImprovement);
 }
 
 void to_json(json& j, const IteratedLocalSearchParams& params)
@@ -138,6 +139,10 @@ void to_json(json& j, const IteratedLocalSearchParams& params)
              {"Run_LS", params.RunLS},
              {"LimitNoImpr", params.NoImprLimit},
              {"K_RandomMoves", params.K_RandomMoves},
+             {"MaxIterationsWithoutImprovement", params.MaxIterationsWithoutImprovement},
+             {"RoundsWithNoImprovement", params.RoundsWithNoImprovement},
+             {"LoadingCheckerType", params.LoadingCheckerType},
+             {"CP_Check",params.CP_Check},
              {"LocalSearchTypes",params.localSearchTypes},
              {"PerturbationTypes",params.perturbationTypes},
              {"StartSolution", params.StartSolution},
@@ -148,18 +153,14 @@ void to_json(json& j, const IteratedLocalSearchParams& params)
 
 void from_json(const json& j, InputParameters& inputParameters)
 {
-    j.at("LoadingProblemParams").get_to(inputParameters.ContainerLoading.LoadingProblem);
     j.at("IteratedLocalSearchParams").get_to(inputParameters.IteratedLocalSearch);
-    j.at("CPSolverParams").get_to(inputParameters.ContainerLoading.CPSolver);
-    j.at("ClassifierParams").get_to(inputParameters.ContainerLoading.classifierParams);
+    j.at("ContainerLoadingParams").get_to(inputParameters.ContainerLoading);
 }
 
 void to_json(json& j, const InputParameters& inputParameters)
 {
-    j = json{{"LoadingProblemParams", inputParameters.ContainerLoading.LoadingProblem},
-             {"IteratedLocalSearchParams", inputParameters.IteratedLocalSearch},
-             {"CPSolverParams", inputParameters.ContainerLoading.CPSolver},
-             {"ClassifierParams",inputParameters.ContainerLoading.classifierParams}};
+    j = json{{"IteratedLocalSearchParams", inputParameters.IteratedLocalSearch},
+             {"ContainerLoadingParams", inputParameters.ContainerLoading}};
 }
 
 }

@@ -1,0 +1,41 @@
+{
+    "IteratedLocalSearchParams": {
+        "Run_ILS": true,
+        "Run_LS" : true,
+        "LimitNoImpr" : 5,
+        "K_RandomMoves" : 5,
+        "StartSolution": "ModifiedSavings",
+        "LocalSearchTypes": ["TwoOpt","IntraSwap","IntraInsertion","InterSwap","InterInsertion","DeleteEmptyRoutes"],
+        "PerturbationTypes": ["K_RandomInsertions","K_RandomSwaps"],
+        "MaxIterationsWithoutImprovement" : 10000,
+        "RoundsWithNoImprovement" : 3,
+        "LoadingCheckerType": "NoClassifier",
+        "CP_Check" : false,
+        "TimeLimit": [
+            ["ILS", 15],
+            ["Constructive",1],
+            ["Exact", 600],
+            ["ExactLimit", 60]
+        ]
+    },
+    "ContainerLoadingParams": {
+       "TracedModelPath": "",
+        "SerializeJson_MeanStd" : "",
+        "SaveTensorData" : false,
+        "TensorDataFilePath": "",
+        "AcceptanceThreshold": 0.5,
+        "EnableCumulativeDimensions": false,
+        "EnableNoOverlap2DFloor": false,
+        "LogFlag": false,
+        "Seed": 1000,
+        "Threads": 8,
+        "ProblemVariant": "AllConstraints",
+        "SupportArea": 0.75,
+        "UseFilterStartSolution" : false,
+        "UseClassifierLocalSearch":[
+            ["Intra", false],
+            ["Perturbation", false],
+            ["Inter", false]
+        ]
+    }
+}

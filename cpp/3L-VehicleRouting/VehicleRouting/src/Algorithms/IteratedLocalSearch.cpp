@@ -1,29 +1,11 @@
 #include "Algorithms/IteratedLocalSearch.h"
 
-#include "Algorithms/Evaluation.h"
-#include "CommonBasics/Helper/ModelServices.h"
-#include "ContainerLoading/Algorithms/CPSolverParameters.h"
-#include "ContainerLoading/Algorithms/LoadingStatus.h"
-#include "ContainerLoading/Helper/HelperIO.h"
-
-#include "Algorithms/Constructive.h"
-#include "Improvement/LocalSearch.h"
-//#include "Algorithms/Heuristics/SPHeuristic.h"
-#include "Helper/HelperIO.h"
-#include "Helper/Serialization.h"
-
-#include "Algorithms/LoadingInterfaceServices.h"
-
-#include <cstdint>
-#include <memory>
-
 namespace VehicleRouting
 {
 using namespace Model;
 
 namespace Algorithms
 {
-namespace CLP = ContainerLoading;
 using namespace ContainerLoading;
 using namespace ContainerLoading::Algorithms;
 using namespace Improvement;
@@ -31,7 +13,7 @@ using namespace Helper;
 
 void IteratedLocalSearch::Initialize()
 {
-    mLogFile << "ProblemVariant: " << (int)mInputParameters.ContainerLoading.LoadingProblem.Variant << "\n";
+    mLogFile << "ProblemVariant: " << (int)mInputParameters.ContainerLoading.Variant << "\n";
 
     std::vector<Container> containers;
     containers.reserve(mInstance->Vehicles.size());
@@ -54,7 +36,21 @@ void IteratedLocalSearch::Initialize()
                                    node.Items);
     }
 
-    mLoadingChecker = std::make_unique<LoadingChecker>(mInputParameters.ContainerLoading, mInputParameters.DetermineMaxRuntime(IteratedLocalSearchParams::CallType::ExactLimit));
+    switch (mInputParameters.IteratedLocalSearch.LoadingCheckerType)
+    {
+        case LoadingCheckerTypes::Filter:          
+            mLoadingChecker = std::make_unique<FilterLoadingChecker>(mInputParameters.ContainerLoading, mInputParameters.DetermineMaxRuntime(IteratedLocalSearchParams::CallType::ExactLimit));
+            break;
+        case LoadingCheckerTypes::NoClassifier:       
+            mLoadingChecker = std::make_unique<NoClassifierLoadingChecker>(mInputParameters.ContainerLoading, mInputParameters.DetermineMaxRuntime(IteratedLocalSearchParams::CallType::ExactLimit));
+            break;
+        case LoadingCheckerTypes::SpeedUp:       
+            mLoadingChecker = std::make_unique<SpeedUpLoadingChecker>(mInputParameters.ContainerLoading, mInputParameters.DetermineMaxRuntime(IteratedLocalSearchParams::CallType::ExactLimit));
+            break;
+        case LoadingCheckerTypes::Hybrid:       
+            mLoadingChecker = std::make_unique<HybridLoadingChecker>(mInputParameters.ContainerLoading, mInputParameters.DetermineMaxRuntime(IteratedLocalSearchParams::CallType::ExactLimit));     
+            break;               
+    }
     mLoadingChecker->SetBinPackingModel(mEnv, containers, customerNodes, mOutputPath);
 
 
@@ -97,9 +93,9 @@ void IteratedLocalSearch::AdaptWeightsVolumesToLoadingProblem()
 {
     mLogFile << "### START PREPROCESSING ###"
              << "\n";
-    switch (mInputParameters.ContainerLoading.LoadingProblem.Variant)
+    switch (mInputParameters.ContainerLoading.Variant)
     {
-        case CLP::LoadingProblemParams::VariantType::Weight:
+        case ContainerLoadingParams::VariantType::Weight:
         {
             for (auto& node: mInstance->Nodes)
             {
@@ -120,7 +116,7 @@ void IteratedLocalSearch::AdaptWeightsVolumesToLoadingProblem()
 
             break;
         }
-        case CLP::LoadingProblemParams::VariantType::Volume:
+        case ContainerLoadingParams::VariantType::Volume:
         {
             for (auto& node: mInstance->Nodes)
             {
@@ -161,6 +157,7 @@ void IteratedLocalSearch::StartSolutionProcedure()
             break;
         case Savings:
             GenerateStartSolutionSavings();
+            
             if (mCurrentSolution.Routes.size() > mInstance->Vehicles.size()){
                 mLogFile << "Not enough vehicles for start solution, copying existing vehicle(s)...\n";
 
@@ -318,7 +315,7 @@ void IteratedLocalSearch::DetermineInfeasiblePaths()
                 continue;
             }
 
-            if (!mInputParameters.ContainerLoading.LoadingProblem.EnableThreeDimensionalLoading)
+            if (!mInputParameters.ContainerLoading.EnableThreeDimensionalLoading)
             {
                 continue;
             }
@@ -376,7 +373,7 @@ bool IteratedLocalSearch::CheckPath(const Collections::IdVector& path, Container
 
 void IteratedLocalSearch::DetermineExtendedInfeasiblePath()
 {
-    if (!mInputParameters.ContainerLoading.LoadingProblem.EnableThreeDimensionalLoading)
+    if (!mInputParameters.ContainerLoading.EnableThreeDimensionalLoading)
     {
         return;
     }
@@ -527,7 +524,7 @@ size_t IteratedLocalSearch::DetermineLowerBoundVehicles()
 
     auto lowerBound1D = static_cast<size_t>(mLoadingChecker->SolveBinPackingApproximation());
 
-    if (!mInputParameters.ContainerLoading.LoadingProblem.EnableThreeDimensionalLoading)
+    if (!mInputParameters.ContainerLoading.EnableThreeDimensionalLoading)
     {
         while (mInstance->Vehicles.size() > lowerBound1D)
         {
@@ -539,21 +536,21 @@ size_t IteratedLocalSearch::DetermineLowerBoundVehicles()
 
     return lowerBound1D;
 }
-/*
-bool IteratedLocalSearch::IsCurrentSolutionCPValid(const Solution& solution, double time_limit) {
+
+bool IteratedLocalSearch::IsCurrentSolutionCPValid(const Solution& solution) {
+
+    const auto& container = mInstance->Vehicles.front().Containers.front();
+    const auto& nodeSize = mInstance->Nodes.size();
+
     for(const auto& route : solution.Routes) {
 
         if(route.Sequence.size() > 0){
 
             auto items = InterfaceConversions::SelectItems(route.Sequence, mInstance->Nodes, false);
-            auto status =
-                mLoadingChecker->CompleteCheck(mInstance->Vehicles.front().Containers.front(),
-                                                        mLoadingChecker->MakeBitset(mInstance->Nodes.size(), route.Sequence),
-                                                        route.Sequence,
-                                                        items,
-                                                        time_limit);
-
-            if(status != LoadingStatus::FeasOpt) {
+            if(!(mLoadingChecker->ExactCheckNoClassifier(container,
+                                                    mLoadingChecker->MakeBitset(nodeSize, route.Sequence),
+                                                    route.Sequence,
+                                                    items))){
                 //std::cout << "Route was rejected by CPSolver" << std::endl;
                 ++mSolutionTracker.rejections;
                 return false;
@@ -562,7 +559,7 @@ bool IteratedLocalSearch::IsCurrentSolutionCPValid(const Solution& solution, dou
     }
     return true;
 }
-*/
+
 
 
 void IteratedLocalSearch::Solve()
@@ -590,13 +587,14 @@ void IteratedLocalSearch::Solve()
     mTimer.calculateStartSolutionTime();
     int iterations_without_improvement{0};
 
+    Solution lastValidSolution = mCurrentSolution;
+
     double maxRuntime = mInputParameters.IteratedLocalSearch.TimeLimits[IteratedLocalSearchParams::CallType::ILS];
     if(mInputParameters.IteratedLocalSearch.RunILS){
-        while(mTimer.getElapsedTime() < maxRuntime && iterations_without_improvement < 10000){
+        while(mTimer.getElapsedTime() < maxRuntime && iterations_without_improvement < mInputParameters.IteratedLocalSearch.MaxIterationsWithoutImprovement){
 
             std::cout << "Run: " << mSolutionTracker.iterations << " - CurrentCosts: " << mCurrentSolution.Costs << " - BestCosts:" << mBestSolution.Costs << std::endl;
-            
-            if(mSolutionTracker.RoundsWithNoImpr > 2){
+            if(mSolutionTracker.RoundsWithNoImpr > mInputParameters.IteratedLocalSearch.RoundsWithNoImprovement){
                 mLocalSearch->RunBigPerturbation(mCurrentSolution, mLoadingChecker.get(), mRNG);
                 mSolutionTracker.RoundsWithNoImpr = 0;
             }else{
@@ -607,6 +605,13 @@ void IteratedLocalSearch::Solve()
             ++mSolutionTracker.iterations;
 
             mTimer.calculateElapsedTime();
+
+            if(mInputParameters.IteratedLocalSearch.CP_Check){
+                if(!(IsCurrentSolutionCPValid(mCurrentSolution))){
+                    mCurrentSolution = lastValidSolution;
+                    --mSolutionTracker.NoImpr;
+                }
+            }
     
             if(mCurrentSolution.Costs < mBestSolution.Costs - 1e-2){
                 mSolutionTracker.UpdateBothSolutions(mTimer.getElapsedTime(), mCurrentSolution.Costs);
@@ -614,6 +619,7 @@ void IteratedLocalSearch::Solve()
                 mSolutionTracker.NoImpr = 0;
                 iterations_without_improvement = 0;
                 mSolutionTracker.RoundsWithNoImpr = 0;
+                lastValidSolution = mCurrentSolution;
                 continue;
             }
 
@@ -626,6 +632,7 @@ void IteratedLocalSearch::Solve()
 
             ++mSolutionTracker.NoImpr;
             ++iterations_without_improvement;
+            lastValidSolution = mCurrentSolution;
 
         }
     }
@@ -709,7 +716,7 @@ void IteratedLocalSearch::DeterminePackingSolution(OutputSolution& outputSolutio
                  << ": weight util " + std::to_string(totalWeight / container.WeightLimit)
                  << " | volume util " + std::to_string(totalVolume / container.Volume) << " | ";
 
-        if (!mInputParameters.ContainerLoading.LoadingProblem.EnableThreeDimensionalLoading)
+        if (!mInputParameters.ContainerLoading.EnableThreeDimensionalLoading)
         {
             mLogFile << "\n";
             continue;

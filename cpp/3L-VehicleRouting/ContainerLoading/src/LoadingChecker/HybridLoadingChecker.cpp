@@ -4,13 +4,48 @@ namespace ContainerLoading
 {
 using namespace Algorithms;
 
-
 bool HybridLoadingChecker::CompleteCheckStartSolution(const Container& container,
                 const boost::dynamic_bitset<>& set,
                 const Collections::IdVector& stopIds,
                 const std::vector<Cuboid>& items)
-{    
-    return true;   
+{  
+    if (RouteIsInFeasSequences(stopIds))
+    {
+        return true;
+    }
+
+    if (RouteIsInInfeasSequences(stopIds))
+    {
+        return false;
+    }
+
+   if(Parameters.UseFilterStartSolution){
+
+        if(mClassifier->classify(items,stopIds,container)){
+
+            auto cpStatus = ConstraintProgrammingSolver(PackingType::Complete,
+                                                    container,
+                                                    set,
+                                                    stopIds,
+                                                    items,
+                                                    false);
+
+            return cpStatus == LoadingStatus::FeasOpt;
+        }
+        return false;
+
+   }else{
+
+        auto cpStatus = ConstraintProgrammingSolver(PackingType::Complete,
+                                                        container,
+                                                        set,
+                                                        stopIds,
+                                                        items,
+                                                        false);
+
+        return cpStatus == LoadingStatus::FeasOpt;
+
+   }
 }
 
 bool HybridLoadingChecker::CompleteCheck(const Container& container,
@@ -30,9 +65,13 @@ bool HybridLoadingChecker::CompleteCheck(const Container& container,
         return false;
     }
     
-       
+    if(Parameters.UseClassifierLocalSearch.at(localsearchtype)){
         
-    if(mClassifier->classify(items,stopIds,container)){
+        return mClassifier->classify(items,stopIds,container);
+
+    }else{
+
+        if(mClassifier->classify(items,stopIds,container)){
 
         auto cpStatus = ConstraintProgrammingSolver(PackingType::Complete,
                                                 container,
@@ -43,9 +82,16 @@ bool HybridLoadingChecker::CompleteCheck(const Container& container,
 
         return cpStatus == LoadingStatus::FeasOpt;
 
-    }else{
+        }
         return false;
+
     }
+}
+
+bool HybridLoadingChecker::RejectCurrentSolution(const VehicleRouting::Model::Solution& currentSolution,
+                                              const Container& container){
+
+    return false;
 }
 
 }

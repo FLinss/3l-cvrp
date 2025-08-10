@@ -8,10 +8,18 @@
 #include "Model/ContainerLoadingInstance.h"
 #include "Classifier.h"
 
+#include "Solution.h"
+
 #include <boost/dynamic_bitset.hpp>
 #include <boost/functional/hash.hpp>
 
-#include <chrono>
+// forward declaration OK
+namespace VehicleRouting {
+namespace Model {
+    class Solution; 
+}
+}
+
 
 namespace ContainerLoading
 {
@@ -51,6 +59,9 @@ class BaseLoadingChecker
                             const boost::dynamic_bitset<>& set,
                             const Collections::IdVector& stopIds,
                             const std::vector<Cuboid>& items) = 0;
+
+    virtual bool RejectCurrentSolution(const VehicleRouting::Model::Solution& currentSolution,
+                                       const Container& container) = 0;
 
     [[nodiscard]] std::vector<Cuboid>
         SelectItems(const Collections::IdVector& nodeIds, std::vector<Group>& nodes, bool reversedDirection) const;

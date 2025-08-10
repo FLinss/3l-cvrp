@@ -5,12 +5,48 @@ namespace ContainerLoading
 using namespace Algorithms;
 
 
- bool FilterLoadingChecker::CompleteCheckStartSolution(const Container& container,
+bool FilterLoadingChecker::CompleteCheckStartSolution(const Container& container,
                 const boost::dynamic_bitset<>& set,
                 const Collections::IdVector& stopIds,
                 const std::vector<Cuboid>& items)
-{    
-    return true;   
+{  
+    if (RouteIsInFeasSequences(stopIds))
+    {
+        return true;
+    }
+
+    if (RouteIsInInfeasSequences(stopIds))
+    {
+        return false;
+    }
+
+   if(Parameters.UseFilterStartSolution){
+
+        if(mClassifier->classify(items,stopIds,container)){
+
+            auto cpStatus = ConstraintProgrammingSolver(PackingType::Complete,
+                                                    container,
+                                                    set,
+                                                    stopIds,
+                                                    items,
+                                                    false);
+
+            return cpStatus == LoadingStatus::FeasOpt;
+        }
+        return false;
+
+   }else{
+
+        auto cpStatus = ConstraintProgrammingSolver(PackingType::Complete,
+                                                        container,
+                                                        set,
+                                                        stopIds,
+                                                        items,
+                                                        false);
+
+        return cpStatus == LoadingStatus::FeasOpt;
+
+   }
 }
 
 bool FilterLoadingChecker::CompleteCheck(const Container& container,
@@ -44,6 +80,12 @@ bool FilterLoadingChecker::CompleteCheck(const Container& container,
     }else{
         return false;
     }
+}
+
+bool FilterLoadingChecker::RejectCurrentSolution(const VehicleRouting::Model::Solution& currentSolution,
+                                              const Container& container){
+
+    return false;
 }
 
 }

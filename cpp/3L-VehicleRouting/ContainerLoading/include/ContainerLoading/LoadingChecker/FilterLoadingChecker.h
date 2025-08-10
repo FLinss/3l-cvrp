@@ -26,6 +26,9 @@ class FilterLoadingChecker : public BaseLoadingChecker
                                     const std::vector<Cuboid>& items,
                                     const VehicleRouting::Improvement::ImprovementTypes& localsearchtype) override;
 
+    [[nodiscard]] bool RejectCurrentSolution(const VehicleRouting::Model::Solution& currentSolution,
+                                              const Container& container) override;
+
   private:
     std::unique_ptr<Classifier> mClassifier;
 };

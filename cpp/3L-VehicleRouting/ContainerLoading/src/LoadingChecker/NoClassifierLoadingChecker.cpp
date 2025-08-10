@@ -10,7 +10,25 @@ bool NoClassifierLoadingChecker::CompleteCheckStartSolution(const Container& con
                 const Collections::IdVector& stopIds,
                 const std::vector<Cuboid>& items)
 {    
-    return true;   
+    if (RouteIsInFeasSequences(stopIds))
+    {
+        return true;
+    }
+
+    if (RouteIsInInfeasSequences(stopIds))
+    {
+        return false;
+    }
+    
+
+    auto cpStatus = ConstraintProgrammingSolver(PackingType::Complete,
+                                            container,
+                                            set,
+                                            stopIds,
+                                            items,
+                                            false);
+
+    return cpStatus == LoadingStatus::FeasOpt;
 }
 
 bool NoClassifierLoadingChecker::CompleteCheck(const Container& container,
@@ -41,5 +59,12 @@ bool NoClassifierLoadingChecker::CompleteCheck(const Container& container,
     return cpStatus == LoadingStatus::FeasOpt;
 
 }
+
+bool NoClassifierLoadingChecker::RejectCurrentSolution(const VehicleRouting::Model::Solution& currentSolution,
+                                              const Container& container){
+
+    return false;
+}
+
 }
 

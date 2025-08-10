@@ -46,6 +46,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 	${PROJECT_SOURCE_DIR}/include/${PROJECT_NAME}
 	${CMAKE_SOURCE_DIR}/external
 	${CMAKE_SOURCE_DIR}/CommonBasics/include
+	${CMAKE_SOURCE_DIR}/VehicleRouting/include/VehicleRouting/Model
 	${Boost_INCLUDE_DIR}
 )
 

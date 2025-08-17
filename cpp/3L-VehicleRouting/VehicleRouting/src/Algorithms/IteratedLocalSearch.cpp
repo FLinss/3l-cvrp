@@ -191,8 +191,14 @@ void IteratedLocalSearch::StartSolutionProcedure()
        mLocalSearch->RunLocalSearch(mCurrentSolution, mLoadingChecker.get());
 
         //Wont be applied, when current = best solution
-        if(mCurrentSolution.Costs < mBestSolution.Costs){
-            mBestSolution = mCurrentSolution;
+        if(mInputParameters.IteratedLocalSearch.CP_Check){
+            if(!(IsCurrentSolutionCPValid(mCurrentSolution))){
+                mCurrentSolution = mBestSolution;
+            }else{
+                if(mCurrentSolution.Costs < mBestSolution.Costs){
+                    mBestSolution = mCurrentSolution;
+                }
+            }
         }
     }
 
@@ -615,7 +621,7 @@ void IteratedLocalSearch::Solve()
                 }else{
                     continue;
                 }
-            }else{
+            }
     
             if(mCurrentSolution.Costs < mBestSolution.Costs - 1e-2){
                 mSolutionTracker.UpdateBothSolutions(mTimer.getElapsedTime(), mCurrentSolution.Costs);

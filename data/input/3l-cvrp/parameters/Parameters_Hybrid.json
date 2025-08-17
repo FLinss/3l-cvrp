@@ -11,6 +11,7 @@
         "RoundsWithNoImprovement" : 3,
         "LoadingCheckerType": "Hybrid",
         "CP_Check" : true,
+        "Interval_CP_Check" : 2,
         "TimeLimit": [
             ["ILS", 15],
             ["Constructive",1],

@@ -607,11 +607,15 @@ void IteratedLocalSearch::Solve()
             mTimer.calculateElapsedTime();
 
             if(mInputParameters.IteratedLocalSearch.CP_Check){
-                if(!(IsCurrentSolutionCPValid(mCurrentSolution))){
-                    mCurrentSolution = lastValidSolution;
-                    --mSolutionTracker.NoImpr;
+                if((mSolutionTracker.iterations % mInputParameters.IteratedLocalSearch.Interval_CP_Check) == 0){
+                    if(!(IsCurrentSolutionCPValid(mCurrentSolution))){
+                        mCurrentSolution = lastValidSolution;
+                        --mSolutionTracker.NoImpr;
+                    }
+                }else{
+                    continue;
                 }
-            }
+            }else{
     
             if(mCurrentSolution.Costs < mBestSolution.Costs - 1e-2){
                 mSolutionTracker.UpdateBothSolutions(mTimer.getElapsedTime(), mCurrentSolution.Costs);

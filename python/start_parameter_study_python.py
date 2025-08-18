@@ -14,14 +14,13 @@ output_folder = r"C:\Users\mahu123a\Documents\Data\ParameterStudy\NoClassifier/"
 input_folder = os.path.join(directory_path,"data/input/3l-cvrp/gendreau_parameterstudy/")
 parameter_files = [os.path.join(directory_path,"data/input/3l-cvrp/parameters/Parameters_NoClassifier.json")]
 temporary_parameter_files = r"C:\Users\mahu123a\Documents\Data\ParameterStudy/Parameters"
-number_of_processes = 10
+number_of_processes = 6
 MAX_TIME_SEC = 700
 
-PARAMETER_STUDY = {"IteratedLocalSearchParams": {"LimitNoImpr" :  [5,8,12,16],
+PARAMETER_STUDY = {"IteratedLocalSearchParams": {"LimitNoImpr" :  [5,8,12],
                    "K_RandomMoves" : [3,5,8],
                    "PerturbationTypes": [["K_RandomInsertions","K_RandomSwaps"],["K_RandomSwaps","K_RandomInsertions"]],
                     "LocalSearchTypes": [["TwoOpt","IntraSwap","IntraInsertion","InterSwap","InterInsertion","DeleteEmptyRoutes"],["InterSwap","InterInsertion","TwoOpt","IntraSwap","IntraInsertion","DeleteEmptyRoutes"]],
-                    "MaxIterationsWithoutImprovement" :  [10000,100000],
                     "RoundsWithNoImprovement":  [1,3,5,10]}}
 
 # Navigate to the directorys

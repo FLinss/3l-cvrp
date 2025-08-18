@@ -194,11 +194,10 @@ void IteratedLocalSearch::StartSolutionProcedure()
         if(mInputParameters.IteratedLocalSearch.CP_Check){
             if(!(IsCurrentSolutionCPValid(mCurrentSolution))){
                 mCurrentSolution = mBestSolution;
-            }else{
-                if(mCurrentSolution.Costs < mBestSolution.Costs){
-                    mBestSolution = mCurrentSolution;
-                }
             }
+        }
+        if(mCurrentSolution.Costs < mBestSolution.Costs){
+            mBestSolution = mCurrentSolution;
         }
     }
 

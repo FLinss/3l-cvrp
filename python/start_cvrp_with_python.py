@@ -10,9 +10,10 @@ directory_path = os.getcwd()
 command_base =  os.path.join(directory_path,"build/Release/bin/Release/3L-VehicleRoutingApplication.exe")
 output_folder = r"H:\Data\Results_Heuristic\Heuristic_Classifier_Approach2/"
 input_folder = os.path.join(directory_path,"data/input/3l-cvrp/gendreau/")
-parameter_files = [os.path.join(directory_path,"data/input/3l-cvrp/parameters/BenchmarkParameters_AllConstraints_Run1.json"),
-                   os.path.join(directory_path,"data/input/3l-cvrp/parameters/BenchmarkParameters_AllConstraints_Run2.json"),
-                   os.path.join(directory_path,"data/input/3l-cvrp/parameters/BenchmarkParameters_AllConstraints_Run3.json")]
+parameter_files = [os.path.join(directory_path,"data/input/3l-cvrp/parameters/Parameteres_Filter.json"),
+                   os.path.join(directory_path,"data/input/3l-cvrp/parameters/Parameteres_Hybrid.json"),
+                   os.path.join(directory_path,"data/input/3l-cvrp/parameters/Parameteres_NoClassifier.json"),
+                   os.path.join(directory_path,"data/input/3l-cvrp/parameters/Parameteres_SpeedUp.json")]
 number_of_processes = 8
 
 # Navigate to the directorys

@@ -66,17 +66,20 @@ NLOHMANN_JSON_SERIALIZE_ENUM(ContainerLoadingParams::VariantType,
                               {ContainerLoadingParams::VariantType::NoSupport, "NoSupport"},
                               {ContainerLoadingParams::VariantType::NoLifo, "NoLifo"},
                               {ContainerLoadingParams::VariantType::LoadingOnly, "LoadingOnly"},
-                              {ContainerLoadingParams::VariantType::VolumeWeightApproximation,
-                               "VolumeWeightApproximation"},
+                              {ContainerLoadingParams::VariantType::VolumeWeightApproximation,"VolumeWeightApproximation"},
                               {ContainerLoadingParams::VariantType::Volume, "Volume"},
                               {ContainerLoadingParams::VariantType::Weight, "Weight"}});
-}
-namespace ContainerLoading
-{
+
+
+NLOHMANN_JSON_SERIALIZE_ENUM(ContainerLoadingParams::ModelTypes,
+                            {{ContainerLoadingParams::ModelTypes::FFNN, "FFNN"},
+                             {ContainerLoadingParams::ModelTypes::LR, "LR"},
+                             {ContainerLoadingParams::ModelTypes::XGBOOST, "XGBOOST"}});
 
 
 void from_json(const json& j, ContainerLoadingParams& params)
 {
+    j.at("ModelType").get_to(params.ModelType);
     j.at("TracedModelPath").get_to(params.TracedModelPath);
     j.at("SerializeJson_MeanStd").get_to(params.SerializeJson_MeanStd);
     j.at("SaveTensorData").get_to(params.SaveTensorData);
@@ -95,7 +98,8 @@ void from_json(const json& j, ContainerLoadingParams& params)
 
 void to_json(json& j, const ContainerLoadingParams& params)
 {
-    j = json{{"EnableCumulativeDimensions", params.EnableCumulativeDimensions},
+    j = json{{"ModelType", params.ModelType},
+             {"EnableCumulativeDimensions", params.EnableCumulativeDimensions},
              {"EnableNoOverlap2DFloor", params.EnableNoOverlap2DFloor},
              {"LogFlag", params.LogFlag},
              {"Threads", params.Threads},

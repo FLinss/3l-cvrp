@@ -15,11 +15,11 @@
             "-i",
             "${workspaceFolder}/data/input/3l-cvrp/gendreau/",
             "-f",
-            "E051-05e.json",
+            "E016-03m.json",
             "-o",
             "${workspaceFolder}/data/output/3l-cvrp/test/",
             "-p",
-            "${workspaceFolder}/data/input/3l-cvrp/parameters/Parameters_NoClassifier.json",
+            "${workspaceFolder}/data/input/3l-cvrp/parameters/Parameters_Filter.json",
             "-s",
             "0"
         ],

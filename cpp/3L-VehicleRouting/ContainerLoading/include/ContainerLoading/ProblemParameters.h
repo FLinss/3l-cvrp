@@ -61,8 +61,8 @@ struct ContainerLoadingParams
     
     //ClassifierParams
     ModelTypes ModelType = ModelTypes::FFNN;
-    std::string TracedModelPath{};
-    std::string SerializeJson_MeanStd{};
+    std::string ModelPath{};
+    std::string ModelValuesJson{};
     bool SaveTensorData = false;
     std::string TensorDataFilePath{};
     float AcceptanceThreshold{0.5f};

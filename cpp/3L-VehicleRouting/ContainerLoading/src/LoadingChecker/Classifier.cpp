@@ -31,10 +31,10 @@ Classifier::Classifier(const ContainerLoadingParams& containerLoadingParams) :
     mSaveTensorPath(containerLoadingParams.TensorDataFilePath)
 {
 
-    model = torch::jit::load(containerLoadingParams.TracedModelPath);
+    model = torch::jit::load(containerLoadingParams.ModelPath);
     model.eval();
 
-    loadStandardScalingFromJson(containerLoadingParams.SerializeJson_MeanStd);
+    loadStandardScalingFromJson(containerLoadingParams.ModelValuesJson);
 
 }
 

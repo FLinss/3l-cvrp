@@ -15,7 +15,7 @@ class DeleteEmptyRoutes : public LocalSearchOperatorBase
     void Run(const Instance* instance,
             const InputParameters& inputParameters,
             BaseLoadingChecker* loadingChecker,
-            Solution& currentSolution) override;
+            Solution& currentSolution) const override;
 
 };
 

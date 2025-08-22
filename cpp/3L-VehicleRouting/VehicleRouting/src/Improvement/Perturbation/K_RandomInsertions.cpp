@@ -8,7 +8,7 @@ using namespace ContainerLoading;
 
 std::optional<PerturbationMove> K_RandomInsertions::DetermineMoves(const Instance* const instance,
                                               const std::vector<Route>& routes,
-                                              std::mt19937& RNG)
+                                              std::mt19937& RNG) const
 {
 
 
@@ -67,7 +67,7 @@ std::optional<PerturbationMove> K_RandomInsertions::DetermineMoves(const Instanc
     return std::nullopt;
 }
 
-void K_RandomInsertions::ChangeRoutes(std::vector<Route>& routes, const PerturbationMove& move)
+void K_RandomInsertions::ChangeRoutes(std::vector<Route>& routes, const PerturbationMove& move) const
 {
 
     auto node_i = std::get<3>(move);
@@ -86,7 +86,7 @@ void K_RandomInsertions::ChangeRoutes(std::vector<Route>& routes, const Perturba
     route_i.erase(it);
 }
 
-void K_RandomInsertions::RevertChangeRoutes(std::vector<Route>& routes, const PerturbationMove& move)
+void K_RandomInsertions::RevertChangeRoutes(std::vector<Route>& routes, const PerturbationMove& move) const
 {
     auto node_i     = std::get<3>(move);  // original position in route_i
     auto position_k = std::get<4>(move);  // inserted position in route_k

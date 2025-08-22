@@ -15,10 +15,10 @@ class K_RandomSwaps : public PerturbationOperatorBase
   private:
      std::optional<PerturbationMove> DetermineMoves(const Instance* instance,
                                                     const std::vector<Route>& routes,
-                                                    std::mt19937& rng) override;
+                                                    std::mt19937& rng) const override;
 
-     void ChangeRoutes(std::vector<Route>& routes, const PerturbationMove& move) override;
-     void RevertChangeRoutes(std::vector<Route>& routes, const PerturbationMove& move) override;
+     void ChangeRoutes(std::vector<Route>& routes, const PerturbationMove& move) const override;
+     void RevertChangeRoutes(std::vector<Route>& routes, const PerturbationMove& move) const override;
 };
 }
 }

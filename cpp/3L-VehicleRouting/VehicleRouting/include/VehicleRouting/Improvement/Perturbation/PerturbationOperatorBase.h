@@ -26,7 +26,7 @@ public:
             const InputParameters&            params,
             ContainerLoading::BaseLoadingChecker* loadingChecker,
             Model::Solution&                  solution,
-            std::mt19937&                     rng);
+            std::mt19937&                     rng) const;
 
 
   private:
@@ -35,12 +35,12 @@ public:
   protected:
     virtual std::optional<PerturbationMove> DetermineMoves(const Instance* instance,
                                                     const std::vector<Route>& routes,
-                                                    std::mt19937& rng) = 0;
+                                                    std::mt19937& rng) const = 0;
 
-    virtual void ChangeRoutes(std::vector<Route>& routes, const PerturbationMove& move) = 0;
-    virtual void RevertChangeRoutes(std::vector<Route>& routes, const PerturbationMove& move) = 0;
+    virtual void ChangeRoutes(std::vector<Route>& routes, const PerturbationMove& move) const = 0;
+    virtual void RevertChangeRoutes(std::vector<Route>& routes, const PerturbationMove& move) const = 0;
 
-    void UpdateRouteVolumeWeight(std::vector<Route>& routes, const PerturbationMove& move);
+    void UpdateRouteVolumeWeight(std::vector<Route>& routes, const PerturbationMove& move) const;
 
 };
 

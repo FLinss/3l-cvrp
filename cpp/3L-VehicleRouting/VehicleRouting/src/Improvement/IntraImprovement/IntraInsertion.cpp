@@ -8,7 +8,7 @@ using namespace ContainerLoading;
 
 
 std::vector<IntraMove> IntraInsertion::DetermineMoves(const Instance* const instance,
-                                                        const Collections::IdVector& route)
+                                                        const Collections::IdVector& route) const
 {
 
     std::vector<IntraMove> moves{};
@@ -33,7 +33,7 @@ std::vector<IntraMove> IntraInsertion::DetermineMoves(const Instance* const inst
     return moves;
 }
 
-void IntraInsertion::ChangeRoute(Collections::IdVector& route, const size_t i, const size_t k)
+void IntraInsertion::ChangeRoute(Collections::IdVector& route, const size_t i, const size_t k) const
 {
 
     auto position_k = k;
@@ -49,36 +49,12 @@ void IntraInsertion::ChangeRoute(Collections::IdVector& route, const size_t i, c
     route.insert(route.begin() + position_k, value);
 }
 
-void IntraInsertion::RevertRoute(Collections::IdVector& route, const size_t old_i, const size_t old_k)
+void IntraInsertion::RevertRoute(Collections::IdVector& route, const size_t old_i, const size_t old_k) const
 {
     size_t new_i = (old_k > old_i) ? old_k - 1 : old_k;
     size_t new_k = (old_k > old_i) ? old_i : old_i + 1;
 
     ChangeRoute(route, new_i, new_k);
 }
-/*
-void IntraInsertion::RevertRoute(Collections::IdVector& route, const size_t original_i, const size_t inserted_at)
-{
-    size_t to = inserted_at;
-    size_t from = original_i;
-
-    auto value = route[to];
-
-    route.erase(route.begin() + to);
-
-    if (from > to) from--;
-    route.insert(route.begin() + from, value);
-
-    std::cout << "Route after revert - i: " << original_i << " - k: " << inserted_at << ":";
-    for(const auto& elem: route){
-        std::cout << elem << " "; 
-    }
-    std::cout << std::endl;
-
-}
-*/
-
-
-
 }
 }

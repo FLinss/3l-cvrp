@@ -7,7 +7,7 @@ namespace Improvement
 using namespace ContainerLoading;
 
 std::vector<IntraMove> TwoOpt::DetermineMoves(const Instance* const instance,
-                                               const Collections::IdVector& route)
+                                               const Collections::IdVector& route) const 
 {
     std::vector<IntraMove> moves = std::vector<IntraMove>();
     auto savings = 0.0; 
@@ -31,14 +31,15 @@ std::vector<IntraMove> TwoOpt::DetermineMoves(const Instance* const instance,
 
 
 
-void TwoOpt::ChangeRoute(Collections::IdVector& route, const size_t i, const size_t k)
+void TwoOpt::ChangeRoute(Collections::IdVector& route, const size_t i, const size_t k) const 
 {
     std::reverse(route.begin() + i, route.begin() + k + 1);
     
 }
 
 
-void TwoOpt::RevertRoute(Collections::IdVector& route, const size_t i, const size_t k){
+void TwoOpt::RevertRoute(Collections::IdVector& route, const size_t i, const size_t k) const
+{
 
     std::reverse(route.begin() + i, route.begin() + k + 1);
 

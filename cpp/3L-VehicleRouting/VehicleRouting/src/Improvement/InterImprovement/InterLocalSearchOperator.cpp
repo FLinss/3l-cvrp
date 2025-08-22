@@ -12,7 +12,7 @@ using namespace ContainerLoading;
 void InterLocalSearchOperator::Run(const Instance* instance,
                     const InputParameters& inputParameters,
                     BaseLoadingChecker* loadingChecker,
-                    Solution& currentSolution){
+                    Solution& currentSolution) const {
 
   std::vector<Route>& routes = currentSolution.Routes;
 
@@ -41,7 +41,7 @@ std::optional<double> InterLocalSearchOperator::GetBestMove(const Instance* inst
                                 const InputParameters& inputParameters,
                                 BaseLoadingChecker* loadingChecker,
                                 std::vector<Route>& routes,
-                                std::vector<InterMove>& moves){
+                                std::vector<InterMove>& moves) const{
   if (moves.size() == 0)
   {
       return std::nullopt;
@@ -103,7 +103,7 @@ std::optional<double> InterLocalSearchOperator::GetBestMove(const Instance* inst
 };
 
 
-void InterLocalSearchOperator::UpdateRouteVolumeWeight(std::vector<Route>& routes, const InterMove& move){
+void InterLocalSearchOperator::UpdateRouteVolumeWeight(std::vector<Route>& routes, const InterMove& move) const {
 
     const auto item_delta = std::get<5>(move);
     const auto volume_delta = std::get<6>(move);

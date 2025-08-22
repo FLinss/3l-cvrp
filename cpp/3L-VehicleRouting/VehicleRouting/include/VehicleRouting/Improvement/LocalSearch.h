@@ -25,17 +25,17 @@ public:
 
     // Run all local‑search moves in order
     void RunLocalSearch(Solution& sol,
-                        ContainerLoading::BaseLoadingChecker* checker);
+                        ContainerLoading::BaseLoadingChecker* checker) const;
 
     // Run all perturbations in order
     void RunPerturbation(Solution& sol,
                         ContainerLoading::BaseLoadingChecker* checker,
-                         std::mt19937& rng);
+                         std::mt19937& rng) const;
 
         // Run all perturbations in order
     void RunBigPerturbation(Solution& sol,
                         ContainerLoading::BaseLoadingChecker* checker,
-                         std::mt19937& rng);
+                         std::mt19937& rng) const;
 
 private:
     std::vector<std::unique_ptr<LocalSearchOperatorBase>>  lsOperators;

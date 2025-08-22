@@ -7,7 +7,7 @@ void PerturbationOperatorBase::Run(const Model::Instance*            instance,
         const InputParameters&            params,
         ContainerLoading::BaseLoadingChecker* loadingChecker,
         Model::Solution&                  solution,
-        std::mt19937&                     rng)
+        std::mt19937&                     rng) const
 {
     int succesful_moves = 0;
 
@@ -72,7 +72,7 @@ void PerturbationOperatorBase::Run(const Model::Instance*            instance,
     }  
 };
 
-void PerturbationOperatorBase::UpdateRouteVolumeWeight(std::vector<Route>& routes, const PerturbationMove& move){
+void PerturbationOperatorBase::UpdateRouteVolumeWeight(std::vector<Route>& routes, const PerturbationMove& move) const {
 
     const auto item_delta = std::get<5>(move);
     const auto volume_delta = std::get<6>(move);

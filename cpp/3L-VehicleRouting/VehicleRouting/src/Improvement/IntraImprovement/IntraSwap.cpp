@@ -7,7 +7,7 @@ namespace Improvement
 using namespace ContainerLoading;
 
 std::vector<IntraMove> IntraSwap::DetermineMoves(const Instance* const instance,
-                                           const Collections::IdVector& route)
+                                           const Collections::IdVector& route) const 
 {
 
     std::vector<IntraMove> moves{};
@@ -30,13 +30,13 @@ std::vector<IntraMove> IntraSwap::DetermineMoves(const Instance* const instance,
     return moves;
 }
 
-void IntraSwap::ChangeRoute(Collections::IdVector& route, const size_t node_i, const size_t node_k)
+void IntraSwap::ChangeRoute(Collections::IdVector& route, const size_t node_i, const size_t node_k) const
 {
     std::swap(route[node_i], route[node_k]);
 };
 
 
-void IntraSwap::RevertRoute(Collections::IdVector& route, const size_t node_i, const size_t node_k)
+void IntraSwap::RevertRoute(Collections::IdVector& route, const size_t node_i, const size_t node_k) const
 {
     std::swap(route[node_i], route[node_k]);
 };

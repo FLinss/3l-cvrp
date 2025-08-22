@@ -18,7 +18,7 @@ class IntraLocalSearchOperator : public LocalSearchOperatorBase
     void Run(const Instance* instance,
                     const InputParameters& inputParameters,
                     BaseLoadingChecker* loadingChecker,
-                    Solution& currentSolution) override;
+                    Solution& currentSolution) const override;
 
   private:
     ImprovementTypes mType = ImprovementTypes::Intra;
@@ -28,13 +28,13 @@ class IntraLocalSearchOperator : public LocalSearchOperatorBase
                                     const InputParameters& inputParameters,
                                     BaseLoadingChecker* loadingChecker,
                                     Collections::IdVector& route,
-                                    std::vector<IntraMove>& moves);
+                                    std::vector<IntraMove>& moves) const;
 
     virtual std::vector<IntraMove> DetermineMoves(const Instance* instance,
-                                                  const Collections::IdVector& route) = 0;
+                                                  const Collections::IdVector& route) const = 0;
 
-    virtual void ChangeRoute(Collections::IdVector& route, const size_t i, const size_t k) = 0;
-    virtual void RevertRoute(Collections::IdVector& route, const size_t k, const size_t i) = 0;
+    virtual void ChangeRoute(Collections::IdVector& route, const size_t i, const size_t k) const = 0;
+    virtual void RevertRoute(Collections::IdVector& route, const size_t k, const size_t i) const = 0;
 };
 }
 }

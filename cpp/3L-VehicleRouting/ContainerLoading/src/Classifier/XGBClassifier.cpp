@@ -20,8 +20,8 @@ XGBClassifier::XGBClassifier(const ContainerLoadingParams& containerLoadingParam
 void XGBClassifier::saveClassifierResults(const std::vector<Model::Cuboid>& items,
                                                 const Collections::IdVector& route,
                                                 const Model::Container& container,
-                                                const float output,
-                                                const int status) const {
+                                                float output,
+                                                int status) const {
     
     return;                                                
 }

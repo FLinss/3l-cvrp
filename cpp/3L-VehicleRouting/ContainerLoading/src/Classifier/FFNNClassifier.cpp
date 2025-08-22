@@ -220,8 +220,8 @@ void FFNNClassifier::save_tensor_to_csv(const torch::Tensor& tensor, const int s
 void FFNNClassifier::saveClassifierResults(const std::vector<Model::Cuboid>& items,
                                                 const Collections::IdVector& route,
                                                 const Model::Container& container,
-                                                const float output,
-                                                const int status) const {
+                                                float output,
+                                                int status) const {
 
     torch::Tensor input = extractFeatures(items, route, container);
     torch::Tensor input_scaled = applyStandardScaling(input);

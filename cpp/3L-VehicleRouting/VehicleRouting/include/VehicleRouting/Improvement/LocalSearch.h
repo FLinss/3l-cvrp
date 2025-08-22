@@ -1,13 +1,13 @@
 #pragma once
 
-#include "Improvement/TwoOpt.h"
-#include "Improvement/InterSwap.h"
-#include "Improvement/IntraSwap.h"
-#include "Improvement/InterInsertion.h"
-#include "Improvement/IntraInsertion.h"
-#include "Improvement/K_RandomSwaps.h"
-#include "Improvement/K_RandomInsertions.h"
-#include "Improvement/DeleteEmptyRoutes.h"
+#include "IntraImprovement/TwoOpt.h"
+#include "InterImprovement/InterSwap.h"
+#include "IntraImprovement/IntraSwap.h"
+#include "InterImprovement/InterInsertion.h"
+#include "IntraImprovement/IntraInsertion.h"
+#include "Perturbation/K_RandomSwaps.h"
+#include "Perturbation/K_RandomInsertions.h"
+#include "IntraImprovement/DeleteEmptyRoutes.h"
 
 namespace VehicleRouting
 {

@@ -1,6 +1,4 @@
-#include "Improvement/IntraSwap.h"
-
-#include <algorithm>
+#include "IntraImprovement/IntraSwap.h"
 
 namespace VehicleRouting
 {

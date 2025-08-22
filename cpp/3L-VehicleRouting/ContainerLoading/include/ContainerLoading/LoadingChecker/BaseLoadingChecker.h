@@ -9,6 +9,7 @@
 
 #include <boost/dynamic_bitset.hpp>
 #include <boost/functional/hash.hpp>
+#include <memory>
 
 namespace ContainerLoading
 {

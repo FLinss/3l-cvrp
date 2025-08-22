@@ -1,6 +1,4 @@
-#pragma once
-
-#include "IntraImprovement/IntraLocalSearchOperator.h"
+#include "Improvement/IntraImprovement/IntraLocalSearchOperator.h"
 
 namespace VehicleRouting
 {

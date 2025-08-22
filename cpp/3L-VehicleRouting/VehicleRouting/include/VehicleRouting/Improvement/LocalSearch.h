@@ -7,7 +7,7 @@
 #include "IntraImprovement/IntraInsertion.h"
 #include "Perturbation/K_RandomSwaps.h"
 #include "Perturbation/K_RandomInsertions.h"
-#include "IntraImprovement/DeleteEmptyRoutes.h"
+#include "DeleteEmptyRoutes.h"
 
 namespace VehicleRouting
 {

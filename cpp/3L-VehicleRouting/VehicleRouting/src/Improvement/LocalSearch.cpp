@@ -95,27 +95,3 @@ std::unique_ptr<PerturbationOperatorBase> LocalSearch::CreatePerturbationOperato
 };
 
 }} // namespace VehicleRouting::Improvement
-
-
-/*
-
-private:
-
-    std::unique_ptr<LocalSearchOperatorBase> CreateLocalSearchOperator(LocalSearchTypes t)
-    {
-        switch (t)
-        {
-            case LocalSearchTypes::TwoOpt:          
-                return std::make_unique<TwoOptOperator>();
-            case LocalSearchTypes::IntraSwap:       
-                return std::make_unique<IntraSwapOperator>();
-            case LocalSearchTypes::InterSwap:       
-                return std::make_unique<InterSwap>();
-            case LocalSearchTypes::FullEnumeration: 
-                return std::make_unique<FullEnumerationOperator>();
-            default:                                
-                return nullptr;
-        }
-    }
-
-*/

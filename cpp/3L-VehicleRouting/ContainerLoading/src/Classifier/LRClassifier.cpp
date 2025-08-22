@@ -1,4 +1,4 @@
-#include "LoadingChecker/LRClassifier.h"
+#include "Classifier/LRClassifier.h"
 
 
 namespace ContainerLoading{
@@ -10,7 +10,7 @@ void LRClassifier::loadStandardScalingFromJson(const std::string& scaler_path){
 }
 
 LRClassifier::LRClassifier(const ContainerLoadingParams& containerLoadingParams) : 
-    Classifier(containerLoadingParams)
+    BaseClassifier(containerLoadingParams)
 {
     loadStandardScalingFromJson(containerLoadingParams.ModelValuesJson);
 

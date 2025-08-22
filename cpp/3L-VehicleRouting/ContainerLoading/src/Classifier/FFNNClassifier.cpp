@@ -1,4 +1,4 @@
-#include "LoadingChecker/FFNNClassifier.h"
+#include "Classifier/FFNNClassifier.h"
 
 namespace ContainerLoading{
 
@@ -21,7 +21,7 @@ void FFNNClassifier::loadStandardScalingFromJson(const std::string& scaler_path)
 }
 
 FFNNClassifier::FFNNClassifier(const ContainerLoadingParams& containerLoadingParams) : 
-    Classifier(containerLoadingParams)
+    BaseClassifier(containerLoadingParams)
 {
 
     model = torch::jit::load(containerLoadingParams.ModelPath);

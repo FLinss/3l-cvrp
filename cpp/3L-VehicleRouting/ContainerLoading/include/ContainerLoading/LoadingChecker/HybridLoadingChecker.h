@@ -1,9 +1,9 @@
 #pragma once
 
 #include "BaseLoadingChecker.h"
-#include "LRClassifier.h"
-#include "XGBClassifier.h"
-#include "FFNNClassifier.h"
+#include "Classifier/LRClassifier.h"
+#include "Classifier/XGBClassifier.h"
+#include "Classifier/FFNNClassifier.h"
 
 namespace ContainerLoading
 {
@@ -47,6 +47,6 @@ class HybridLoadingChecker : public BaseLoadingChecker
                                         const std::vector<Cuboid>& items) override;
 
   private:
-    std::unique_ptr<Classifier> mClassifier;
+    std::unique_ptr<BaseClassifier> mClassifier;
 };
 }

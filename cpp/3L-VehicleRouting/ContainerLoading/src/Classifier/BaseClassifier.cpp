@@ -1,15 +1,15 @@
-// File: Classifier.cpp
+// File: BaseClassifier.cpp
 
-#include "LoadingChecker/Classifier.h"
+#include "Classifier/BaseClassifier.h"
 
 namespace ContainerLoading {
 
-Classifier::Classifier(const ContainerLoadingParams& containerLoadingParams) : 
+BaseClassifier::BaseClassifier(const ContainerLoadingParams& containerLoadingParams) : 
     mAcceptanceThreshold(containerLoadingParams.AcceptanceThreshold),
     mSaveTensorPath(containerLoadingParams.TensorDataFilePath)
 {}
 
-float Classifier::getMean(std::vector<float>::const_iterator first,
+float BaseClassifier::getMean(std::vector<float>::const_iterator first,
                           std::vector<float>::const_iterator last)
 {
     auto count = std::distance(first, last);
@@ -20,7 +20,7 @@ float Classifier::getMean(std::vector<float>::const_iterator first,
 }
 
 
-float Classifier::getStd(std::vector<float>::const_iterator first,
+float BaseClassifier::getStd(std::vector<float>::const_iterator first,
                          std::vector<float>::const_iterator last)
 {
     auto count = std::distance(first, last);
@@ -35,7 +35,7 @@ float Classifier::getStd(std::vector<float>::const_iterator first,
     return std::sqrt(variance / count);  // or / (count - 1) for sample stddev
 }
 
-std::string Classifier::get_timestamp() const{
+std::string BaseClassifier::get_timestamp() const{
     using namespace std::chrono;
 
     auto now = system_clock::now();

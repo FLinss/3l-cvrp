@@ -22,11 +22,11 @@ using json = nlohmann::json;
 
 namespace ContainerLoading {
     
-class Classifier {
+class BaseClassifier {
 public:
 
-    Classifier(const ContainerLoadingParams& containerLoadingParams);
-    virtual ~Classifier() = default;
+    BaseClassifier(const ContainerLoadingParams& containerLoadingParams);
+    virtual ~BaseClassifier() = default;
 
     // Output: classification probability (0–1) - O Infeasible - 1 Feasible
     virtual void saveClassifierResults(const std::vector<Model::Cuboid>& items,

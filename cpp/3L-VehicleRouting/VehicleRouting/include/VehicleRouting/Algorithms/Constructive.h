@@ -2,8 +2,6 @@
 
 #include "Algorithms/BCRoutingParams.h"
 #include "ContainerLoading/LoadingChecker/BaseLoadingChecker.h"
-#include "ContainerLoading/LoadingChecker/Classifier.h"
-
 #include "Model/Instance.h"
 
 #include <random>

@@ -1,4 +1,4 @@
-#include "LoadingChecker/XGBClassifier.h"
+#include "Classifier/XGBClassifier.h"
 
 namespace ContainerLoading{
 
@@ -9,7 +9,7 @@ void XGBClassifier::loadStandardScalingFromJson(const std::string& scaler_path){
 }
 
 XGBClassifier::XGBClassifier(const ContainerLoadingParams& containerLoadingParams) : 
-    Classifier(containerLoadingParams)
+    BaseClassifier(containerLoadingParams)
 {
     loadStandardScalingFromJson(containerLoadingParams.ModelValuesJson);
 }

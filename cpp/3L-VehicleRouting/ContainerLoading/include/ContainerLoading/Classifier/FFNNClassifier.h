@@ -1,13 +1,13 @@
 #pragma once
 
-#include "Classifier.h"
+#include "BaseClassifier.h"
 #include <torch/script.h>
 #include <numeric> // for std::iota
 
 
 namespace ContainerLoading {
     
-class FFNNClassifier : public Classifier{
+class FFNNClassifier : public BaseClassifier{
 public:
 
     explicit FFNNClassifier(const ContainerLoadingParams& containerLoadingParams);

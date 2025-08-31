@@ -27,7 +27,7 @@ LocalSearch::LocalSearch(const InputParameters& params,
 
 // Run all local‑search moves in order
 void LocalSearch::RunLocalSearch(Model::Solution& sol,
-                                ContainerLoading::BaseLoadingChecker* checker)
+                                ContainerLoading::BaseLoadingChecker* checker) const
 {
     for (auto& op : lsOperators){
         op->Run(mInstance, mInputParameters, checker, sol);
@@ -37,7 +37,7 @@ void LocalSearch::RunLocalSearch(Model::Solution& sol,
 // Run all perturbations in order
 void LocalSearch::RunPerturbation(Model::Solution&                  sol,
                                   ContainerLoading::BaseLoadingChecker* checker,
-                                  std::mt19937&                     rng)
+                                  std::mt19937&                     rng) const
 {
     for (auto& op : pertOperators){
         //TODO handles nullptr case! 
@@ -51,7 +51,7 @@ void LocalSearch::RunPerturbation(Model::Solution&                  sol,
 // Run all perturbations in order
 void LocalSearch::RunBigPerturbation(Model::Solution&                  sol,
                                   ContainerLoading::BaseLoadingChecker* checker,
-                                  std::mt19937&                     rng)
+                                  std::mt19937&                     rng) const 
 {
     for (auto& op : pertOperators)
         //TODO handles nullptr case! 
@@ -95,27 +95,3 @@ std::unique_ptr<PerturbationOperatorBase> LocalSearch::CreatePerturbationOperato
 };
 
 }} // namespace VehicleRouting::Improvement
-
-
-/*
-
-private:
-
-    std::unique_ptr<LocalSearchOperatorBase> CreateLocalSearchOperator(LocalSearchTypes t)
-    {
-        switch (t)
-        {
-            case LocalSearchTypes::TwoOpt:          
-                return std::make_unique<TwoOptOperator>();
-            case LocalSearchTypes::IntraSwap:       
-                return std::make_unique<IntraSwapOperator>();
-            case LocalSearchTypes::InterSwap:       
-                return std::make_unique<InterSwap>();
-            case LocalSearchTypes::FullEnumeration: 
-                return std::make_unique<FullEnumerationOperator>();
-            default:                                
-                return nullptr;
-        }
-    }
-
-*/

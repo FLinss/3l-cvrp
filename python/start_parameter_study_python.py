@@ -44,7 +44,7 @@ def create_new_parameter_file(file_path_base_parameter:str,
 
 
     with open(save_path, "w") as f:
-        json.dump(data, f)
+        json.dump(data, f, indent=4)
 
     return save_path
 

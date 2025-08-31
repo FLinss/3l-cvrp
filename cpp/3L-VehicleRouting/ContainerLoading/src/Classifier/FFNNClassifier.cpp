@@ -1,14 +1,8 @@
-// File: Classifier.cpp
+#include "Classifier/FFNNClassifier.h"
 
-#include "LoadingChecker/Classifier.h"
-#include <cmath>
-#include <fstream>
-#include "nlohmann/json.hpp"
-#include <filesystem>
+namespace ContainerLoading{
 
-namespace ContainerLoading {
-
-void Classifier::loadStandardScalingFromJson(const std::string& scaler_path){
+void FFNNClassifier::loadStandardScalingFromJson(const std::string& scaler_path){
 
     std::ifstream file(scaler_path);
     if (!file) {
@@ -26,58 +20,25 @@ void Classifier::loadStandardScalingFromJson(const std::string& scaler_path){
 
 }
 
-Classifier::Classifier(const ContainerLoadingParams& containerLoadingParams) : 
-    mAcceptanceThreshold(containerLoadingParams.AcceptanceThreshold),
-    mSaveTensorPath(containerLoadingParams.TensorDataFilePath)
+FFNNClassifier::FFNNClassifier(const ContainerLoadingParams& containerLoadingParams) : 
+    BaseClassifier(containerLoadingParams)
 {
 
-    model = torch::jit::load(containerLoadingParams.TracedModelPath);
+    model = torch::jit::load(containerLoadingParams.ModelPath);
     model.eval();
 
-    loadStandardScalingFromJson(containerLoadingParams.SerializeJson_MeanStd);
+    loadStandardScalingFromJson(containerLoadingParams.ModelValuesJson);
 
 }
 
-torch::Tensor Classifier::applyStandardScaling(const torch::Tensor& input) const{
+torch::Tensor FFNNClassifier::applyStandardScaling(const torch::Tensor& input) const{
 
     return (input - mean_tensor) / std_tensor;
 }
 
-float Classifier::getMean(std::vector<float>::iterator first,
-                          std::vector<float>::iterator last)
-{
-    auto count = std::distance(first, last);
-    if (count == 0) return 0.0f;
-
-    float sum = std::accumulate(first, last, 0.0f);
-    return sum / count;
-}
-
-
-float Classifier::getStd(std::vector<float>::iterator first,
-                         std::vector<float>::iterator last)
-{
-    auto count = std::distance(first, last);
-    if (count <= 1) return 0.0f;
-
-    float mean = getMean(first, last);
-
-    float variance = 0.0f;
-    for (auto it = first; it != last; ++it)
-        variance += std::pow(*it - mean, 2);
-
-    return std::sqrt(variance / count);  // or / (count - 1) for sample stddev
-}
-
-
-
-
-//['NoItems', 'NoCustomers', 'Rel Volume', 'Rel Weight', 'Weight Distribution', 'Volume Distribution', 'Fragile Ratio',
-//'Rel Total Length Items', 'Rel Total Width Items', 'Rel Total Height Items']
-
-torch::Tensor Classifier::extractFeatures(const std::vector<Cuboid>& items,
+torch::Tensor FFNNClassifier::extractFeatures(const std::vector<Model::Cuboid>& items,
                                           const Collections::IdVector& route,
-                                          const Container& container) const {
+                                          const Model::Container& container) const {
 
     torch::Tensor result = torch::zeros({1,46});
     //std::vector<float> features;
@@ -123,7 +84,7 @@ torch::Tensor Classifier::extractFeatures(const std::vector<Cuboid>& items,
         tot_width += item.Dy;
         tot_length += item.Dx;
         tot_height += item.Dz;
-        if(item.Fragility == Fragility::Fragile){
+        if(item.Fragility == Model::Fragility::Fragile){
             ++fragile_count;
         }
         //Distributions
@@ -222,24 +183,9 @@ torch::Tensor Classifier::extractFeatures(const std::vector<Cuboid>& items,
     return result;
 }
 
-std::string Classifier::get_timestamp() {
-    using namespace std::chrono;
-
-    auto now = system_clock::now();
-    auto now_time_t = system_clock::to_time_t(now);
-    auto now_ms = duration_cast<milliseconds>(now.time_since_epoch()) % 1000;
-    std::tm* parts = std::localtime(&now_time_t);
-
-    std::ostringstream oss;
-    oss << std::put_time(parts, "%Y-%m-%d_%H-%M-%S");
-    oss << "-" << std::setw(3) << std::setfill('0') << now_ms.count();  // add milliseconds
-
-    return oss.str();
-}
-
 
 // Save a 1D or 2D tensor as CSV with timestamp
-void Classifier::save_tensor_to_csv(const torch::Tensor& tensor, const int status, const float output) {
+void FFNNClassifier::save_tensor_to_csv(const torch::Tensor& tensor, const int status, const float output) const{
     torch::Tensor cpu_tensor = tensor.detach().cpu();
     std::string filename = mSaveTensorPath + "/tensor_" + get_timestamp() + ".csv";
 
@@ -271,11 +217,11 @@ void Classifier::save_tensor_to_csv(const torch::Tensor& tensor, const int statu
 }
 
 
-void Classifier::saveClassifierResults(const std::vector<Cuboid>& items,
+void FFNNClassifier::saveClassifierResults(const std::vector<Model::Cuboid>& items,
                                                 const Collections::IdVector& route,
-                                                const Container& container,
-                                                const float output,
-                                                const int status) {
+                                                const Model::Container& container,
+                                                float output,
+                                                int status) const {
 
     torch::Tensor input = extractFeatures(items, route, container);
     torch::Tensor input_scaled = applyStandardScaling(input);
@@ -283,9 +229,9 @@ void Classifier::saveClassifierResults(const std::vector<Cuboid>& items,
     save_tensor_to_csv(input_scaled, status, output);
 }
 
-float Classifier::classifyReturnOutput(const std::vector<Cuboid>& items,
+float FFNNClassifier::classifyReturnOutput(const std::vector<Model::Cuboid>& items,
                             const Collections::IdVector& route,
-                            const Container& container){
+                            const Model::Container& container){
 
     torch::Tensor input = extractFeatures(items, route, container);
     torch::Tensor input_scaled = applyStandardScaling(input);
@@ -294,9 +240,9 @@ float Classifier::classifyReturnOutput(const std::vector<Cuboid>& items,
     return output.item<float>();
 }
 
-bool Classifier::classify(const std::vector<Cuboid>& items,
+bool FFNNClassifier::classify(const std::vector<Model::Cuboid>& items,
                            const Collections::IdVector& route,
-                           const Container& container) {
+                           const Model::Container& container){
 
     torch::Tensor input = extractFeatures(items, route, container);
     torch::Tensor input_scaled = applyStandardScaling(input);
@@ -305,4 +251,4 @@ bool Classifier::classify(const std::vector<Cuboid>& items,
     return output.item<float>() > mAcceptanceThreshold;
 }
 
-}  // namespace ContainerLoading
+}

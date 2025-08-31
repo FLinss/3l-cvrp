@@ -1,4 +1,4 @@
-#include "Improvement/K_RandomSwaps.h"
+#include "Improvement/Perturbation/K_RandomSwaps.h"
 
 namespace VehicleRouting
 {
@@ -8,7 +8,7 @@ using namespace ContainerLoading;
 
 std::optional<PerturbationMove> K_RandomSwaps::DetermineMoves(const Instance* const instance,
                                               const std::vector<Route>& routes,
-                                              std::mt19937& RNG)
+                                              std::mt19937& RNG) const 
 {
 
 
@@ -67,7 +67,7 @@ std::optional<PerturbationMove> K_RandomSwaps::DetermineMoves(const Instance* co
 }
 
 
-void K_RandomSwaps::ChangeRoutes(std::vector<Route>& routes, const PerturbationMove& move)
+void K_RandomSwaps::ChangeRoutes(std::vector<Route>& routes, const PerturbationMove& move) const 
 {
 
     auto node_i = std::get<3>(move);
@@ -80,7 +80,7 @@ void K_RandomSwaps::ChangeRoutes(std::vector<Route>& routes, const PerturbationM
     
 }
 
-void K_RandomSwaps::RevertChangeRoutes(std::vector<Route>& routes, const PerturbationMove& move)
+void K_RandomSwaps::RevertChangeRoutes(std::vector<Route>& routes, const PerturbationMove& move) const 
 {
 
     auto node_i = std::get<3>(move);

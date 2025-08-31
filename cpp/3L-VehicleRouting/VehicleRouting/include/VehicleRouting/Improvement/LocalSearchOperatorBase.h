@@ -20,7 +20,7 @@ public:
     virtual void Run(const Instance* instance,
                      const InputParameters& inputParameters,
                      BaseLoadingChecker* loadingChecker,
-                     Solution& currentSolution) = 0;
+                     Solution& currentSolution) const = 0;
 };
 
 }}  // namespace

@@ -1,7 +1,9 @@
 #pragma once
 
 #include "BaseLoadingChecker.h"
-#include "Classifier.h"
+#include "Classifier/LRClassifier.h"
+#include "Classifier/XGBClassifier.h"
+#include "Classifier/FFNNClassifier.h"
 
 namespace ContainerLoading
 {
@@ -12,8 +14,21 @@ class HybridLoadingChecker : public BaseLoadingChecker
   public:
 
     explicit HybridLoadingChecker(const ContainerLoadingParams& parameters, const double maxruntime)
-    : BaseLoadingChecker(parameters,maxruntime), mClassifier(std::make_unique<Classifier>(Parameters))
-    {}
+    : BaseLoadingChecker(parameters,maxruntime)
+    {
+      switch (Parameters.ModelType){
+        case ContainerLoadingParams::ModelTypes::FFNN:
+          mClassifier = std::make_unique<FFNNClassifier>(Parameters);
+          break;
+        case ContainerLoadingParams::ModelTypes::LR:
+          mClassifier = std::make_unique<LRClassifier>(Parameters);
+          break;
+        
+        case ContainerLoadingParams::ModelTypes::XGBOOST:
+          mClassifier = std::make_unique<XGBClassifier>(Parameters);
+          break;
+      }
+    }
 
     [[nodiscard]] bool CompleteCheckStartSolution(const Container& container,
                 const boost::dynamic_bitset<>& set,
@@ -32,6 +47,6 @@ class HybridLoadingChecker : public BaseLoadingChecker
                                         const std::vector<Cuboid>& items) override;
 
   private:
-    std::unique_ptr<Classifier> mClassifier;
+    std::unique_ptr<BaseClassifier> mClassifier;
 };
 }

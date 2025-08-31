@@ -13,15 +13,16 @@
         "CP_Check" : true,
         "Interval_CP_Check" : 5,
         "TimeLimit": [
-            ["ILS", 120],
+            ["ILS", 15],
             ["Constructive",1],
             ["Exact", 600],
             ["ExactLimit", 60]
         ]
     }, 
     "ContainerLoadingParams": {
-        "TracedModelPath": "C:/Users/mahu123a/Documents/3l-cvrp-heuristic/data/input/model/Gendreau_14440_inf_1_1/mb_complete_nodupl_mlp_cp_status_model_traced.pt",
-        "SerializeJson_MeanStd" : "C:/Users/mahu123a/Documents/3l-cvrp-heuristic/data/input/model/Gendreau_14440_inf_1_1/mb_complete_nodupl_mlp_input_scaling.json",
+        "ModelType":"FFNN",
+        "ModelPath": "C:/Users/mahu123a/Documents/3l-cvrp-heuristic/data/input/model/Gendreau_14440_inf_1_1/mb_complete_nodupl_mlp_cp_status_model_traced.pt",
+        "ModelValuesJson" : "C:/Users/mahu123a/Documents/3l-cvrp-heuristic/data/input/model/Gendreau_14440_inf_1_1/mb_complete_nodupl_mlp_input_scaling.json",
         "SaveTensorData" : false,
         "TensorDataFilePath": "",
         "AcceptanceThreshold": 0.5,

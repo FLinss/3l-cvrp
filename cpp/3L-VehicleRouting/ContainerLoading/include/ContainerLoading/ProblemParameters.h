@@ -44,6 +44,13 @@ struct ContainerLoadingParams
         Weight
     };
 
+    enum class ModelTypes
+    {
+        XGBOOST,
+        FFNN,
+        LR
+    };
+
     VariantType Variant = VariantType::None;
     Algorithms::LoadingFlag LoadingFlags = Algorithms::LoadingFlag::NoneSet;
     bool EnableThreeDimensionalLoading = false;
@@ -53,8 +60,9 @@ struct ContainerLoadingParams
     bool EnableFragility = false;
     
     //ClassifierParams
-    std::string TracedModelPath{};
-    std::string SerializeJson_MeanStd{};
+    ModelTypes ModelType = ModelTypes::FFNN;
+    std::string ModelPath{};
+    std::string ModelValuesJson{};
     bool SaveTensorData = false;
     std::string TensorDataFilePath{};
     float AcceptanceThreshold{0.5f};

@@ -1,5 +1,5 @@
 
-#include "Improvement/InterSwap.h"
+#include "Improvement/InterImprovement/InterSwap.h"
 
 namespace VehicleRouting
 {
@@ -9,7 +9,7 @@ using namespace ContainerLoading;
 
 
 std::vector<InterMove> InterSwap::DetermineMoves(const Instance* const instance,
-                                                     const std::vector<Route>& routes)
+                                                     const std::vector<Route>& routes) const
 {
 
     std::vector<InterMove> moves{};
@@ -65,7 +65,7 @@ std::vector<InterMove> InterSwap::DetermineMoves(const Instance* const instance,
 }
 
 
-void InterSwap::ChangeRoutes(std::vector<Route>& routes, const InterMove& move)
+void InterSwap::ChangeRoutes(std::vector<Route>& routes, const InterMove& move) const
 {
 
     auto node_i = std::get<3>(move);
@@ -78,7 +78,7 @@ void InterSwap::ChangeRoutes(std::vector<Route>& routes, const InterMove& move)
     
 };
 
-void InterSwap::RevertChangeRoutes(std::vector<Route>& routes, const InterMove& move)
+void InterSwap::RevertChangeRoutes(std::vector<Route>& routes, const InterMove& move) const 
 {
 
     auto node_i = std::get<3>(move);

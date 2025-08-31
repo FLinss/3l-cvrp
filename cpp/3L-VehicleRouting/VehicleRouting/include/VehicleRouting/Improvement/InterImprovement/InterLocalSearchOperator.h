@@ -1,6 +1,6 @@
 #pragma once
 
-#include "LocalSearchOperatorBase.h"
+#include "Improvement/LocalSearchOperatorBase.h"
 
 namespace VehicleRouting
 {
@@ -19,7 +19,7 @@ class InterLocalSearchOperator : public LocalSearchOperatorBase
     void Run(const Instance* instance,
                     const InputParameters& inputParameters,
                     BaseLoadingChecker* loadingChecker,
-                    Solution& currentSolution) override;
+                    Solution& currentSolution) const override;
 
   private:
     ImprovementTypes mType = ImprovementTypes::Inter;
@@ -29,15 +29,15 @@ class InterLocalSearchOperator : public LocalSearchOperatorBase
                                 const InputParameters& inputParameters,
                                 BaseLoadingChecker* loadingChecker,
                                 std::vector<Route>& routes,
-                                std::vector<InterMove>& moves);
+                                std::vector<InterMove>& moves) const;
 
     virtual std::vector<InterMove> DetermineMoves(const Instance* instance,
-                                                  const std::vector<Route>& routes) = 0;
+                                                  const std::vector<Route>& routes) const = 0;
 
-    virtual void ChangeRoutes(std::vector<Route>& routes, const InterMove& move) = 0;
-    virtual void RevertChangeRoutes(std::vector<Route>& routes, const InterMove& move) = 0; 
+    virtual void ChangeRoutes(std::vector<Route>& routes, const InterMove& move) const = 0;
+    virtual void RevertChangeRoutes(std::vector<Route>& routes, const InterMove& move) const = 0; 
 
-    void UpdateRouteVolumeWeight(std::vector<Route>& routes, const InterMove& move);
+    void UpdateRouteVolumeWeight(std::vector<Route>& routes, const InterMove& move) const;
 
 };
 }

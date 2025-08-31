@@ -1,6 +1,4 @@
-#pragma once
-
-#include "Improvement/IntraLocalSearchOperator.h"
+#include "Improvement/IntraImprovement/IntraLocalSearchOperator.h"
 
 namespace VehicleRouting
 {
@@ -13,7 +11,7 @@ using namespace ContainerLoading;
 void IntraLocalSearchOperator::Run(const Instance* instance,
                                     const InputParameters& inputParameters,
                                     BaseLoadingChecker* loadingChecker,
-                                    Solution& currentSolution)
+                                    Solution& currentSolution) const 
 {
    for(auto& route : currentSolution.Routes){
 
@@ -41,7 +39,7 @@ std::optional<double> IntraLocalSearchOperator::GetBestMove(const Instance* inst
                                 const InputParameters& inputParameters,
                                 BaseLoadingChecker* loadingChecker,
                                 Collections::IdVector& route,
-                                std::vector<IntraMove>& moves){
+                                std::vector<IntraMove>& moves) const {
 
     if (moves.size() == 0)
     {

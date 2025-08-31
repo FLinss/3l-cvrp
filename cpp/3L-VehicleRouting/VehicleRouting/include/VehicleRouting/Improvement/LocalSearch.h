@@ -1,13 +1,13 @@
 #pragma once
 
-#include "Improvement/TwoOpt.h"
-#include "Improvement/InterSwap.h"
-#include "Improvement/IntraSwap.h"
-#include "Improvement/InterInsertion.h"
-#include "Improvement/IntraInsertion.h"
-#include "Improvement/K_RandomSwaps.h"
-#include "Improvement/K_RandomInsertions.h"
-#include "Improvement/DeleteEmptyRoutes.h"
+#include "IntraImprovement/TwoOpt.h"
+#include "InterImprovement/InterSwap.h"
+#include "IntraImprovement/IntraSwap.h"
+#include "InterImprovement/InterInsertion.h"
+#include "IntraImprovement/IntraInsertion.h"
+#include "Perturbation/K_RandomSwaps.h"
+#include "Perturbation/K_RandomInsertions.h"
+#include "DeleteEmptyRoutes.h"
 
 namespace VehicleRouting
 {
@@ -25,17 +25,17 @@ public:
 
     // Run all local‑search moves in order
     void RunLocalSearch(Solution& sol,
-                        ContainerLoading::BaseLoadingChecker* checker);
+                        ContainerLoading::BaseLoadingChecker* checker) const;
 
     // Run all perturbations in order
     void RunPerturbation(Solution& sol,
                         ContainerLoading::BaseLoadingChecker* checker,
-                         std::mt19937& rng);
+                         std::mt19937& rng) const;
 
         // Run all perturbations in order
     void RunBigPerturbation(Solution& sol,
                         ContainerLoading::BaseLoadingChecker* checker,
-                         std::mt19937& rng);
+                         std::mt19937& rng) const;
 
 private:
     std::vector<std::unique_ptr<LocalSearchOperatorBase>>  lsOperators;

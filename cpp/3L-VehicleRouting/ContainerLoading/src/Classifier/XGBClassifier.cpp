@@ -37,7 +37,7 @@ bool XGBClassifier::classify(const std::vector<Model::Cuboid>& items,
                            const Collections::IdVector& route,
                            const Model::Container& container){
 
-
+    BoosterHandle booster{nullptr};
     return false;
 }
 

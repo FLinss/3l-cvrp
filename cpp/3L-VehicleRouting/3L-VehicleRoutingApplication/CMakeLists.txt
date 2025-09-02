@@ -16,6 +16,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+
 file(GLOB_RECURSE _HDRS "include/${PROJECT_NAME}/*.h")
 file(GLOB_RECURSE _SRCS "src/*.cpp")
 
@@ -26,6 +27,24 @@ message(STATUS "Sources ${_SRCS}")
 add_executable(${PROJECT_NAME} "")
 target_sources(${PROJECT_NAME} PRIVATE ${_HDRS} ${_SRCS})
 
+#XGBOOST Detection
+find_package(XGBoost REQUIRED)
+
+# Gurobi
+find_package(GUROBI REQUIRED)
+if(CXX)
+	target_link_libraries(${PROJECT_NAME} PUBLIC optimized ${GUROBI_CXX_LIBRARY} debug ${GUROBI_CXX_LIBRARY})
+	#target_link_libraries(${PROJECT_NAME} "${TORCH_LIBRARIES}")
+endif()
+
+# Pytorch
+find_package(Torch REQUIRED)
+message(STATUS "=== Torch detection ===")
+message(STATUS "Torch_DIR: ${Torch_DIR}")
+message(STATUS "TORCH_LIBRARIES: ${TORCH_LIBRARIES}")
+message(STATUS "TORCH_INCLUDE_DIRS: ${TORCH_INCLUDE_DIRS}")
+
+
 target_include_directories(${PROJECT_NAME} PUBLIC
 	${PROJECT_SOURCE_DIR}/include/${PROJECT_NAME}
 	${CMAKE_SOURCE_DIR}/external
@@ -34,30 +53,12 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 	${CMAKE_SOURCE_DIR}/ContainerLoading/CommonBasics/include
 )
 
-# Gurobi
-find_package(GUROBI REQUIRED)
-message(STATUS "Gurobi include: ${GUROBI_INCLUDE_DIRS}")
-message(STATUS "Gurobi lib: ${GUROBI_LIBRARY}")
-message(STATUS "Gurobi CXX: ${GUROBI_CXX_LIBRARY}")
-message(STATUS "Gurobi CXX Debug: ${GUROBI_CXX_DEBUG_LIBRARY}")
-
-if(CXX)
-	target_link_libraries(${PROJECT_NAME} PUBLIC optimized ${GUROBI_CXX_LIBRARY} debug ${GUROBI_CXX_LIBRARY})
-	#target_link_libraries(${PROJECT_NAME} "${TORCH_LIBRARIES}")
-endif()
-
-# Pytorch
-find_package(Torch REQUIRED)
 
 add_library(LibTorch INTERFACE)
 target_link_libraries(LibTorch INTERFACE ${TORCH_LIBRARIES})
 target_include_directories(LibTorch INTERFACE ${TORCH_INCLUDE_DIRS})
 target_compile_options(LibTorch INTERFACE ${TORCH_CXX_FLAGS})
 target_link_libraries(${PROJECT_NAME} PRIVATE LibTorch)
-
-message(STATUS "Torch_DIR: ${Torch_DIR}")
-message(STATUS "TORCH_LIBRARIES: ${TORCH_LIBRARIES}")
-message(STATUS "TORCH_INCLUDE_DIRS: ${TORCH_INCLUDE_DIRS}")
-
+target_link_libraries(${PROJECT_NAME} PRIVATE XGBoost::xgboost)
 target_link_libraries(${PROJECT_NAME} PRIVATE VehicleRouting ContainerLoading CommonBasics)
 

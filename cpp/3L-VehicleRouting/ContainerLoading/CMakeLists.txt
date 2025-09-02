@@ -24,7 +24,12 @@ set(Boost_USE_STATIC_RUNTIME OFF)
 
 find_package(Boost REQUIRED) # REQUIRED COMPONENTS graph dynamic_bitset property_map
 
-if(${BOOST_FOUND})
+# Only call find_package if the imported target isn’t defined yet
+if(NOT TARGET XGBoost::xgboost)
+  find_package(XGBoost REQUIRED)
+endif()
+
+if(Boost_FOUND)
 	message(STATUS "Boost_FOUND: ${Boost_FOUND}")
 	message(STATUS "Boost version: ${Boost_VERSION}")
 	message(STATUS "Boost include: ${Boost_INCLUDE_DIR}")
@@ -50,4 +55,6 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE CommonBasics)
-target_link_libraries(${PROJECT_NAME}  PUBLIC LibTorch)
+target_link_libraries(${PROJECT_NAME} PUBLIC LibTorch)
+target_link_libraries(${PROJECT_NAME} PUBLIC XGBoost::xgboost)
+

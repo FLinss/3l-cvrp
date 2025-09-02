@@ -45,5 +45,12 @@ if(CXX)
     endif()
 endif()
 
+message(STATUS "=== Gurobi detection ===")
+message(STATUS "Gurobi include: ${GUROBI_INCLUDE_DIRS}")
+message(STATUS "Gurobi lib: ${GUROBI_LIBRARY}")
+message(STATUS "Gurobi CXX: ${GUROBI_CXX_LIBRARY}")
+message(STATUS "Gurobi CXX Debug: ${GUROBI_CXX_DEBUG_LIBRARY}")
+
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(GUROBI DEFAULT_MSG GUROBI_LIBRARY)
+

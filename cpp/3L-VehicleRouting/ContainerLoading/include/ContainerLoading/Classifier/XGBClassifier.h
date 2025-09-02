@@ -1,6 +1,7 @@
 #pragma once
 
 #include "BaseClassifier.h"
+#include <xgboost/c_api.h>   // from XGBoost build/include
 
 
 namespace ContainerLoading {

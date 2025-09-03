@@ -4,10 +4,9 @@ namespace VehicleRouting
 {
 namespace Improvement
 {
-using namespace ContainerLoading;
 
-std::optional<PerturbationMove> K_RandomSwaps::DetermineMoves(const Instance* const instance,
-                                              const std::vector<Route>& routes,
+std::optional<PerturbationMove> K_RandomSwaps::DetermineMoves(const Model::Instance* const instance,
+                                              const std::vector<Model::Route>& routes,
                                               std::mt19937& RNG) const 
 {
 
@@ -51,7 +50,7 @@ std::optional<PerturbationMove> K_RandomSwaps::DetermineMoves(const Instance* co
         if(res_weight_route_i + weight_item_delta >= 0 && res_weight_route_k - weight_item_delta >= 0)
             if(res_volume_route_i + volume_item_delta >= 0 && res_volume_route_k - volume_item_delta >= 0){
 
-                auto savings = Evaluator::CalculateInterSwapDelta(instance,
+                auto savings = Algorithms::Evaluator::CalculateInterSwapDelta(instance,
                                                                     route_i.Sequence,
                                                                     route_k.Sequence,
                                                                     node_i,
@@ -67,7 +66,7 @@ std::optional<PerturbationMove> K_RandomSwaps::DetermineMoves(const Instance* co
 }
 
 
-void K_RandomSwaps::ChangeRoutes(std::vector<Route>& routes, const PerturbationMove& move) const 
+void K_RandomSwaps::ChangeRoutes(std::vector<Model::Route>& routes, const PerturbationMove& move) const 
 {
 
     auto node_i = std::get<3>(move);
@@ -80,7 +79,7 @@ void K_RandomSwaps::ChangeRoutes(std::vector<Route>& routes, const PerturbationM
     
 }
 
-void K_RandomSwaps::RevertChangeRoutes(std::vector<Route>& routes, const PerturbationMove& move) const 
+void K_RandomSwaps::RevertChangeRoutes(std::vector<Model::Route>& routes, const PerturbationMove& move) const 
 {
 
     auto node_i = std::get<3>(move);

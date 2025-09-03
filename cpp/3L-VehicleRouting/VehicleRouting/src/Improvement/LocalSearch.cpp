@@ -4,90 +4,89 @@
 
 namespace VehicleRouting
 {
-using namespace Model;
-
 namespace Improvement
 {
 
 // Build operator lists once, from whatever vectors your config provides
-LocalSearch::LocalSearch(const InputParameters& params,
-                        const Instance* inst)
+LocalSearch::LocalSearch(const VRP_InputParameters* const params,
+                        const Instance* const inst,
+                        const Helper::Timer* const timer,
+                        ContainerLoading::BaseLoadingChecker* checker,
+                        std::mt19937& rng)
                         : mInstance(inst),
-                        mInputParameters(params)
+                        mInputParameters(params),
+                        mTimer(timer),
+                        mLoadingChecker(checker),
+                        mRNG(rng)
 {   
-    for (auto t : params.IteratedLocalSearch.localSearchTypes)
+    for (auto t : params ->IteratedLocalSearch.localSearchTypes)
         if (auto op = this->CreateLocalSearchOperator(t))
             lsOperators.emplace_back(std::move(op));
 
-    for (auto t : params.IteratedLocalSearch.perturbationTypes)
+    for (auto t : params ->IteratedLocalSearch.perturbationTypes)
         if (auto op = this->CreatePerturbationOperator(t))
             pertOperators.emplace_back(std::move(op));
 }
 
 
 // Run all local‑search moves in order
-void LocalSearch::RunLocalSearch(Model::Solution& sol,
-                                ContainerLoading::BaseLoadingChecker* checker) const
+void LocalSearch::RunLocalSearch(Model::Solution& sol) const
 {
     for (auto& op : lsOperators){
-        op->Run(mInstance, mInputParameters, checker, sol);
+        op->Run(mInstance, mInputParameters, mLoadingChecker, mTimer, sol);
     }
 };
 
 // Run all perturbations in order
-void LocalSearch::RunPerturbation(Model::Solution&                  sol,
-                                  ContainerLoading::BaseLoadingChecker* checker,
-                                  std::mt19937&                     rng) const
+void LocalSearch::RunPerturbation(Model::Solution& sol) const
 {
     for (auto& op : pertOperators){
         //TODO handles nullptr case! 
-        if(op != nullptr){
-            op->Run(mInstance, mInputParameters, checker, sol, rng);
+        if(op){
+            op->Run(mInstance, mInputParameters, mLoadingChecker, mTimer, sol, mRNG);
         }
         break;
     }
 };
 
 // Run all perturbations in order
-void LocalSearch::RunBigPerturbation(Model::Solution&                  sol,
-                                  ContainerLoading::BaseLoadingChecker* checker,
-                                  std::mt19937&                     rng) const 
+void LocalSearch::RunBigPerturbation(Model::Solution&  sol) const 
 {
     for (auto& op : pertOperators)
         //TODO handles nullptr case! 
-        if(op != nullptr){
-            op->Run(mInstance, mInputParameters, checker, sol, rng);
+        if(op){
+            op->Run(mInstance, mInputParameters, mLoadingChecker, mTimer, sol, mRNG);
         }
 };
 
-std::unique_ptr<LocalSearchOperatorBase> LocalSearch::CreateLocalSearchOperator(const LocalSearchTypes& t)
+std::unique_ptr<LocalSearchOperatorBase> LocalSearch::CreateLocalSearchOperator(const VRP_LocalSearchtypes& t) const
 {
     switch (t)
     {
-        case LocalSearchTypes::TwoOpt:          
+        case VRP_LocalSearchtypes::TwoOpt:          
             return std::make_unique<TwoOpt>();
-        case LocalSearchTypes::IntraSwap:       
+        case VRP_LocalSearchtypes::IntraSwap:       
             return std::make_unique<IntraSwap>();
-        case LocalSearchTypes::IntraInsertion:       
+        case VRP_LocalSearchtypes::IntraInsertion:       
             return std::make_unique<IntraInsertion>();
-        case LocalSearchTypes::InterSwap:       
+        case VRP_LocalSearchtypes::InterSwap:       
             return std::make_unique<InterSwap>();
-        case LocalSearchTypes::InterInsertion:       
+        case VRP_LocalSearchtypes::InterInsertion:       
             return std::make_unique<InterInsertion>();
-        case LocalSearchTypes::DeleteEmptyRoutes:       
+        case VRP_LocalSearchtypes::DeleteEmptyRoutes:       
             return std::make_unique<DeleteEmptyRoutes>();
         default:                                
             return nullptr;                       
     }
 }
 
-std::unique_ptr<PerturbationOperatorBase> LocalSearch::CreatePerturbationOperator(const PerturbationTypes& t)
+std::unique_ptr<PerturbationOperatorBase> LocalSearch::CreatePerturbationOperator(const VRP_PerturbationTypes& t) const
 {
         switch (t)
         {
-            case PerturbationTypes::K_RandomSwaps:  
+            case VRP_PerturbationTypes::K_RandomSwaps:  
                 return std::make_unique<K_RandomSwaps>();
-            case PerturbationTypes::K_RandomInsertions:
+            case VRP_PerturbationTypes::K_RandomInsertions:
                 return std::make_unique<K_RandomInsertions>();
             default:                               
                 return nullptr;

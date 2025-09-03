@@ -2,41 +2,43 @@
 
 #include "Algorithms/BCRoutingParams.h"
 #include "ContainerLoading/LoadingChecker/BaseLoadingChecker.h"
-#include "Model/Instance.h"
+#include "Helper/Timer.h"
+#include "Algorithms/Evaluation.h"
+#include "Algorithms/LoadingInterfaceServices.h"
+#include "CommonBasics/Helper/ModelServices.h"
 
 #include <random>
-#include <vector>
+#include <algorithm>
 
 namespace VehicleRouting
 {
-using namespace Model;
-
 namespace Algorithms
 {
 namespace Constructive
 {
-using namespace ContainerLoading;
-using namespace ContainerLoading::Model;
+
 
 class Savings
 {
   public:
-    Savings(const Instance* const instance,
+    Savings(const Model::Instance* const instance,
             const InputParameters* const inputParameters,
-            BaseLoadingChecker* loadingChecker)
+            ContainerLoading::BaseLoadingChecker* loadingChecker,
+            const Helper::Timer* timer)
 
-    : mInstance(instance), mInputParameters(inputParameters), mLoadingChecker(loadingChecker){};
+    : mInstance(instance), mInputParameters(inputParameters), mLoadingChecker(loadingChecker), mTimer(timer){};
 
-    std::vector<Route> Run();
+    std::vector<Model::Route> Run();
 
   private:
-    const Instance* const mInstance;
+    const Model::Instance* const mInstance;
     const InputParameters* const mInputParameters;
-    BaseLoadingChecker* mLoadingChecker;
+    ContainerLoading::BaseLoadingChecker* mLoadingChecker;
+    const Helper::Timer* const mTimer;
 
     bool ConcatRoutes(Collections::IdVector& frontSequence,
                       const Collections::IdVector& backSequence,
-                      const Container& container);
+                      const ContainerLoading::Model::Container& container);
     void
         DeleteSavings(std::vector<std::tuple<double, size_t, size_t>>& savingsValues, size_t startNode, size_t endNode);
 };
@@ -44,28 +46,30 @@ class Savings
 class ModifiedSavings
 {
   public:
-    ModifiedSavings(const Instance* const instance,
+    ModifiedSavings(const Model::Instance* const instance,
                     const InputParameters* const inputParameters,
-                    BaseLoadingChecker* loadingChecker,
-                    std::mt19937* rng)
+                    ContainerLoading::BaseLoadingChecker* loadingChecker,
+                    std::mt19937* rng,
+                    const Helper::Timer* timer)
 
-    : mInstance(instance), mInputParameters(inputParameters), mLoadingChecker(loadingChecker), mRNG(rng){};
+    : mInstance(instance), mInputParameters(inputParameters), mLoadingChecker(loadingChecker), mRNG(rng),  mTimer(timer){};
 
-    std::vector<Route> Run();
+    std::vector<Model::Route> Run();
 
   private:
-    const Instance* const mInstance;
+    const Model::Instance* const mInstance;
     const InputParameters* const mInputParameters;
-    BaseLoadingChecker* mLoadingChecker;
+    ContainerLoading::BaseLoadingChecker* mLoadingChecker;
     std::mt19937* mRNG;
+    const Helper::Timer* const mTimer;
 
-    void RepairProcedure(std::vector<Route>& solution);
-    std::vector<std::tuple<double, size_t, size_t>> DetermineInsertionCostsAllRoutes(std::vector<Route>& solution,
+    void RepairProcedure(std::vector<Model::Route>& solution);
+    std::vector<std::tuple<double, size_t, size_t>> DetermineInsertionCostsAllRoutes(std::vector<Model::Route>& solution,
                                                                                      size_t nodeId);
     std::vector<std::tuple<double, size_t, size_t>>
-        DetermineInsertionCosts(const Route& route, size_t routeId, size_t nodeId);
-    Collections::IdVector InsertInRandomRoute(Route& route, size_t nodeToInsert);
-    bool InsertionFeasible(Route& route, size_t nodeToInsert, size_t position);
+        DetermineInsertionCosts(const Model::Route& route, size_t routeId, size_t nodeId);
+    Collections::IdVector InsertInRandomRoute(Model::Route& route, size_t nodeToInsert);
+    bool InsertionFeasible(Model::Route& route, size_t nodeToInsert, size_t position);
 };
 
 }

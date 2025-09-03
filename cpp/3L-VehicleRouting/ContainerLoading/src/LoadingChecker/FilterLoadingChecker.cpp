@@ -2,13 +2,12 @@
 
 namespace ContainerLoading
 {
-using namespace Algorithms;
 
-
-bool FilterLoadingChecker::CompleteCheckStartSolution(const Container& container,
+bool FilterLoadingChecker::CompleteCheckStartSolution(const Model::Container& container,
                 const boost::dynamic_bitset<>& set,
                 const Collections::IdVector& stopIds,
-                const std::vector<Cuboid>& items)
+                const std::vector<Model::Cuboid>& items,
+                double maxRuntime)
 {  
     if (RouteIsInFeasSequences(stopIds))
     {
@@ -24,36 +23,39 @@ bool FilterLoadingChecker::CompleteCheckStartSolution(const Container& container
 
         if(mClassifier->classify(items,stopIds,container)){
 
-            auto cpStatus = ConstraintProgrammingSolver(PackingType::Complete,
+            auto cpStatus = ConstraintProgrammingSolver(CLP_PackingType::Complete,
                                                     container,
                                                     set,
                                                     stopIds,
                                                     items,
-                                                    false);
+                                                    false,
+                                                    maxRuntime);
 
-            return cpStatus == LoadingStatus::FeasOpt;
+            return cpStatus == CLP_LoadingStatus::FeasOpt;
         }
         return false;
 
    }else{
 
-        auto cpStatus = ConstraintProgrammingSolver(PackingType::Complete,
+        auto cpStatus = ConstraintProgrammingSolver(CLP_PackingType::Complete,
                                                         container,
                                                         set,
                                                         stopIds,
                                                         items,
-                                                        false);
+                                                        false,
+                                                        maxRuntime);
 
-        return cpStatus == LoadingStatus::FeasOpt;
+        return cpStatus == CLP_LoadingStatus::FeasOpt;
 
    }
 }
 
-bool FilterLoadingChecker::CompleteCheck(const Container& container,
+bool FilterLoadingChecker::CompleteCheck(const Model::Container& container,
                                     const boost::dynamic_bitset<>& set,
                                     const Collections::IdVector& stopIds,
-                                    const std::vector<Cuboid>& items,
-                                    const VehicleRouting::Improvement::ImprovementTypes& localsearchtype)
+                                    const std::vector<Model::Cuboid>& items,
+                                    const VehicleRouting::Improvement::ImprovementTypes& localsearchtype,
+                                    double maxRuntime) 
 {
     if (RouteIsInFeasSequences(stopIds))
     {
@@ -68,24 +70,26 @@ bool FilterLoadingChecker::CompleteCheck(const Container& container,
     
     if(mClassifier->classify(items,stopIds,container)){
 
-        auto cpStatus = ConstraintProgrammingSolver(PackingType::Complete,
+        auto cpStatus = ConstraintProgrammingSolver(CLP_PackingType::Complete,
                                                 container,
                                                 set,
                                                 stopIds,
                                                 items,
-                                                false);
+                                                false,
+                                                maxRuntime);
 
-        return cpStatus == LoadingStatus::FeasOpt;
+        return cpStatus == CLP_LoadingStatus::FeasOpt;
 
     }else{
         return false;
     }
 }
 
-bool FilterLoadingChecker::ExactCheckNoClassifier(const Container& container,
+bool FilterLoadingChecker::ExactCheckNoClassifier(const Model::Container& container,
                                         const boost::dynamic_bitset<>& set,
                                         const Collections::IdVector& stopIds,
-                                        const std::vector<Cuboid>& items){
+                                        const std::vector<Model::Cuboid>& items,
+                                        double maxRuntime){
     
     return true;
 }

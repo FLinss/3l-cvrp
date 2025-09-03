@@ -9,8 +9,6 @@ namespace VehicleRouting
 {
 namespace Algorithms
 {
-using namespace ContainerLoading;
-using namespace ContainerLoading::Algorithms;
 
 enum class LocalSearchTypes
 {
@@ -86,9 +84,11 @@ class InputParameters
   public:
 
     IteratedLocalSearchParams IteratedLocalSearch;
-    ContainerLoadingParams ContainerLoading;
+    ContainerLoading::ContainerLoadingParams ContainerLoading;
 
-    void SetLoadingFlags() { ContainerLoading.SetFlags(); };
+    void SetLoadingFlags(){
+        ContainerLoading.SetFlags();
+    };
 
     [[nodiscard]] double DetermineMaxRuntime(IteratedLocalSearchParams::CallType callType,
                                              double residualTime = std::numeric_limits<double>::max()) const

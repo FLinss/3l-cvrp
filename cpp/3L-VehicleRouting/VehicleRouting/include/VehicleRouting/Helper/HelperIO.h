@@ -13,18 +13,15 @@ namespace VehicleRouting
 {
 namespace Helper
 {
-using namespace VehicleRouting::Model;
-using namespace VehicleRouting::Algorithms;
-using namespace ContainerLoading::Model;
 
 class HelperIO
 {
   public:
-    static Instance ParseInstanceJson(std::ifstream& ifs);
+    static Model::Instance ParseInstanceJson(std::ifstream& ifs);
 
     static VehicleRouting::Algorithms::InputParameters ReadInputParameters(std::string& parameterFilePath);
 
-    static std::vector<Route> ParseSolutionJson(std::ifstream& ifs);
+    static std::vector<Model::Route> ParseSolutionJson(std::ifstream& ifs);
 
     template <typename E> void PrintEnum(E e)
     {

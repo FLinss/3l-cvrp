@@ -13,12 +13,11 @@ namespace SolutionValidator
 {
 using boost::format;
 using boost::io::group;
-using namespace ContainerLoading::Model;
 
 static void WriteInput(const std::string& folderPath,
                        const std::string& name,
-                       const std::vector<Group>& nodes,
-                       const Container& container,
+                       const std::vector<ContainerLoading::Model::Group>& nodes,
+                       const ContainerLoading::Model::Container& container,
                        const size_t numberContainers)
 {
     std::string path = folderPath + "SolutionValidator/";
@@ -53,7 +52,7 @@ static void WriteInput(const std::string& folderPath,
     inputFile << format("%-15s %-15s %-15s %-15s %-15s %-15s %-15s %-15s %s\n") % "i" % "x" % "y" % "Demand"
                      % "ReadyTime" % "DueDate" % "ServiceTime" % "DemandedMass" % "DemandedVolume";
 
-    auto printNode = [&inputFile](const Group& node)
+    auto printNode = [&inputFile](const ContainerLoading::Model::Group& node)
     {
         inputFile << format("%-15s %-15s %-15s %-15s %-15s %-15s %-15s %-15s %s\n") % node.InternId % node.PositionX
                          % node.PositionY % node.Items.size() % 0 % 1000000 % 0 % node.TotalWeight % node.TotalVolume;
@@ -65,13 +64,13 @@ static void WriteInput(const std::string& folderPath,
     inputFile << format("%-15s %-15s %-15s %-15s %-15s %-15s %s\n") % "Type" % "Length" % "Width" % "Height" % "Mass"
                      % "Fragility" % "LoadingBearingStrength";
 
-    auto printItems = [&inputFile](const Group& node)
+    auto printItems = [&inputFile](const ContainerLoading::Model::Group& node)
     {
         for (const auto& item: node.Items)
         {
             auto mass = node.TotalWeight / static_cast<double>(node.Items.size());
             inputFile << format("Bt%-13s %-15s %-15s %-15s %-15d %-15s %s\n") % (item.InternId + 1) % item.Dx % item.Dy
-                             % item.Dz % mass % (item.Fragility == Fragility::None ? 0 : 1) % 0;
+                             % item.Dz % mass % (item.Fragility == ContainerLoading::Model::Fragility::None ? 0 : 1) % 0;
         }
     };
 
@@ -80,7 +79,7 @@ static void WriteInput(const std::string& folderPath,
     inputFile << "\nDEMANDS PER CUSTOMER\n";
     inputFile << format("%-4s %-4s %-2s\n") % "i" % "Type" % "Quantity";
 
-    auto printDemand = [&inputFile](const Group& node)
+    auto printDemand = [&inputFile](const ContainerLoading::Model::Group& node)
     {
         if (node.Items.size() == 0)
         {
@@ -101,7 +100,7 @@ static void WriteInput(const std::string& folderPath,
 
 static void WriteOutput(const std::string& folderPath,
                         const std::string& name,
-                        std::vector<std::vector<Group>>& routes,
+                        std::vector<std::vector<ContainerLoading::Model::Group>>& routes,
                         const double costs)
 {
     std::string path = folderPath + "SolutionValidator/";
@@ -125,7 +124,7 @@ static void WriteOutput(const std::string& folderPath,
 
     int routeId = 1;
 
-    auto printSequence = [](const std::vector<Group>& route)
+    auto printSequence = [](const std::vector<ContainerLoading::Model::Group>& route)
     {
         std::string sequence;
         for (const auto& node: route)
@@ -136,19 +135,19 @@ static void WriteOutput(const std::string& folderPath,
         return sequence;
     };
 
-    auto printStop = [&inputFile](const Group& node)
+    auto printStop = [&inputFile](const ContainerLoading::Model::Group& node)
     {
         auto mass = node.TotalWeight / static_cast<double>(node.Items.size());
         for (const auto& item: node.Items)
         {
             inputFile << format("%-9s %-9s %-9s %-9s %-9s %-9s %-9s %-9s %-9s %-9s %-9d %-9s %s\n") % node.InternId
-                             % (item.InternId + 1) % (item.InternId + 1) % (item.Rotated == Rotation::None ? 0 : 1)
+                             % (item.InternId + 1) % (item.InternId + 1) % (item.Rotated == ContainerLoading::Model::Rotation::None ? 0 : 1)
                              % item.X % item.Y % item.Z % item.Dx % item.Dy % item.Dz % mass
-                             % (item.Fragility == Fragility::None ? 0 : 1) % 0;
+                             % (item.Fragility == ContainerLoading::Model::Fragility::None ? 0 : 1) % 0;
         }
     };
 
-    auto printRoute = [&inputFile, &routeId, &printSequence, &printStop](const std::vector<Group>& route)
+    auto printRoute = [&inputFile, &routeId, &printSequence, &printStop](const std::vector<ContainerLoading::Model::Group>& route)
     {
         auto numberOfCustomers = route.size();
         size_t numberOfItems = 0;

@@ -7,14 +7,13 @@
 
 namespace ContainerLoading
 {
-using namespace Algorithms;
-
+  
 class SpeedUpLoadingChecker : public BaseLoadingChecker
 {
   public:
 
-    explicit SpeedUpLoadingChecker(const ContainerLoadingParams& parameters, const double maxruntime)
-    : BaseLoadingChecker(parameters,maxruntime)
+    explicit SpeedUpLoadingChecker(const ContainerLoadingParams& parameters)
+    : BaseLoadingChecker(parameters)
     {
       switch (Parameters.ModelType){
         case ContainerLoadingParams::ModelTypes::FFNN:
@@ -30,21 +29,24 @@ class SpeedUpLoadingChecker : public BaseLoadingChecker
       }
     }
 
-    [[nodiscard]] bool CompleteCheckStartSolution(const Container& container,
+    [[nodiscard]] bool CompleteCheckStartSolution(const Model::Container& container,
                 const boost::dynamic_bitset<>& set,
                 const Collections::IdVector& stopIds,
-                const std::vector<Cuboid>& items) override;
+                const std::vector<Model::Cuboid>& items,
+                double maxRuntime) override;
 
-    [[nodiscard]] bool CompleteCheck(const Container& container,
+    [[nodiscard]] bool CompleteCheck(const Model::Container& container,
                                     const boost::dynamic_bitset<>& set,
                                     const Collections::IdVector& stopIds,
-                                    const std::vector<Cuboid>& items,
-                                    const  VehicleRouting::Improvement::ImprovementTypes& localsearchtype) override;
+                                    const std::vector<Model::Cuboid>& items,
+                                    const  VehicleRouting::Improvement::ImprovementTypes& localsearchtype,
+                                    double maxRuntime) override;
 
-    [[nodiscard]] bool ExactCheckNoClassifier(const Container& container,
+    [[nodiscard]] bool ExactCheckNoClassifier(const Model::Container& container,
                                         const boost::dynamic_bitset<>& set,
                                         const Collections::IdVector& stopIds,
-                                        const std::vector<Cuboid>& items) override;
+                                        const std::vector<Model::Cuboid>& items,
+                                        double maxRuntime) override;
 
   private:
     std::unique_ptr<BaseClassifier> mClassifier;

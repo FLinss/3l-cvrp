@@ -8,6 +8,7 @@
 #include <unordered_map>
 
 namespace VehicleRouting{
+    
 namespace Improvement{
 
     enum class ImprovementTypes

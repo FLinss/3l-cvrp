@@ -10,10 +10,10 @@
 
 namespace ContainerLoading
 {
-using namespace Model;
 
 namespace Algorithms
 {
+
 void ContainerLoadingCP::BuildModel()
 {
     CreateVariables();
@@ -142,13 +142,13 @@ void ContainerLoadingCP::PrintSolution()
     }
 }
 
-void ContainerLoadingCP::ExtractPacking(std::vector<Cuboid>& items) const
+void ContainerLoadingCP::ExtractPacking(std::vector<Model::Cuboid>& items) const
 {
     for (size_t i = 0; i < items.size(); ++i)
     {
         auto& item = items[i];
 
-        item.Rotated = (Rotation)operations_research::sat::SolutionBooleanValue(mResponse, mOrientation[i][RotationZ]);
+        item.Rotated = (Model::Rotation)operations_research::sat::SolutionBooleanValue(mResponse, mOrientation[i][Model::RotationZ]);
 
         item.X = operations_research::sat::SolutionIntegerValue(mResponse, mStartPositionsX[i]);
         item.Y = operations_research::sat::SolutionIntegerValue(mResponse, mStartPositionsY[i]);
@@ -181,7 +181,7 @@ void ContainerLoadingCP::CreateVariables()
 {
     size_t numberOfItems = mItems.size();
 
-    std::vector<Cuboid> itemCopy;
+    std::vector<Model::Cuboid> itemCopy;
     itemCopy.reserve(mItems.size());
     for (const auto& item: mItems)
     {
@@ -200,7 +200,7 @@ void ContainerLoadingCP::CreateVariables()
 
     for (size_t i = 0; i < numberOfItems; i++)
     {
-        const Cuboid& item = mItems[i];
+        const Model::Cuboid& item = mItems[i];
         int minLength = item.EnableHorizontalRotation ? std::min(item.Dx, item.Dy) : item.Dx;
         int minWidth = item.EnableHorizontalRotation ? std::min(item.Dx, item.Dy) : item.Dy;
 
@@ -223,7 +223,7 @@ void ContainerLoadingCP::CreateVariables()
 
     for (size_t i = 0; i < numberOfItems; i++)
     {
-        const Cuboid& item = mItems[i];
+        const Model::Cuboid& item = mItems[i];
 
         int minLength = item.EnableHorizontalRotation ? std::min(item.Dx, item.Dy) : item.Dx;
         int minWidth = item.EnableHorizontalRotation ? std::min(item.Dx, item.Dy) : item.Dy;
@@ -260,7 +260,7 @@ void ContainerLoadingCP::CreateVariables()
     mOrientation.reserve(numberOfItems);
     for (size_t i = 0; i < numberOfItems; i++)
     {
-        const Cuboid& itemI = mItems[i];
+        const Model::Cuboid& itemI = mItems[i];
         mOrientation.emplace_back();
         mOrientation[i].reserve(mItemOrientations.size());
 
@@ -272,7 +272,7 @@ void ContainerLoadingCP::CreateVariables()
         if (!itemI.EnableHorizontalRotation)
         {
             // TODO: consider not creating the variable instead of fixing it to zero.
-            mModelCP.FixVariable(mOrientation[i][RotationZ], false);
+            mModelCP.FixVariable(mOrientation[i][Model::RotationZ], false);
         }
     }
 
@@ -310,7 +310,7 @@ void ContainerLoadingCP::CreateVariables()
     mItemsOverlapsXY.reserve(numberOfItems);
     for (size_t i = 0; i < numberOfItems - 1; i++)
     {
-        const Cuboid& itemI = mItems[i];
+        const Model::Cuboid& itemI = mItems[i];
 
         mItemsOverlapsXY.emplace_back();
         mItemsOverlapsXY.reserve(numberOfItems - i);
@@ -323,7 +323,7 @@ void ContainerLoadingCP::CreateVariables()
 
         for (size_t j = i + 1; j < numberOfItems; j++)
         {
-            const Cuboid& itemJ = mItems[j];
+            const Model::Cuboid& itemJ = mItems[j];
             int maxIntersection = std::max(itemI.Dx * itemI.Dy, itemJ.Dx * itemJ.Dy);
 
             mItemsOverlapsXY[i].emplace_back(mModelCP.NewBoolVar());
@@ -358,15 +358,15 @@ void ContainerLoadingCP::CreateVariables()
     mMaxLength = mModelCP.NewIntVar({0, mContainer.Dx});
 }
 
-std::tuple<ORIntVars1D, ORIntVars1D> ContainerLoadingCP::GetIntVars(DimensionType dimension) const
+std::tuple<ORIntVars1D, ORIntVars1D> ContainerLoadingCP::GetIntVars(Model::DimensionType dimension) const
 {
     switch (dimension)
     {
-        case AxisX:
+        case Model::AxisX:
             return std::make_tuple(mStartPositionsX, mEndPositionsX);
-        case AxisY:
+        case Model::AxisY:
             return std::make_tuple(mStartPositionsY, mEndPositionsY);
-        case AxisZ:
+        case Model::AxisZ:
             return std::make_tuple(mStartPositionsZ, mEndPositionsZ);
         default:
             throw std::runtime_error("DimensionType not implemented.");
@@ -427,7 +427,7 @@ void ContainerLoadingCP::CreateNoOverlap()
 
             for (size_t d = 0; d < mDimensions.size(); ++d)
             {
-                const Dimension& dimension = mDimensions[d];
+                const Model::Dimension& dimension = mDimensions[d];
                 const auto [startPosition, endPosition] = GetIntVars(dimension.Type);
 
                 mModelCP.AddLessOrEqual(endPosition[j], startPosition[i])
@@ -456,7 +456,7 @@ void ContainerLoadingCP::CreateItemOrientations()
     size_t numberOfItems = mItems.size();
     for (size_t i = 0; i < numberOfItems; ++i)
     {
-        const Cuboid& item = mItems[i];
+        const Model::Cuboid& item = mItems[i];
         for (size_t o = 0; o < mItemOrientations.size(); ++o)
         {
             // Dimensions of item depending on orientation
@@ -483,7 +483,7 @@ void ContainerLoadingCP::CreateFragility()
     {
         for (size_t j = 0; j < numberOfItems; ++j)
         {
-            if (mItems[j].Fragility == Fragility::Fragile && mItems[i].Fragility == Fragility::None)
+            if (mItems[j].Fragility == Model::Fragility::Fragile && mItems[i].Fragility == Model::Fragility::None)
             {
                 if (i != j)
                 {
@@ -509,8 +509,8 @@ void ContainerLoadingCP::CreateSupportArea()
                 continue;
             }
 
-            if (!mEnableFragility || mItems[j].Fragility == Fragility::None
-                || (mItems[j].Fragility == Fragility::Fragile && mItems[i].Fragility == Fragility::Fragile))
+            if (!mEnableFragility || mItems[j].Fragility == Model::Fragility::None
+                || (mItems[j].Fragility == Model::Fragility::Fragile && mItems[i].Fragility == Model::Fragility::Fragile))
             {
                 int areaJ = mItems[j].Dy * mItems[j].Dx;
                 int minArea = std::min(areaI, areaJ);
@@ -552,15 +552,15 @@ void ContainerLoadingCP::CreateXYIntersectionBool()
             auto positionJ = j - i - 1;
 
             mModelCP.AddAtLeastOne({mItemsOverlapsXY[i][positionJ],
-                                    mRelativeDirections[i][j][Left],
-                                    mRelativeDirections[i][j][Right],
-                                    mRelativeDirections[i][j][Behind],
-                                    mRelativeDirections[i][j][InFront]});
+                                    mRelativeDirections[i][j][Model::Left],
+                                    mRelativeDirections[i][j][Model::Right],
+                                    mRelativeDirections[i][j][Model::Behind],
+                                    mRelativeDirections[i][j][Model::InFront]});
 
-            mModelCP.AddImplication(mRelativeDirections[i][j][Left], mItemsOverlapsXY[i][positionJ].Not());
-            mModelCP.AddImplication(mRelativeDirections[i][j][Right], mItemsOverlapsXY[i][positionJ].Not());
-            mModelCP.AddImplication(mRelativeDirections[i][j][Behind], mItemsOverlapsXY[i][positionJ].Not());
-            mModelCP.AddImplication(mRelativeDirections[i][j][InFront], mItemsOverlapsXY[i][positionJ].Not());
+            mModelCP.AddImplication(mRelativeDirections[i][j][Model::Left], mItemsOverlapsXY[i][positionJ].Not());
+            mModelCP.AddImplication(mRelativeDirections[i][j][Model::Right], mItemsOverlapsXY[i][positionJ].Not());
+            mModelCP.AddImplication(mRelativeDirections[i][j][Model::Behind], mItemsOverlapsXY[i][positionJ].Not());
+            mModelCP.AddImplication(mRelativeDirections[i][j][Model::InFront], mItemsOverlapsXY[i][positionJ].Not());
         }
     }
 }
@@ -674,8 +674,8 @@ void ContainerLoadingCP::CreateLifoSequence()
                 // - item i is unloaded after item j (smaller group id) and
                 // - item i is not placed left or right of item j -> in way to rear end of container
 
-                mModelCP.AddAtLeastOne({mRelativeDirections[i][j][Behind], mRelativeDirections[i][j][Below]})
-                    .OnlyEnforceIf({mRelativeDirections[i][j][Left].Not(), mRelativeDirections[i][j][Right].Not()});
+                mModelCP.AddAtLeastOne({mRelativeDirections[i][j][Model::Behind], mRelativeDirections[i][j][Model::Below]})
+                    .OnlyEnforceIf({mRelativeDirections[i][j][Model::Left].Not(), mRelativeDirections[i][j][Model::Right].Not()});
             }
         }
     }
@@ -700,17 +700,17 @@ void ContainerLoadingCP::CreateLifoNoSequence()
                 if (customerI < customerJ)
                 {
                     auto position = customerJ - customerI - 1;
-                    mModelCP.AddAtLeastOne({mRelativeDirections[i][j][Behind], mRelativeDirections[i][j][Below]})
-                        .OnlyEnforceIf({mRelativeDirections[i][j][Left].Not(),
-                                        mRelativeDirections[i][j][Right].Not(),
+                    mModelCP.AddAtLeastOne({mRelativeDirections[i][j][Model::Behind], mRelativeDirections[i][j][Model::Below]})
+                        .OnlyEnforceIf({mRelativeDirections[i][j][Model::Left].Not(),
+                                        mRelativeDirections[i][j][Model::Right].Not(),
                                         mSuccessionMatrix[customerI][position]});
                 }
                 else
                 {
                     auto position = customerI - customerJ - 1;
-                    mModelCP.AddAtLeastOne({mRelativeDirections[i][j][Behind], mRelativeDirections[i][j][Below]})
-                        .OnlyEnforceIf({mRelativeDirections[i][j][Left].Not(),
-                                        mRelativeDirections[i][j][Right].Not(),
+                    mModelCP.AddAtLeastOne({mRelativeDirections[i][j][Model::Behind], mRelativeDirections[i][j][Model::Below]})
+                        .OnlyEnforceIf({mRelativeDirections[i][j][Model::Left].Not(),
+                                        mRelativeDirections[i][j][Model::Right].Not(),
                                         mSuccessionMatrix[customerJ][position].Not()});
                 }
             }

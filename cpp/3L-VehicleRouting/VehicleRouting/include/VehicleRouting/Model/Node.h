@@ -11,9 +11,8 @@ namespace VehicleRouting
 {
 namespace Model
 {
-using namespace ContainerLoading::Model;
 
-class Node : public Group
+class Node : public ContainerLoading::Model::Group
 {
   public:
     Node() = default;
@@ -25,8 +24,8 @@ class Node : public Group
          double totalWeight,
          double totalVolume,
          double totalArea,
-         std::vector<Cuboid> items)
-    : Group(internId, externId, xPos, yPos, totalWeight, totalVolume, totalArea, std::move(items))
+         std::vector<ContainerLoading::Model::Cuboid> items)
+    : ContainerLoading::Model::Group(internId, externId, xPos, yPos, totalWeight, totalVolume, totalArea, std::move(items))
     {
     }
 };

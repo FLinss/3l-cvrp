@@ -24,94 +24,79 @@
 #include <cstdint>
 #include <memory>
 
-
-
 namespace VehicleRouting
 {
-using namespace Model;
-using namespace Helper;
-
 namespace Algorithms
 {
-using namespace ContainerLoading;
-using namespace ContainerLoading::Model;
-
 class IteratedLocalSearch
 {
   public:
-  IteratedLocalSearch(Instance* instance,
-                      GRBEnv* env,
-                      const VehicleRouting::InputParameters& inputParameters,
+  IteratedLocalSearch(Model::Instance* instance,
+                      const InputParameters& inputParameters,
                       const std::string& startSolutionFolderPath,
                       const std::string& outputPath,
                       const int seedOffset)
-    : mEnv(env),
-      mInstance(instance),
+    : mInstance(instance),
       mInputParameters(inputParameters),
       mStartSolutionFolderPath(startSolutionFolderPath),
       mOutputPath(outputPath),
       mSeedOffset(seedOffset),
       mSolutionTracker(mSeedOffset)
     {
-        mLogFile.open(env->get(GRB_StringParam_LogFile), std::ios::out | std::ios::app);
-
-        //Initialize Local Search
-        mLocalSearch = std::make_unique<Improvement::LocalSearch>(mInputParameters, mInstance);
-
         //Initialize RNG 
         mRNG.seed(42 + seedOffset);
+
+        switch (mInputParameters.IteratedLocalSearch.LoadingCheckerType)
+        {
+            case LoadingCheckerTypes::Filter:          
+                mLoadingChecker = std::make_unique<ContainerLoading::FilterLoadingChecker>(mInputParameters.ContainerLoading);
+                break;
+            case LoadingCheckerTypes::NoClassifier:       
+                mLoadingChecker = std::make_unique<ContainerLoading::NoClassifierLoadingChecker>(mInputParameters.ContainerLoading);
+                break;
+            case LoadingCheckerTypes::SpeedUp:       
+                mLoadingChecker = std::make_unique<ContainerLoading::SpeedUpLoadingChecker>(mInputParameters.ContainerLoading);
+                break;
+            case LoadingCheckerTypes::Hybrid:       
+                mLoadingChecker = std::make_unique<ContainerLoading::HybridLoadingChecker>(mInputParameters.ContainerLoading);     
+                break;               
+        }
+
+        //Initialize Local Search
+        mLocalSearch = std::make_unique<Improvement::LocalSearch>(&mInputParameters, mInstance, &mTimer, mLoadingChecker.get(), mRNG);
     }
 
     void Solve();
 
   private:
-    GRBEnv* mEnv;
-    Instance* mInstance;
+    Model::Instance* mInstance;
     InputParameters mInputParameters;
     std::string mStartSolutionFolderPath;
     std::string mOutputPath;
     int mSeedOffset;
 
     std::ofstream mLogFile;
-    std::vector<Arc> mInfeasibleArcs;
-    std::vector<Arc> mInfeasibleTailPaths;
-    Collections::SequenceSet mInfeasibleCombinations;
-    //std::vector<Arc> mCurrentSolutionArcs;
+    Model::Solution mCurrentSolution;
+    Model::Solution mBestSolution;
 
-    Solution mCurrentSolution;
-    Solution mBestSolution;
-
-    SolutionTracker mSolutionTracker;
+    Model::SolutionTracker mSolutionTracker;
 
     std::mt19937 mRNG;
-
-    std::unique_ptr<BaseLoadingChecker> mLoadingChecker;
+    std::unique_ptr<ContainerLoading::BaseLoadingChecker> mLoadingChecker;
     std::unique_ptr<Improvement::LocalSearch> mLocalSearch;
-
-    void InfeasibleArcProcedure();
-    void DetermineInfeasiblePaths();
-    bool CheckPath(const Collections::IdVector& path, Container& container, std::vector<Cuboid>& items);
-    void DetermineExtendedInfeasiblePath();
-    void DetermineInfeasibleCustomerCombinations();
-
     Helper::Timer mTimer = Helper::Timer();
 
-    size_t DetermineLowerBoundVehicles();
+    void TestSingleCustomerRoutes();
+    void DeterminePackingSolution(Model::OutputSolution& outputSolution);
+    void PrintSolution(const Model::OutputSolution& outputSolution);
 
-    void Initialize();
-    void TestProcedure();
-    void AdaptWeightsVolumesToLoadingProblem();
-    void DeterminePackingSolution(OutputSolution& outputSolution);
-    void PrintSolution(const OutputSolution& outputSolution);
-
-    void WriteSolutionSolutionValidator(const OutputSolution& outputSolution);
+    void WriteSolutionSolutionValidator(const Model::OutputSolution& outputSolution);
 
     void StartSolutionProcedure();
     void GenerateStartSolutionSavings();
     void GenerateStartSolutionModifiedSavings();
     void GenerateStartSolutionSPHeuristic();
-    bool IsCurrentSolutionCPValid(const Solution& solution);
-
+    bool IsCurrentSolutionCPValid(const Model::Solution& solution);
 
 };
 }

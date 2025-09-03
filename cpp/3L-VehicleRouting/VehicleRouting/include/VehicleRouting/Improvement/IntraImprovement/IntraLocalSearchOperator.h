@@ -4,33 +4,32 @@
 
 namespace VehicleRouting
 {
-using namespace Model;
-
 namespace Improvement
 {
-using namespace ContainerLoading;
 
 using IntraMove = std::tuple<double, size_t, size_t>;
 
 class IntraLocalSearchOperator : public LocalSearchOperatorBase
 {
   public:
-    void Run(const Instance* instance,
-                    const InputParameters& inputParameters,
-                    BaseLoadingChecker* loadingChecker,
-                    Solution& currentSolution) const override;
+    void Run(const Model::Instance* const instance,
+            const VRP_InputParameters* const inputParameters,
+            ContainerLoading::BaseLoadingChecker* loadingChecker,
+            const Helper::Timer* const mTimer,
+            Model::Solution& currentSolution) const override;
 
   private:
     ImprovementTypes mType = ImprovementTypes::Intra;
 
   protected:
-    std::optional<double> GetBestMove(const Instance* instance,
-                                    const InputParameters& inputParameters,
-                                    BaseLoadingChecker* loadingChecker,
-                                    Collections::IdVector& route,
-                                    std::vector<IntraMove>& moves) const;
+    std::optional<double> GetBestMove(const Model::Instance* instance,
+                                      const VRP_InputParameters* const inputParameters,
+                                      ContainerLoading::BaseLoadingChecker* loadingChecker,
+                                      const Helper::Timer* const mTimer,  
+                                      Collections::IdVector& route,
+                                      std::vector<IntraMove>& moves) const;
 
-    virtual std::vector<IntraMove> DetermineMoves(const Instance* instance,
+    virtual std::vector<IntraMove> DetermineMoves(const Model::Instance* instance,
                                                   const Collections::IdVector& route) const = 0;
 
     virtual void ChangeRoute(Collections::IdVector& route, const size_t i, const size_t k) const = 0;

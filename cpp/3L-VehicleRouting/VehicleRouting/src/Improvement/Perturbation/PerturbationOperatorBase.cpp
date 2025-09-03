@@ -3,15 +3,17 @@
 namespace VehicleRouting {
 namespace Improvement {
 
-void PerturbationOperatorBase::Run(const Model::Instance*            instance,
-        const InputParameters&            params,
-        ContainerLoading::BaseLoadingChecker* loadingChecker,
-        Model::Solution&                  solution,
-        std::mt19937&                     rng) const
+void PerturbationOperatorBase::Run(const Model::Instance* const instance,
+                                    const VRP_InputParameters* const inputParameters,
+                                    ContainerLoading::BaseLoadingChecker* loadingChecker,
+                                    const Helper::Timer* const mTimer,
+                                    Model::Solution& currentSolution,
+                                    std::mt19937& rng) const
 {
+
     int succesful_moves = 0;
 
-    std::vector<Route>& routes = solution.Routes;
+    std::vector<Model::Route>& routes = currentSolution.Routes;
 
     if (routes.size() < 2)
     {
@@ -23,7 +25,7 @@ void PerturbationOperatorBase::Run(const Model::Instance*            instance,
 
     // Implement unordered_set as tabu list
 
-    while(succesful_moves < params.IteratedLocalSearch.K_RandomMoves){
+    while(succesful_moves < inputParameters->IteratedLocalSearch.K_RandomMoves){
 
         // Implement unordered_set as tabu list
         //Update DetermineMovesTo give only one Move, where routes are different! 
@@ -52,7 +54,8 @@ void PerturbationOperatorBase::Run(const Model::Instance*            instance,
             auto set = loadingChecker->MakeBitset(instance->Nodes.size(), route.Sequence);
             auto selectedItems = Algorithms::InterfaceConversions::SelectItems(route.Sequence, instance->Nodes, false);
             
-            if (!loadingChecker->CompleteCheck(container, set, route.Sequence, selectedItems, mType))
+            double maxRuntime = inputParameters->DetermineMaxRuntime(Algorithms::IteratedLocalSearchParams::CallType::Exact, mTimer->getElapsedTime());
+            if (!loadingChecker->CompleteCheck(container, set, route.Sequence, selectedItems, mType, maxRuntime))
             {
                 controlFlag = false;
                 break;
@@ -67,12 +70,12 @@ void PerturbationOperatorBase::Run(const Model::Instance*            instance,
         }
 
         UpdateRouteVolumeWeight(routes, *move);
-        solution.Costs += std::get<0>(*move);
+        currentSolution.Costs += std::get<0>(*move);
         ++succesful_moves;
     }  
 };
 
-void PerturbationOperatorBase::UpdateRouteVolumeWeight(std::vector<Route>& routes, const PerturbationMove& move) const {
+void PerturbationOperatorBase::UpdateRouteVolumeWeight(std::vector<Model::Route>& routes, const PerturbationMove& move) const {
 
     const auto item_delta = std::get<5>(move);
     const auto volume_delta = std::get<6>(move);

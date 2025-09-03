@@ -8,25 +8,25 @@
 
 namespace ContainerLoading
 {
-using namespace Model;
 namespace Algorithms
 {
+
 class ContainerLoadingCP
 {
   public:
-    [[nodiscard]] std::tuple<ORIntVars1D, ORIntVars1D> GetIntVars(DimensionType dimension) const;
+    [[nodiscard]] std::tuple<ORIntVars1D, ORIntVars1D> GetIntVars(Model::DimensionType dimension) const;
 
     void WriteProtoModel(const operations_research::sat::CpModelProto& protoModel) const;
     void PrintSolution();
-    void ExtractPacking(std::vector<Cuboid>& items) const;
+    void ExtractPacking(std::vector<Model::Cuboid>& items) const;
     [[nodiscard]] std::vector<int> ExtractSequence() const;
 
     [[nodiscard]] LoadingStatus Solve();
     [[nodiscard]] double GetRuntime() const { return mResponse.wall_time(); };
 
     ContainerLoadingCP(const ContainerLoadingParams& params,
-                       const Container& container,
-                       const std::vector<Cuboid>& items,
+                       const Model::Container& container,
+                       const std::vector<Model::Cuboid>& items,
                        const size_t numberCustomers,
                        const LoadingFlag loadingMask,
                        const double supportArea,
@@ -51,8 +51,8 @@ class ContainerLoadingCP
 
   private:
     const ContainerLoadingParams& mParams;
-    const Container& mContainer;
-    const std::vector<Cuboid>& mItems;
+    const Model::Container& mContainer;
+    const std::vector<Model::Cuboid>& mItems;
     size_t mNumberCustomers;
 
     const bool mEnableFragility;
@@ -72,8 +72,11 @@ class ContainerLoadingCP
 
     operations_research::sat::CpSolverResponse mResponse;
 
-    std::vector<Dimension> mDimensions = {{AxisY, Right, Left}, {AxisX, InFront, Behind}, {AxisZ, Above, Below}};
-    std::vector<Orientation> mItemOrientations = std::vector{NoRotation, RotationZ};
+    std::vector<Model::Dimension> mDimensions = {{Model::AxisY, Model::Right, Model::Left},
+                                                 {Model::AxisX, Model::InFront, Model::Behind},
+                                                 {Model::AxisZ, Model::Above, Model::Below}};
+
+    std::vector<Model::Orientation> mItemOrientations = std::vector{Model::NoRotation, Model::RotationZ};
 
     operations_research::sat::CpModelBuilder mModelCP;
 

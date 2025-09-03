@@ -11,7 +11,7 @@ namespace Improvement
 class IntraInsertion : public IntraLocalSearchOperator
 {
   private:
-    std::vector<IntraMove> DetermineMoves(const Instance* instance, const Collections::IdVector& route) const override;
+    std::vector<IntraMove> DetermineMoves(const Model::Instance* instance, const Collections::IdVector& route) const override;
 
   void ChangeRoute(Collections::IdVector& route, const size_t i, const size_t k) const override;
 

@@ -5,14 +5,12 @@
 
 namespace VehicleRouting
 {
-using namespace Model;
 namespace Algorithms
 {
-
 class Evaluator
 {
   public:
-    static double CalculateRouteCosts(const Instance* const instance, const Collections::IdVector& route)
+    static double CalculateRouteCosts(const Model::Instance* const instance, const Collections::IdVector& route)
     {
         double costs = 0.0;
 
@@ -28,7 +26,7 @@ class Evaluator
         return costs;
     };
 
-    static double CalculateRouteCosts(const Instance* const instance, const std::vector<Node>& route)
+    static double CalculateRouteCosts(const Model::Instance* const instance, const std::vector<Model::Node>& route)
     {
         double costs = 0.0;
 
@@ -44,20 +42,20 @@ class Evaluator
         return costs;
     };
 
-    static double CalculateInsertionCosts(const Instance* const instance, size_t tailId, size_t headId, size_t nodeId)
+    static double CalculateInsertionCosts(const Model::Instance* const instance, size_t tailId, size_t headId, size_t nodeId)
     {
         return instance->Distance(tailId, nodeId) + instance->Distance(nodeId, headId)
                - instance->Distance(tailId, headId);
     }
 
-    static double CalculateSavings(const Instance* const instance, size_t tailId, size_t headId)
+    static double CalculateSavings(const Model::Instance* const instance, size_t tailId, size_t headId)
     {
         return instance->Distance(tailId, headId)
                - (instance->Distance(tailId, instance->GetDepotId())
                   + instance->Distance(instance->GetDepotId(), headId));
     }
 
-    static double CalculateInterSwapDelta(const Instance* const instance,
+    static double CalculateInterSwapDelta(const Model::Instance* const instance,
                                           const Collections::IdVector& routeA,
                                           const Collections::IdVector& routeB,
                                           const size_t nodeA,
@@ -83,7 +81,7 @@ class Evaluator
         return savings;
     }  
 
-    static double CalculateIntraSwapDelta(const Instance* const instance,
+    static double CalculateIntraSwapDelta(const Model::Instance* const instance,
                                           const Collections::IdVector& route,
                                           const size_t nodeA,
                                           const size_t nodeB)
@@ -116,7 +114,7 @@ class Evaluator
         return savings;
     }
 
-        static double CalculateIntraInsertionDelta(const Instance* const instance,
+        static double CalculateIntraInsertionDelta(const Model::Instance* const instance,
                                                     const Collections::IdVector& route,
                                                     const size_t nodeA,
                                                     const size_t positionB)
@@ -149,7 +147,7 @@ class Evaluator
     return savings;
     }
 
-    static double CalculateTwoOptDelta(const Instance* const instance,
+    static double CalculateTwoOptDelta(const Model::Instance* const instance,
                                         const Collections::IdVector& route,
                                         const size_t startIndex,
                                         const size_t endIndex)
@@ -168,7 +166,7 @@ class Evaluator
         return savings;
     } 
 
-    static double CalculateInsertionDelta(const Instance* const instance,
+    static double CalculateInsertionDelta(const Model::Instance* const instance,
                                           const Collections::IdVector& routeA,
                                           const Collections::IdVector& routeB,
                                           const size_t nodeA,

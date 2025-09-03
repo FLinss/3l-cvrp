@@ -4,10 +4,9 @@ namespace VehicleRouting
 {
 namespace Improvement
 {
-using namespace ContainerLoading;
 
 
-std::vector<IntraMove> IntraInsertion::DetermineMoves(const Instance* const instance,
+std::vector<IntraMove> IntraInsertion::DetermineMoves(const Model::Instance* const instance,
                                                         const Collections::IdVector& route) const
 {
 
@@ -20,7 +19,7 @@ std::vector<IntraMove> IntraInsertion::DetermineMoves(const Instance* const inst
         {
             if (position_k == node_i - 1 || position_k == node_i || position_k == node_i + 1) continue; // Inserting before or after itself makes no change
 
-            savings = Evaluator::CalculateIntraInsertionDelta(instance, route, node_i, position_k);
+            savings = Algorithms::Evaluator::CalculateIntraInsertionDelta(instance, route, node_i, position_k);
 
             if (savings < -1e-3)
             {

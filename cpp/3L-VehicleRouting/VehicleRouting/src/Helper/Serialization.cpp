@@ -259,16 +259,12 @@ void to_json(json& j, const OutputSolution& solution)
     };
 }
 
-//void from_json(const json& j, SolverStatistics& statistics) { j.at("Runtime").get_to(statistics.Runtime); }
-
 void to_json(json& j, const SolverStatistics& statistics)
 {
     j = json{
         {"ILSIterations", statistics.ILSIterationCount},
         {"CP_Rejections", statistics.rejectionCount},
-        {"DeletedArcs", statistics.DeletedArcs},
         {"SeedOffset", statistics.seedOffset},
-        {"InfTailPath", statistics.InfeasibleTailPathStart},
         {"Timer", statistics.Timer},
         {"SolutionProgress", statistics.solutionTracker}
     };
@@ -276,7 +272,7 @@ void to_json(json& j, const SolverStatistics& statistics)
 
 void from_json(const json& j, SolutionFile& solution)
 {
-    j.at("InputParameters").get_to<InputParameters>(solution.InputParameters);
+    j.at("InputParameters").get_to<Algorithms::InputParameters>(solution.InputParameters);
     ////j.at("SolverStatistics").get_to<SolverStatistics>(solution.SolverStatistics);
     j.at("Solution").get_to<OutputSolution>(solution.OutputSolution);
 }

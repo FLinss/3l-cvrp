@@ -4,11 +4,10 @@ namespace VehicleRouting
 {
 namespace Improvement
 {
-using namespace ContainerLoading;
 
-std::optional<PerturbationMove> K_RandomInsertions::DetermineMoves(const Instance* const instance,
-                                              const std::vector<Route>& routes,
-                                              std::mt19937& RNG) const
+std::optional<PerturbationMove> K_RandomInsertions::DetermineMoves(const Model::Instance* const instance,
+                                                                    const std::vector<Model::Route>& routes,
+                                                                    std::mt19937& RNG) const
 {
 
 
@@ -51,7 +50,7 @@ std::optional<PerturbationMove> K_RandomInsertions::DetermineMoves(const Instanc
         if(res_weight_route_k - weight_item_delta >= 0)
             if(res_volume_route_k - volume_item_delta >= 0){
 
-                auto savings = Evaluator::CalculateInsertionDelta(instance,
+                auto savings = Algorithms::Evaluator::CalculateInsertionDelta(instance,
                                                                     route_i.Sequence,
                                                                     route_k.Sequence,
                                                                     node_i,
@@ -67,7 +66,7 @@ std::optional<PerturbationMove> K_RandomInsertions::DetermineMoves(const Instanc
     return std::nullopt;
 }
 
-void K_RandomInsertions::ChangeRoutes(std::vector<Route>& routes, const PerturbationMove& move) const
+void K_RandomInsertions::ChangeRoutes(std::vector<Model::Route>& routes, const PerturbationMove& move) const
 {
 
     auto node_i = std::get<3>(move);
@@ -86,7 +85,7 @@ void K_RandomInsertions::ChangeRoutes(std::vector<Route>& routes, const Perturba
     route_i.erase(it);
 }
 
-void K_RandomInsertions::RevertChangeRoutes(std::vector<Route>& routes, const PerturbationMove& move) const
+void K_RandomInsertions::RevertChangeRoutes(std::vector<Model::Route>& routes, const PerturbationMove& move) const
 {
     auto node_i     = std::get<3>(move);  // original position in route_i
     auto position_k = std::get<4>(move);  // inserted position in route_k

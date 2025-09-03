@@ -19,20 +19,14 @@ class Timer
     std::chrono::time_point<std::chrono::system_clock> start;
     std::chrono::time_point<std::chrono::system_clock> overall_start;
     
-    double elapsed;
-    
     Timer() = default;
 
     inline void startOverallTime(){
         overall_start = std::chrono::system_clock::now();
     }
 
-    inline void calculateElapsedTime(){
-        elapsed = std::chrono::duration<double>(std::chrono::system_clock::now() - overall_start).count();  // result in seconds as double (e.g., 16.2541)
-    }
-
     inline double getElapsedTime() const{
-        return elapsed;
+        return std::chrono::duration<double>(std::chrono::system_clock::now() - overall_start).count();
     }
 
     void calculateMetaHeuristicTime(){

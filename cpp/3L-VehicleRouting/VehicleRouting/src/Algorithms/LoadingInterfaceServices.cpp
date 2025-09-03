@@ -4,9 +4,9 @@ namespace VehicleRouting
 {
 namespace Algorithms
 {
-std::vector<Cuboid> InterfaceConversions::SelectItems(const Collections::IdVector& nodeIds, const std::vector<Node>& nodes, bool reversedDirection)
+std::vector<ContainerLoading::Model::Cuboid> InterfaceConversions::SelectItems(const Collections::IdVector& nodeIds, const std::vector<Model::Node>& nodes, bool reversedDirection)
 {
-    std::vector<Cuboid> selectedItems;
+    std::vector<ContainerLoading::Model::Cuboid> selectedItems;
     if (!reversedDirection)
     {
         for (size_t i = 0; i < nodeIds.size(); ++i)
@@ -37,11 +37,11 @@ std::vector<Cuboid> InterfaceConversions::SelectItems(const Collections::IdVecto
     return selectedItems;
 }
 
-std::vector<Group> InterfaceConversions::NodesToGroup(const std::vector<Node>& nodes)
+std::vector<ContainerLoading::Model::Group> InterfaceConversions::NodesToGroup(const std::vector<Model::Node>& nodes)
 {
-    std::vector<Group> groups;
+    std::vector<ContainerLoading::Model::Group> groups;
     groups.reserve(nodes.size());
-    for (const Node& node: nodes)
+    for (const Model::Node& node: nodes)
     {
         groups.emplace_back(node.InternId,
                             node.ExternId,

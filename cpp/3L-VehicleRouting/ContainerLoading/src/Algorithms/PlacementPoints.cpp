@@ -3,12 +3,10 @@
 #include <iostream>
 namespace ContainerLoading
 {
-using namespace Model;
-
 namespace Algorithms
 {
 std::tuple<std::vector<int64>, std::vector<int64>, std::vector<int64>>
-    PlacementPointGenerator::DetermineMeetInTheMiddlePatterns(const Container& container, std::vector<Cuboid>& items)
+    PlacementPointGenerator::DetermineMeetInTheMiddlePatterns(const Model::Container& container, std::vector<Model::Cuboid>& items)
 {
     boost::dynamic_bitset<> placeableCoordinatesX(container.Dx + 1);
     boost::dynamic_bitset<> placeableCoordinatesY(container.Dy + 1);
@@ -16,9 +14,9 @@ std::tuple<std::vector<int64>, std::vector<int64>, std::vector<int64>>
 
     for (size_t i = 0; i < items.size(); ++i)
     {
-        const Cuboid& itemI = items[i];
+        const Model::Cuboid& itemI = items[i];
 
-        std::vector<Cuboid*> filteredItems;
+        std::vector<Model::Cuboid*> filteredItems;
         filteredItems.reserve(items.size() - 1);
 
         for (size_t j = 0; j < items.size(); j++)
@@ -28,7 +26,7 @@ std::tuple<std::vector<int64>, std::vector<int64>, std::vector<int64>>
                 continue;
             }
 
-            Cuboid& itemJ = items[j];
+            Model::Cuboid& itemJ = items[j];
 
             filteredItems.emplace_back(&itemJ);
         }
@@ -77,9 +75,9 @@ std::tuple<std::vector<int64>, std::vector<int64>, std::vector<int64>>
 }
 
 std::tuple<boost::dynamic_bitset<>, boost::dynamic_bitset<>, boost::dynamic_bitset<>>
-    PlacementPointGenerator::DetermineItemSpecificMeetInTheMiddlePatterns(const Container& container,
-                                                                          const std::vector<Cuboid*>& items,
-                                                                          const Cuboid& itemI)
+    PlacementPointGenerator::DetermineItemSpecificMeetInTheMiddlePatterns(const Model::Container& container,
+                                                                          const std::vector<Model::Cuboid*>& items,
+                                                                          const Model::Cuboid& itemI)
 {
     boost::dynamic_bitset<> meetInTheMiddlePointsX(container.Dx + 1);
     boost::dynamic_bitset<> meetInTheMiddlePointsY(container.Dy + 1);
@@ -87,25 +85,25 @@ std::tuple<boost::dynamic_bitset<>, boost::dynamic_bitset<>, boost::dynamic_bits
 
     // Meet-in-the-middle patterns should only be generated for one value of t. When t = binDimension,
     // meet-in-the-middle patterns are equal to regular normal patterns, i.e., MiM_it = \mathcal{B}_i.
-    meetInTheMiddlePointsX |= DetermineMeetInTheMiddlePatterns(container, items, itemI, container.Dx, Axis::X);
-    meetInTheMiddlePointsY |= DetermineMeetInTheMiddlePatterns(container, items, itemI, container.Dy, Axis::Y);
-    meetInTheMiddlePointsZ |= DetermineMeetInTheMiddlePatterns(container, items, itemI, container.Dz, Axis::Z);
+    meetInTheMiddlePointsX |= DetermineMeetInTheMiddlePatterns(container, items, itemI, container.Dx, Model::Axis::X);
+    meetInTheMiddlePointsY |= DetermineMeetInTheMiddlePatterns(container, items, itemI, container.Dy, Model::Axis::Y);
+    meetInTheMiddlePointsZ |= DetermineMeetInTheMiddlePatterns(container, items, itemI, container.Dz, Model::Axis::Z);
 
     return std::make_tuple(
         std::move(meetInTheMiddlePointsX), std::move(meetInTheMiddlePointsY), std::move(meetInTheMiddlePointsZ));
 }
 
 std::vector<ItemPlacementPatternsBitset> PlacementPointGenerator::DetermineMinimalMeetInTheMiddlePatterns(
-    const Container& container,
-    std::vector<Cuboid>& items,
+    const Model::Container& container,
+    std::vector<Model::Cuboid>& items,
     MeetInTheMiddleMinimizationTarget minimizationTarget)
 {
     std::vector<boost::dynamic_bitset<>> minimalMeetInTheMiddlePatternsX =
-        DetermineMinimalMeetInTheMiddlePatterns(container, items, minimizationTarget, Axis::X);
+        DetermineMinimalMeetInTheMiddlePatterns(container, items, minimizationTarget, Model::Axis::X);
     std::vector<boost::dynamic_bitset<>> minimalMeetInTheMiddlePatternsY =
-        DetermineMinimalMeetInTheMiddlePatterns(container, items, minimizationTarget, Axis::Y);
+        DetermineMinimalMeetInTheMiddlePatterns(container, items, minimizationTarget, Model::Axis::Y);
     std::vector<boost::dynamic_bitset<>> minimalMeetInTheMiddlePatternsZ =
-        DetermineMinimalMeetInTheMiddlePatterns(container, items, minimizationTarget, Axis::Z);
+        DetermineMinimalMeetInTheMiddlePatterns(container, items, minimizationTarget, Model::Axis::Z);
 
     std::vector<ItemPlacementPatternsBitset> placementPatterns;
     placementPatterns.reserve(items.size());
@@ -128,9 +126,9 @@ std::vector<ItemPlacementPatternsBitset> PlacementPointGenerator::DetermineMinim
 }
 
 std::vector<boost::dynamic_bitset<>>
-    PlacementPointGenerator::DetermineUnitDiscretizationPoints(const Container& container,
-                                                               std::vector<Cuboid>& items,
-                                                               Axis axis)
+    PlacementPointGenerator::DetermineUnitDiscretizationPoints(const Model::Container& container,
+                                                               std::vector<Model::Cuboid>& items,
+                                                               Model::Axis axis)
 {
     std::vector<boost::dynamic_bitset<>> itemSpecificUnitDiscretizationPoints;
     itemSpecificUnitDiscretizationPoints.reserve(items.size());
@@ -139,7 +137,7 @@ std::vector<boost::dynamic_bitset<>>
 
     for (size_t i = 0; i < items.size(); ++i)
     {
-        const Cuboid& itemI = items[i];
+        const Model::Cuboid& itemI = items[i];
         int minimumItemDimension = itemI.MinimumRotatableDimension(axis);
 
         boost::dynamic_bitset<> unitDiscretizationPoints(containerDimension + 1);
@@ -158,10 +156,10 @@ std::vector<boost::dynamic_bitset<>>
 }
 
 std::vector<boost::dynamic_bitset<>> PlacementPointGenerator::DetermineMinimalMeetInTheMiddlePatterns(
-    const Container& container,
-    std::vector<Cuboid>& items,
+    const Model::Container& container,
+    std::vector<Model::Cuboid>& items,
     MeetInTheMiddleMinimizationTarget minimizationTarget,
-    Axis axis)
+    Model::Axis axis)
 {
     std::vector<boost::dynamic_bitset<>> regularNormalPatterns;
     regularNormalPatterns.reserve(items.size());
@@ -171,9 +169,9 @@ std::vector<boost::dynamic_bitset<>> PlacementPointGenerator::DetermineMinimalMe
 
     for (size_t i = 0; i < items.size(); ++i)
     {
-        const Cuboid& itemI = items[i];
+        const Model::Cuboid& itemI = items[i];
 
-        std::vector<Cuboid*> filteredItems;
+        std::vector<Model::Cuboid*> filteredItems;
         filteredItems.reserve(items.size() - 1);
 
         for (size_t j = 0; j < items.size(); j++)
@@ -183,7 +181,7 @@ std::vector<boost::dynamic_bitset<>> PlacementPointGenerator::DetermineMinimalMe
                 continue;
             }
 
-            Cuboid& itemJ = items[j];
+            Model::Cuboid& itemJ = items[j];
 
             filteredItems.emplace_back(&itemJ);
         }
@@ -246,10 +244,10 @@ std::vector<boost::dynamic_bitset<>> PlacementPointGenerator::DetermineMinimalMe
 /// Preprocessing steps according to Côté, J. F., & Iori, M. (2018). The meet-in-the-middle principle for cutting and
 /// packing problems. INFORMS Journal on Computing, 30(4), 646-661.
 std::vector<boost::dynamic_bitset<>>
-    PlacementPointGenerator::DetermineReducedMeetInTheMiddlePatterns(std::vector<Cuboid>& items,
-                                                                     const Container& container,
+    PlacementPointGenerator::DetermineReducedMeetInTheMiddlePatterns(std::vector<Model::Cuboid>& items,
+                                                                     const Model::Container& container,
                                                                      int threshold,
-                                                                     Axis axis,
+                                                                     Model::Axis axis,
                                                                      bool enablePreprocessingStep1,
                                                                      bool enablePreprocessingStep2)
 {
@@ -260,7 +258,7 @@ std::vector<boost::dynamic_bitset<>>
 
     for (size_t k = 1; k < items.size(); k++)
     {
-        const Cuboid& itemK = items[k];
+        const Model::Cuboid& itemK = items[k];
 
         int itemDimension = itemK.MinimumRotatableDimension(axis);
         if (itemDimension < minOverallDimension)
@@ -283,14 +281,14 @@ std::vector<boost::dynamic_bitset<>>
     // paper.
     for (size_t i = 0; i < items.size(); i++)
     {
-        const Cuboid& item = items[i];
+        const Model::Cuboid& item = items[i];
         int minSelectedItemDimension = item.MinimumRotatableDimension(axis);
 
         boost::dynamic_bitset<> placementPointsLeft;
         boost::dynamic_bitset<> placementPointsRightPrime;
 
-        std::vector<Cuboid*> filteredItems;
-        std::vector<Cuboid*> doublyFilteredItems;
+        std::vector<Model::Cuboid*> filteredItems;
+        std::vector<Model::Cuboid*> doublyFilteredItems;
         filteredItems.reserve(items.size() - 1);
         doublyFilteredItems.reserve(items.size() - 1);
 
@@ -349,7 +347,7 @@ std::vector<boost::dynamic_bitset<>>
 
     for (size_t i = 0; i < items.size(); i++)
     {
-        const Cuboid& itemI = items[i];
+        const Model::Cuboid& itemI = items[i];
         const int minItemDimensionI = itemI.MinimumRotatableDimension(axis);
 
         const boost::dynamic_bitset<>& placementPointsRightPrime = itemSpecificPlacementPointsRightPrime[i];
@@ -385,7 +383,7 @@ std::vector<boost::dynamic_bitset<>>
     itemSpecificModifiedItemDimensions.reserve(items.size() + 1);
     for (size_t i = 0; i < items.size(); i++)
     {
-        const Cuboid& itemI = items[i];
+        const Model::Cuboid& itemI = items[i];
         int minItemDimensionI = itemI.MinimumRotatableDimension(axis);
 
         itemSpecificModifiedItemDimensions.emplace_back(
@@ -425,15 +423,15 @@ void PlacementPointGenerator::DetermineSingleItemReducedLeftRightPatterns(
     int threshold,
     int separationThreshold,
     boost::dynamic_bitset<>& placementPointsLeft,
-    const Container& container,
-    Axis axis,
+    const Model::Container& container,
+    Model::Axis axis,
     int minSelectedItemDimension,
-    const std::vector<Cuboid*>& doublyFilteredItems,
+    const std::vector<Model::Cuboid*>& doublyFilteredItems,
     boost::dynamic_bitset<>& placementPointsRightPrime,
-    const std::vector<Cuboid*>& filteredItems)
+    const std::vector<Model::Cuboid*>& filteredItems)
 {
-    std::vector<Cuboid*> filteredItemsA;
-    std::vector<Cuboid*> filteredItemsB;
+    std::vector<Model::Cuboid*> filteredItemsA;
+    std::vector<Model::Cuboid*> filteredItemsB;
 
     if (threshold <= separationThreshold)
     {
@@ -462,7 +460,7 @@ void PlacementPointGenerator::DetermineSingleItemReducedLeftRightPatterns(
 
     switch (axis)
     {
-        case Axis::X:
+        case Model::Axis::X:
             placementPointsLeft = DetermineRegularNormalPatternsX(
                 std::min(threshold - 1, container.Dimension(axis) - minSelectedItemDimension),
                 container.Dimension(axis),
@@ -472,7 +470,7 @@ void PlacementPointGenerator::DetermineSingleItemReducedLeftRightPatterns(
                                                 container.Dimension(axis),
                                                 filteredItemsA);
             break;
-        case Axis::Y:
+        case Model::Axis::Y:
             placementPointsLeft = DetermineRegularNormalPatternsY(
                 std::min(threshold - 1, container.Dimension(axis) - minSelectedItemDimension),
                 container.Dimension(axis),
@@ -482,7 +480,7 @@ void PlacementPointGenerator::DetermineSingleItemReducedLeftRightPatterns(
                                                 container.Dimension(axis),
                                                 filteredItemsA);
             break;
-        case Axis::Z:
+        case Model::Axis::Z:
             placementPointsLeft = DetermineRegularNormalPatternsZ(
                 std::min(threshold - 1, container.Dimension(axis) - minSelectedItemDimension),
                 container.Dimension(axis),
@@ -498,16 +496,16 @@ void PlacementPointGenerator::DetermineSingleItemReducedLeftRightPatterns(
 }
 
 void PlacementPointGenerator::DetermineEnlargedItemDimensionsLeft(
-    std::vector<Cuboid>& items,
-    Axis axis,
+    std::vector<Model::Cuboid>& items,
+    Model::Axis axis,
     std::vector<std::vector<int>>& itemSpecificModifiedItemDimensions,
     const std::vector<boost::dynamic_bitset<>>& itemSpecificPlacementPointsLeft,
-    const Container& container,
+    const Model::Container& container,
     const std::vector<boost::dynamic_bitset<>>& preliminaryItemSpecificMeetInTheMiddleSets)
 {
     for (size_t k = 0; k < items.size(); k++)
     {
-        const Cuboid& itemK = items[k];
+        const Model::Cuboid& itemK = items[k];
         int minSelectedItemDimension = itemK.MinimumRotatableDimension(axis);
 
         std::vector<int>& modifiedItemDimensionsK = itemSpecificModifiedItemDimensions[k];
@@ -531,7 +529,7 @@ void PlacementPointGenerator::DetermineEnlargedItemDimensionsLeft(
                     continue;
                 }
 
-                const Cuboid& itemI = items[i];
+                const Model::Cuboid& itemI = items[i];
                 int minSelectedItemDimensionI = itemI.MinimumRotatableDimension(axis);
                 const boost::dynamic_bitset<>& meetInTheMiddlePointsI = preliminaryItemSpecificMeetInTheMiddleSets[i];
 
@@ -562,8 +560,8 @@ void PlacementPointGenerator::DetermineEnlargedItemDimensionsLeft(
 }
 
 void PlacementPointGenerator::DetermineEnlargedItemDimensionsRight(
-    std::vector<Cuboid>& items,
-    Axis axis,
+    std::vector<Model::Cuboid>& items,
+    Model::Axis axis,
     std::vector<std::vector<int>>& itemSpecificModifiedItemDimensions,
     const std::vector<boost::dynamic_bitset<>>& itemSpecificPlacementPointsLeft,
     std::vector<boost::dynamic_bitset<>>& itemSpecificPlacementPointsRight,
@@ -571,7 +569,7 @@ void PlacementPointGenerator::DetermineEnlargedItemDimensionsRight(
 {
     for (size_t k = 0; k < items.size(); k++)
     {
-        const Cuboid& itemK = items[k];
+        const Model::Cuboid& itemK = items[k];
         const int minSelectedItemDimension = itemK.MinimumRotatableDimension(axis);
 
         std::vector<int>& modifiedItemDimensionsK = itemSpecificModifiedItemDimensions[k];
@@ -595,7 +593,7 @@ void PlacementPointGenerator::DetermineEnlargedItemDimensionsRight(
                 {
                     continue;
                 }
-                const Cuboid& itemI = items[i];
+                const Model::Cuboid& itemI = items[i];
                 int minSelectedItemDimensionI = itemI.MinimumRotatableDimension(axis);
                 const boost::dynamic_bitset<>& meetInTheMiddlePointsI = preliminaryItemSpecificMeetInTheMiddleSets[i];
                 std::vector<int>& modifiedItemDimensionsI = itemSpecificModifiedItemDimensions[i];
@@ -644,13 +642,13 @@ void PlacementPointGenerator::DetermineEnlargedItemDimensionsRight(
 }
 
 void PlacementPointGenerator::RemoveRedundantPatterns(
-    std::vector<Cuboid>& items,
+    std::vector<Model::Cuboid>& items,
     const std::vector<std::vector<int>>& itemSpecificModifiedItemDimensions,
     std::vector<boost::dynamic_bitset<>>& itemSpecificPlacementPoints)
 {
     for (size_t k = 0; k < items.size(); k++)
     {
-        const Cuboid& itemK = items[k];
+        const Model::Cuboid& itemK = items[k];
 
         const std::vector<int>& modifiedItemDimensionsK = itemSpecificModifiedItemDimensions[k];
         boost::dynamic_bitset<>& placementPoints = itemSpecificPlacementPoints[k];
@@ -682,11 +680,11 @@ void PlacementPointGenerator::RemoveRedundantPatterns(
 }
 
 std::vector<boost::dynamic_bitset<>> PlacementPointGenerator::GenerateMeetInTheMiddlePatterns(
-    std::vector<Cuboid>& items,
-    const Container& container,
+    std::vector<Model::Cuboid>& items,
+    const Model::Container& container,
     const std::vector<boost::dynamic_bitset<>>& regularNormalPatterns,
     int threshold,
-    Axis axis)
+    Model::Axis axis)
 {
     std::vector<boost::dynamic_bitset<>> itemSpecificMeetInTheMiddlePoints;
     itemSpecificMeetInTheMiddlePoints.reserve(items.size());
@@ -696,7 +694,7 @@ std::vector<boost::dynamic_bitset<>> PlacementPointGenerator::GenerateMeetInTheM
         boost::dynamic_bitset<> meetInTheMiddlePoints(container.Dimension(axis) + 1);
 
         // Item specific meet-in-the-middle patterns \mathcal{M}_i can be extracted from this loop.
-        const Cuboid& itemI = items[i];
+        const Model::Cuboid& itemI = items[i];
         const boost::dynamic_bitset<>& regularNormalPattern = regularNormalPatterns[i];
 
         for (size_t p = 0; p < regularNormalPattern.size(); p++)
@@ -726,13 +724,13 @@ std::vector<boost::dynamic_bitset<>> PlacementPointGenerator::GenerateMeetInTheM
 }
 
 boost::dynamic_bitset<>
-    PlacementPointGenerator::DetermineRegularNormalPatterns(const Container& container,
-                                                            const std::vector<Cuboid*>& items,
-                                                            const Cuboid& itemI,
+    PlacementPointGenerator::DetermineRegularNormalPatterns(const Model::Container& container,
+                                                            const std::vector<Model::Cuboid*>& items,
+                                                            const Model::Cuboid& itemI,
                                                             std::vector<int>& meetInTheMiddlePointsLeft,
                                                             std::vector<int>& meetInTheMiddlePointsRight,
                                                             MeetInTheMiddleMinimizationTarget minimizationTarget,
-                                                            Axis axis)
+                                                            Model::Axis axis)
 {
     // Note: with rotation, item specific normal patterns can be reduced by creating item specific normal patterns for
     // each rotation separately. This is only useful, when item specific placement points are actually used in the model
@@ -742,15 +740,15 @@ boost::dynamic_bitset<>
     boost::dynamic_bitset<> regularNormalPattern;
     switch (axis)
     {
-        case Axis::X:
+        case Model::Axis::X:
             regularNormalPattern = DetermineRegularNormalPatternsX(
                 container.Dimension(axis) - itemDimension, container.Dimension(axis), items);
             break;
-        case Axis::Y:
+        case Model::Axis::Y:
             regularNormalPattern = DetermineRegularNormalPatternsY(
                 container.Dimension(axis) - itemDimension, container.Dimension(axis), items);
             break;
-        case Axis::Z:
+        case Model::Axis::Z:
             regularNormalPattern = DetermineRegularNormalPatternsZ(
                 container.Dimension(axis) - itemDimension, container.Dimension(axis), items);
             break;
@@ -781,11 +779,11 @@ boost::dynamic_bitset<>
     return regularNormalPattern;
 }
 
-boost::dynamic_bitset<> PlacementPointGenerator::DetermineMeetInTheMiddlePatterns(const Container& container,
-                                                                                  const std::vector<Cuboid*>& items,
-                                                                                  const Cuboid& itemI,
+boost::dynamic_bitset<> PlacementPointGenerator::DetermineMeetInTheMiddlePatterns(const Model::Container& container,
+                                                                                  const std::vector<Model::Cuboid*>& items,
+                                                                                  const Model::Cuboid& itemI,
                                                                                   int threshold,
-                                                                                  Axis axis)
+                                                                                  Model::Axis axis)
 {
     int minDimension = itemI.MinimumRotatableDimension(axis);
 
@@ -793,19 +791,19 @@ boost::dynamic_bitset<> PlacementPointGenerator::DetermineMeetInTheMiddlePattern
     boost::dynamic_bitset<> placementPointsRightPrime;
     switch (axis)
     {
-        case Axis::X:
+        case Model::Axis::X:
             meetInTheMiddlePoints = DetermineRegularNormalPatternsX(
                 std::min(threshold - 1, container.Dimension(axis) - minDimension), container.Dimension(axis), items);
             placementPointsRightPrime = DetermineRegularNormalPatternsX(
                 container.Dimension(axis) - minDimension - threshold, container.Dimension(axis), items);
             break;
-        case Axis::Y:
+        case Model::Axis::Y:
             meetInTheMiddlePoints = DetermineRegularNormalPatternsY(
                 std::min(threshold - 1, container.Dimension(axis) - minDimension), container.Dimension(axis), items);
             placementPointsRightPrime = DetermineRegularNormalPatternsY(
                 container.Dimension(axis) - minDimension - threshold, container.Dimension(axis), items);
             break;
-        case Axis::Z:
+        case Model::Axis::Z:
             meetInTheMiddlePoints = DetermineRegularNormalPatternsZ(
                 std::min(threshold - 1, container.Dimension(axis) - minDimension), container.Dimension(axis), items);
             placementPointsRightPrime = DetermineRegularNormalPatternsZ(
@@ -828,7 +826,7 @@ boost::dynamic_bitset<> PlacementPointGenerator::DetermineMeetInTheMiddlePattern
 
 boost::dynamic_bitset<> PlacementPointGenerator::DetermineRegularNormalPatternsX(int containerDx,
                                                                                  int actualContainerDx,
-                                                                                 const std::vector<Cuboid*>& items)
+                                                                                 const std::vector<Model::Cuboid*>& items)
 {
     // + 1 can be neglected, because at coordinate actualContainerDx, no item with itemDx > 0 can ever be placed.
     // boost::dynamic_bitset, because of performance when building set intersections in the calling methods. Instead,
@@ -849,7 +847,7 @@ boost::dynamic_bitset<> PlacementPointGenerator::DetermineRegularNormalPatternsX
 
     for (size_t i = 0; i < items.size(); ++i)
     {
-        const Cuboid& item = *items[i];
+        const Model::Cuboid& item = *items[i];
 
         int minLength = item.EnableHorizontalRotation ? std::min(item.Dx, item.Dy) : item.Dx;
 
@@ -878,7 +876,7 @@ boost::dynamic_bitset<> PlacementPointGenerator::DetermineRegularNormalPatternsX
 
 boost::dynamic_bitset<> PlacementPointGenerator::DetermineRegularNormalPatternsY(int containerDy,
                                                                                  int actualContainerDy,
-                                                                                 const std::vector<Cuboid*>& items)
+                                                                                 const std::vector<Model::Cuboid*>& items)
 {
     boost::dynamic_bitset<> yT(actualContainerDy + 1, 0);
 
@@ -896,7 +894,7 @@ boost::dynamic_bitset<> PlacementPointGenerator::DetermineRegularNormalPatternsY
 
     for (size_t i = 0; i < items.size(); ++i)
     {
-        const Cuboid& item = *items[i];
+        const Model::Cuboid& item = *items[i];
         int minWidth = item.EnableHorizontalRotation ? std::min(item.Dx, item.Dy) : item.Dy;
 
         for (int p = containerDy - minWidth; p > -1; --p)
@@ -921,7 +919,7 @@ boost::dynamic_bitset<> PlacementPointGenerator::DetermineRegularNormalPatternsY
 
 boost::dynamic_bitset<> PlacementPointGenerator::DetermineRegularNormalPatternsZ(int containerDz,
                                                                                  int actualContainerDz,
-                                                                                 const std::vector<Cuboid*>& items)
+                                                                                 const std::vector<Model::Cuboid*>& items)
 {
     boost::dynamic_bitset<> zT(actualContainerDz + 1, 0);
 
@@ -939,7 +937,7 @@ boost::dynamic_bitset<> PlacementPointGenerator::DetermineRegularNormalPatternsZ
 
     for (size_t i = 0; i < items.size(); ++i)
     {
-        const Cuboid& item = *items[i];
+        const Model::Cuboid& item = *items[i];
 
         for (int p = containerDz - item.Dz; p > -1; --p)
         {
@@ -996,8 +994,8 @@ std::tuple<PlacementPattern, PlacementPattern, PlacementPattern>
 
 /*
 std::vector<int64> PlacementPointGenerator::DetermineNormalPatternsX(
-    const Container& container,
-    const std::vector<Cuboid>& items)
+    const Model::Container& container,
+    const std::vector<Model::Cuboid>& items)
 {
     std::vector<int> xT(container.Dx, 0);
 
@@ -1007,7 +1005,7 @@ std::vector<int64> PlacementPointGenerator::DetermineNormalPatternsX(
 
     for (size_t i = 0; i < items.size(); ++i)
     {
-        const Cuboid& item = items[i];
+        const Model::Cuboid& item = items[i];
 
         int minLength = item.EnableHorizontalRotation ? std::min(item.Dx, item.Dy) : item.Dx;
 
@@ -1044,8 +1042,8 @@ std::vector<int64> PlacementPointGenerator::DetermineNormalPatternsX(
 }
 
 std::vector<int64> PlacementPointGenerator::DetermineNormalPatternsY(
-    const Container& container,
-    const std::vector<Cuboid>& items)
+    const Model::Container& container,
+    const std::vector<Model::Cuboid>& items)
 {
     std::vector<int> yT(container.Dy, 0);
 
@@ -1055,7 +1053,7 @@ std::vector<int64> PlacementPointGenerator::DetermineNormalPatternsY(
 
     for (size_t i = 0; i < items.size(); ++i)
     {
-        const Cuboid& item = items[i];
+        const Model::Cuboid& item = items[i];
         int minWidth = item.EnableHorizontalRotation ? std::min(item.Dx, item.Dy) : item.Dy;
 
         minWidthAllItems = minWidth < minWidthAllItems ? minWidth : minWidthAllItems;
@@ -1092,8 +1090,8 @@ std::vector<int64> PlacementPointGenerator::DetermineNormalPatternsY(
 }
 
 std::vector<int64> PlacementPointGenerator::DetermineNormalPatternsZ(
-    const Container& container,
-    const std::vector<Cuboid>& items)
+    const Model::Container& container,
+    const std::vector<Model::Cuboid>& items)
 {
     std::vector<int> zT(container.Dz, 0);
 
@@ -1103,7 +1101,7 @@ std::vector<int64> PlacementPointGenerator::DetermineNormalPatternsZ(
 
     for (size_t i = 0; i < items.size(); ++i)
     {
-        const Cuboid& item = items[i];
+        const Model::Cuboid& item = items[i];
 
         minHeightAllItems = item.Dz < minHeightAllItems ? item.Dz : minHeightAllItems;
 
@@ -1134,7 +1132,7 @@ std::vector<int64> PlacementPointGenerator::DetermineNormalPatternsZ(
 }
 
 std::tuple<std::vector<int64>, std::vector<int64>, std::vector<int64>>
-PlacementPointGenerator::DetermineNormalPatterns3D(const Container& container, const std::vector<Cuboid>& items)
+PlacementPointGenerator::DetermineNormalPatterns3D(const Model::Container& container, const std::vector<Model::Cuboid>& items)
 {
     auto normalPatternsX = PlacementPointGenerator::DetermineNormalPatternsX(container, items);
     auto normalPatternsY = PlacementPointGenerator::DetermineNormalPatternsY(container, items);
@@ -1143,8 +1141,8 @@ PlacementPointGenerator::DetermineNormalPatterns3D(const Container& container, c
     return std::make_tuple(std::move(normalPatternsX), std::move(normalPatternsY), std::move(normalPatternsZ));
 }
 
-std::tuple<std::vector<int64>, std::vector<int64>> PlacementPointGenerator::DetermineNormalPatternsXY(const Container&
-container, const std::vector<Cuboid>& items)
+std::tuple<std::vector<int64>, std::vector<int64>> PlacementPointGenerator::DetermineNormalPatternsXY(const Model::Container&
+container, const std::vector<Model::Cuboid>& items)
 {
     auto normalPatternsX = PlacementPointGenerator::DetermineNormalPatternsX(container, items);
     auto normalPatternsY = PlacementPointGenerator::DetermineNormalPatternsY(container, items);
@@ -1267,19 +1265,19 @@ std::vector<int64> PlacementPointGenerator::DetermineEndPoints(const std::vector
     return startPoints;
 }
 
-std::vector<boost::dynamic_bitset<>> PlacementPointGenerator::GenerateRegularNormalPatterns(const Container& container,
-                                                                                            std::vector<Cuboid>& items,
-                                                                                            Axis axis)
+std::vector<boost::dynamic_bitset<>> PlacementPointGenerator::GenerateRegularNormalPatterns(const Model::Container& container,
+                                                                                            std::vector<Model::Cuboid>& items,
+                                                                                            Model::Axis axis)
 {
     std::vector<boost::dynamic_bitset<>> itemSpecificRegularNormalPatterns;
     itemSpecificRegularNormalPatterns.reserve(items.size());
 
     for (size_t i = 0; i < items.size(); i++)
     {
-        const Cuboid itemI = items[i];
+        const Model::Cuboid itemI = items[i];
         int itemDimension = itemI.MinimumRotatableDimension(axis);
 
-        std::vector<Cuboid*> filteredItems;
+        std::vector<Model::Cuboid*> filteredItems;
         filteredItems.reserve(items.size() - 1);
         for (size_t j = 0; j < items.size(); j++)
         {
@@ -1288,22 +1286,22 @@ std::vector<boost::dynamic_bitset<>> PlacementPointGenerator::GenerateRegularNor
                 continue;
             }
 
-            Cuboid& itemJ = items[j];
+            Model::Cuboid& itemJ = items[j];
             filteredItems.emplace_back(&itemJ);
         }
 
         boost::dynamic_bitset<> regularNormalPatterns;
         switch (axis)
         {
-            case Axis::X:
+            case Model::Axis::X:
                 regularNormalPatterns = DetermineRegularNormalPatternsX(
                     container.Dimension(axis) - itemDimension, container.Dimension(axis), filteredItems);
                 break;
-            case Axis::Y:
+            case Model::Axis::Y:
                 regularNormalPatterns = DetermineRegularNormalPatternsY(
                     container.Dimension(axis) - itemDimension, container.Dimension(axis), filteredItems);
                 break;
-            case Axis::Z:
+            case Model::Axis::Z:
                 regularNormalPatterns = DetermineRegularNormalPatternsZ(
                     container.Dimension(axis) - itemDimension, container.Dimension(axis), filteredItems);
                 break;
@@ -1318,10 +1316,10 @@ std::vector<boost::dynamic_bitset<>> PlacementPointGenerator::GenerateRegularNor
 }
 
 std::vector<boost::dynamic_bitset<>>
-    PlacementPointGenerator::GeneratePlacementPatterns(const Container& container,
-                                                       std::vector<Cuboid>& items,
+    PlacementPointGenerator::GeneratePlacementPatterns(const Model::Container& container,
+                                                       std::vector<Model::Cuboid>& items,
                                                        PlacementPattern placementPatternType,
-                                                       Axis axis)
+                                                       Model::Axis axis)
 {
     std::vector<boost::dynamic_bitset<>> itemSpecificPlacementPatterns;
     itemSpecificPlacementPatterns.reserve(items.size());
@@ -1350,10 +1348,10 @@ std::vector<boost::dynamic_bitset<>>
 }
 
 std::vector<std::vector<int64>>
-    PlacementPointGenerator::GeneratePlacementPatternsBaseType(const Container& container,
-                                                               std::vector<Cuboid>& items,
+    PlacementPointGenerator::GeneratePlacementPatternsBaseType(const Model::Container& container,
+                                                               std::vector<Model::Cuboid>& items,
                                                                PlacementPattern placementPatternType,
-                                                               Axis axis)
+                                                               Model::Axis axis)
 {
     std::vector<boost::dynamic_bitset<>> itemSpecificPlacementPatterns;
     itemSpecificPlacementPatterns.reserve(items.size());
@@ -1390,29 +1388,29 @@ std::vector<std::vector<int64>>
     return itemSpecificPlacementPatternsVector;
 }
 
-std::unordered_map<Cuboid, ItemPlacementPatterns, HomogeneityHash, HomogeneityHash>
-    PlacementPointGenerator::GeneratePlacementPatterns(const Container& container,
-                                                       std::vector<Cuboid>& items,
+std::unordered_map<Model::Cuboid, ItemPlacementPatterns, Model::HomogeneityHash, Model::HomogeneityHash>
+    PlacementPointGenerator::GeneratePlacementPatterns(const Model::Container& container,
+                                                       std::vector<Model::Cuboid>& items,
                                                        PlacementPattern placementPatternTypeX,
                                                        PlacementPattern placementPatternTypeY,
                                                        PlacementPattern placementPatternTypeZ)
 {
     std::vector<boost::dynamic_bitset<>> placementPatternX =
-        GeneratePlacementPatterns(container, items, placementPatternTypeX, Axis::X);
+        GeneratePlacementPatterns(container, items, placementPatternTypeX, Model::Axis::X);
     std::vector<boost::dynamic_bitset<>> placementPatternY =
-        GeneratePlacementPatterns(container, items, placementPatternTypeY, Axis::Y);
+        GeneratePlacementPatterns(container, items, placementPatternTypeY, Model::Axis::Y);
     std::vector<boost::dynamic_bitset<>> placementPatternZ =
-        GeneratePlacementPatterns(container, items, placementPatternTypeZ, Axis::Z);
+        GeneratePlacementPatterns(container, items, placementPatternTypeZ, Model::Axis::Z);
 
     ////CountPlacementPoints(placementPatternX, placementPatternY, placementPatternZ);
 
-    std::unordered_map<Cuboid, ItemPlacementPatterns, HomogeneityHash, HomogeneityHash>
+    std::unordered_map<Model::Cuboid, ItemPlacementPatterns, Model::HomogeneityHash, Model::HomogeneityHash>
         itemTypeSpecificPlacementPatterns;
     itemTypeSpecificPlacementPatterns.reserve(items.size()); // Overestimation when there are homogeneous items.
 
     for (size_t i = 0; i < items.size(); i++)
     {
-        const Cuboid& item = items[i];
+        const Model::Cuboid& item = items[i];
 
         if (itemTypeSpecificPlacementPatterns.contains(item))
         {
@@ -1428,21 +1426,21 @@ std::unordered_map<Cuboid, ItemPlacementPatterns, HomogeneityHash, HomogeneityHa
     return itemTypeSpecificPlacementPatterns;
 }
 
-std::tuple<std::unordered_map<Cuboid, ItemPlacementPatterns, HomogeneityHash, HomogeneityHash>, ItemPlacementPatterns>
-    PlacementPointGenerator::GeneratePlacementPatternsWithUnion(const Container& container,
-                                                                std::vector<Cuboid>& items,
+std::tuple<std::unordered_map<Model::Cuboid, ItemPlacementPatterns, Model::HomogeneityHash, Model::HomogeneityHash>, ItemPlacementPatterns>
+    PlacementPointGenerator::GeneratePlacementPatternsWithUnion(const Model::Container& container,
+                                                                std::vector<Model::Cuboid>& items,
                                                                 PlacementPattern placementPatternTypeX,
                                                                 PlacementPattern placementPatternTypeY,
                                                                 PlacementPattern placementPatternTypeZ)
 {
     std::vector<boost::dynamic_bitset<>> placementPatternX =
-        GeneratePlacementPatterns(container, items, placementPatternTypeX, Axis::X);
+        GeneratePlacementPatterns(container, items, placementPatternTypeX, Model::Axis::X);
     std::vector<boost::dynamic_bitset<>> placementPatternY =
-        GeneratePlacementPatterns(container, items, placementPatternTypeY, Axis::Y);
+        GeneratePlacementPatterns(container, items, placementPatternTypeY, Model::Axis::Y);
     std::vector<boost::dynamic_bitset<>> placementPatternZ =
-        GeneratePlacementPatterns(container, items, placementPatternTypeZ, Axis::Z);
+        GeneratePlacementPatterns(container, items, placementPatternTypeZ, Model::Axis::Z);
 
-    std::unordered_map<Cuboid, ItemPlacementPatterns, HomogeneityHash, HomogeneityHash>
+    std::unordered_map<Model::Cuboid, ItemPlacementPatterns, Model::HomogeneityHash, Model::HomogeneityHash>
         itemTypeSpecificPlacementPatterns;
     itemTypeSpecificPlacementPatterns.reserve(items.size()); // Overestimation when there are homogeneous items.
 
@@ -1457,7 +1455,7 @@ std::tuple<std::unordered_map<Cuboid, ItemPlacementPatterns, HomogeneityHash, Ho
 
     for (size_t i = 0; i < items.size(); i++)
     {
-        const Cuboid& item = items[i];
+        const Model::Cuboid& item = items[i];
 
         itemsSpecificPlacementPointCountX += placementPatternX[i].count();
         itemsSpecificPlacementPointCountY += placementPatternY[i].count();

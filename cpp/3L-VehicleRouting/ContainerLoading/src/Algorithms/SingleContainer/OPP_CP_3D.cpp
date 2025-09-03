@@ -142,7 +142,7 @@ void ContainerLoadingCP::PrintSolution()
     }
 }
 
-void ContainerLoadingCP::ExtractPacking(std::vector<Cuboid>& items) const
+void ContainerLoadingCP::ExtractPacking(std::vector<Model::Cuboid>& items) const
 {
     for (size_t i = 0; i < items.size(); ++i)
     {
@@ -181,7 +181,7 @@ void ContainerLoadingCP::CreateVariables()
 {
     size_t numberOfItems = mItems.size();
 
-    std::vector<Cuboid> itemCopy;
+    std::vector<Model::Cuboid> itemCopy;
     itemCopy.reserve(mItems.size());
     for (const auto& item: mItems)
     {
@@ -200,7 +200,7 @@ void ContainerLoadingCP::CreateVariables()
 
     for (size_t i = 0; i < numberOfItems; i++)
     {
-        const Cuboid& item = mItems[i];
+        const Model::Cuboid& item = mItems[i];
         int minLength = item.EnableHorizontalRotation ? std::min(item.Dx, item.Dy) : item.Dx;
         int minWidth = item.EnableHorizontalRotation ? std::min(item.Dx, item.Dy) : item.Dy;
 
@@ -223,7 +223,7 @@ void ContainerLoadingCP::CreateVariables()
 
     for (size_t i = 0; i < numberOfItems; i++)
     {
-        const Cuboid& item = mItems[i];
+        const Model::Cuboid& item = mItems[i];
 
         int minLength = item.EnableHorizontalRotation ? std::min(item.Dx, item.Dy) : item.Dx;
         int minWidth = item.EnableHorizontalRotation ? std::min(item.Dx, item.Dy) : item.Dy;
@@ -260,7 +260,7 @@ void ContainerLoadingCP::CreateVariables()
     mOrientation.reserve(numberOfItems);
     for (size_t i = 0; i < numberOfItems; i++)
     {
-        const Cuboid& itemI = mItems[i];
+        const Model::Cuboid& itemI = mItems[i];
         mOrientation.emplace_back();
         mOrientation[i].reserve(mItemOrientations.size());
 
@@ -310,7 +310,7 @@ void ContainerLoadingCP::CreateVariables()
     mItemsOverlapsXY.reserve(numberOfItems);
     for (size_t i = 0; i < numberOfItems - 1; i++)
     {
-        const Cuboid& itemI = mItems[i];
+        const Model::Cuboid& itemI = mItems[i];
 
         mItemsOverlapsXY.emplace_back();
         mItemsOverlapsXY.reserve(numberOfItems - i);
@@ -323,7 +323,7 @@ void ContainerLoadingCP::CreateVariables()
 
         for (size_t j = i + 1; j < numberOfItems; j++)
         {
-            const Cuboid& itemJ = mItems[j];
+            const Model::Cuboid& itemJ = mItems[j];
             int maxIntersection = std::max(itemI.Dx * itemI.Dy, itemJ.Dx * itemJ.Dy);
 
             mItemsOverlapsXY[i].emplace_back(mModelCP.NewBoolVar());
@@ -358,7 +358,7 @@ void ContainerLoadingCP::CreateVariables()
     mMaxLength = mModelCP.NewIntVar({0, mContainer.Dx});
 }
 
-std::tuple<ORIntVars1D, ORIntVars1D> ContainerLoadingCP::GetIntVars(DimensionType dimension) const
+std::tuple<ORIntVars1D, ORIntVars1D> ContainerLoadingCP::GetIntVars(Model::DimensionType dimension) const
 {
     switch (dimension)
     {
@@ -456,7 +456,7 @@ void ContainerLoadingCP::CreateItemOrientations()
     size_t numberOfItems = mItems.size();
     for (size_t i = 0; i < numberOfItems; ++i)
     {
-        const Cuboid& item = mItems[i];
+        const Model::Cuboid& item = mItems[i];
         for (size_t o = 0; o < mItemOrientations.size(); ++o)
         {
             // Dimensions of item depending on orientation

@@ -2,7 +2,7 @@
     "cmake.buildDirectory": "${workspaceFolder}/build/${buildType}",
     "cmake.sourceDirectory": "${workspaceFolder}/cpp/3L-VehicleRouting",
     "cmake.buildArgs": [
-        "--parallel", "8"
+        "--parallel", "16"
     ],
     "cmake.configureArgs": [
         "-DXGBOOST_ROOT=C:/xgboost/install",

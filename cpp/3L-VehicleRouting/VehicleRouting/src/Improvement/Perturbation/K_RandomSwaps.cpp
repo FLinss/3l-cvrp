@@ -4,7 +4,6 @@ namespace VehicleRouting
 {
 namespace Improvement
 {
-using namespace ContainerLoading;
 
 std::optional<PerturbationMove> K_RandomSwaps::DetermineMoves(const Model::Instance* const instance,
                                               const std::vector<Model::Route>& routes,

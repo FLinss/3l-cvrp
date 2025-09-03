@@ -15,7 +15,6 @@ struct IteratedLocalSearchParams;
 struct CPSolverParams;
 struct LoadingProblemParams;
 struct ClassifierParams;
-
 class InputParameters;
 
 namespace VehicleRouting

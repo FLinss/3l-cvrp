@@ -3,7 +3,6 @@
 namespace ContainerLoading
 {
 
-
 bool NoClassifierLoadingChecker::CompleteCheckStartSolution(const Model::Container& container,
                 const boost::dynamic_bitset<>& set,
                 const Collections::IdVector& stopIds,

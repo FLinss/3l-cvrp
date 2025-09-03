@@ -7,7 +7,6 @@
 
 namespace ContainerLoading
 {
-using namespace Algorithms;
 
 class HybridLoadingChecker : public BaseLoadingChecker
 {

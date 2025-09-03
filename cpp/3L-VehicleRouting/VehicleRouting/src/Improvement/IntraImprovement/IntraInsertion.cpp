@@ -4,7 +4,6 @@ namespace VehicleRouting
 {
 namespace Improvement
 {
-using namespace ContainerLoading;
 
 
 std::vector<IntraMove> IntraInsertion::DetermineMoves(const Model::Instance* const instance,

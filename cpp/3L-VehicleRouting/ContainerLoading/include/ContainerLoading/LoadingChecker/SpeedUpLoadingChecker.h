@@ -7,6 +7,7 @@
 
 namespace ContainerLoading
 {
+  
 class SpeedUpLoadingChecker : public BaseLoadingChecker
 {
   public:

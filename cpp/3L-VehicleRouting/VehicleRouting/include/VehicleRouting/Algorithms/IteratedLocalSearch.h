@@ -24,8 +24,6 @@
 #include <cstdint>
 #include <memory>
 
-
-
 namespace VehicleRouting
 {
 using namespace Model;

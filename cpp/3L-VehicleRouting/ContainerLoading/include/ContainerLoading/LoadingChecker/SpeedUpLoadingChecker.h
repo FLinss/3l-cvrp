@@ -13,8 +13,8 @@ class SpeedUpLoadingChecker : public BaseLoadingChecker
 {
   public:
 
-    explicit SpeedUpLoadingChecker(const ContainerLoadingParams& parameters, const double maxruntime)
-    : BaseLoadingChecker(parameters,maxruntime)
+    explicit SpeedUpLoadingChecker(const ContainerLoadingParams& parameters)
+    : BaseLoadingChecker(parameters)
     {
       switch (Parameters.ModelType){
         case ContainerLoadingParams::ModelTypes::FFNN:

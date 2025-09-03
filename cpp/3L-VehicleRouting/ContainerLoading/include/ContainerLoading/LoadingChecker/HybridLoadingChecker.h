@@ -13,8 +13,8 @@ class HybridLoadingChecker : public BaseLoadingChecker
 {
   public:
 
-    explicit HybridLoadingChecker(const ContainerLoadingParams& parameters, const double maxruntime)
-    : BaseLoadingChecker(parameters,maxruntime)
+    explicit HybridLoadingChecker(const ContainerLoadingParams& parameters)
+    : BaseLoadingChecker(parameters)
     {
       switch (Parameters.ModelType){
         case ContainerLoadingParams::ModelTypes::FFNN:

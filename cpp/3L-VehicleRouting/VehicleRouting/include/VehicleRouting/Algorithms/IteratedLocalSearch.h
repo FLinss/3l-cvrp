@@ -57,6 +57,25 @@ class IteratedLocalSearch
 
         //Initialize RNG 
         mRNG.seed(42 + seedOffset);
+
+        switch (mInputParameters.IteratedLocalSearch.LoadingCheckerType)
+        {
+            case LoadingCheckerTypes::Filter:          
+                mLoadingChecker = std::make_unique<FilterLoadingChecker>(mInputParameters.ContainerLoading);
+                break;
+            case LoadingCheckerTypes::NoClassifier:       
+                mLoadingChecker = std::make_unique<NoClassifierLoadingChecker>(mInputParameters.ContainerLoading);
+                break;
+            case LoadingCheckerTypes::SpeedUp:       
+                mLoadingChecker = std::make_unique<SpeedUpLoadingChecker>(mInputParameters.ContainerLoading);
+                break;
+            case LoadingCheckerTypes::Hybrid:       
+                mLoadingChecker = std::make_unique<HybridLoadingChecker>(mInputParameters.ContainerLoading);     
+                break;               
+        }
+
+        //Initialize Local Search
+        mLocalSearch = std::make_unique<Improvement::LocalSearch>(&mInputParameters, mInstance, &mTimer, mLoadingChecker.get(), mRNG);
     }
 
     void Solve();
@@ -76,14 +95,11 @@ class IteratedLocalSearch
     SolutionTracker mSolutionTracker;
 
     std::mt19937 mRNG;
-
     std::unique_ptr<BaseLoadingChecker> mLoadingChecker;
     std::unique_ptr<Improvement::LocalSearch> mLocalSearch;
-
     Helper::Timer mTimer = Helper::Timer();
 
-    void Initialize();
-    void TestProcedure();
+    void TestSingleCustomerRoutes();
     void DeterminePackingSolution(OutputSolution& outputSolution);
     void PrintSolution(const OutputSolution& outputSolution);
 
@@ -94,7 +110,6 @@ class IteratedLocalSearch
     void GenerateStartSolutionModifiedSavings();
     void GenerateStartSolutionSPHeuristic();
     bool IsCurrentSolutionCPValid(const Solution& solution);
-
 
 };
 }

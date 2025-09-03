@@ -11,49 +11,11 @@ using namespace ContainerLoading::Algorithms;
 using namespace Improvement;
 using namespace Helper;
 
-void IteratedLocalSearch::Initialize()
+void IteratedLocalSearch::TestSingleCustomerRoutes()
 {
     mLogFile << "ProblemVariant: " << (int)mInputParameters.ContainerLoading.Variant << "\n";
 
-    std::vector<Container> containers;
-    containers.reserve(mInstance->Vehicles.size());
-    for (const auto& vehicle: mInstance->Vehicles)
-    {
-        containers.emplace_back(vehicle.Containers[0]);
-    }
-
-    std::vector<Group> customerNodes;
-    customerNodes.reserve(mInstance->GetCustomers().size());
-    for (const auto& node: mInstance->GetCustomers())
-    {
-        customerNodes.emplace_back(node.InternId,
-                                   node.ExternId,
-                                   node.PositionX,
-                                   node.PositionY,
-                                   node.TotalWeight,
-                                   node.TotalVolume,
-                                   node.TotalArea,
-                                   node.Items);
-    }
-
-    switch (mInputParameters.IteratedLocalSearch.LoadingCheckerType)
-    {
-        case LoadingCheckerTypes::Filter:          
-            mLoadingChecker = std::make_unique<FilterLoadingChecker>(mInputParameters.ContainerLoading, mInputParameters.DetermineMaxRuntime(IteratedLocalSearchParams::CallType::ExactLimit));
-            break;
-        case LoadingCheckerTypes::NoClassifier:       
-            mLoadingChecker = std::make_unique<NoClassifierLoadingChecker>(mInputParameters.ContainerLoading, mInputParameters.DetermineMaxRuntime(IteratedLocalSearchParams::CallType::ExactLimit));
-            break;
-        case LoadingCheckerTypes::SpeedUp:       
-            mLoadingChecker = std::make_unique<SpeedUpLoadingChecker>(mInputParameters.ContainerLoading, mInputParameters.DetermineMaxRuntime(IteratedLocalSearchParams::CallType::ExactLimit));
-            break;
-        case LoadingCheckerTypes::Hybrid:       
-            mLoadingChecker = std::make_unique<HybridLoadingChecker>(mInputParameters.ContainerLoading, mInputParameters.DetermineMaxRuntime(IteratedLocalSearchParams::CallType::ExactLimit));     
-            break;               
-    }
-
-    //Initialize Local Search
-    mLocalSearch = std::make_unique<Improvement::LocalSearch>(&mInputParameters, mInstance, &mTimer, mLoadingChecker.get(), mRNG);
+    Container container =  mInstance->Vehicles.front().Containers.front();
 
     double maxRuntime = mInputParameters.DetermineMaxRuntime(IteratedLocalSearchParams::CallType::Exact);
     for (const auto& customer: mInstance->GetCustomers())
@@ -64,7 +26,7 @@ void IteratedLocalSearch::Initialize()
 
         auto exactStatus =
             mLoadingChecker->ConstraintProgrammingSolver(PackingType::Complete,
-                                                         containers[0],
+                                                         container,
                                                          mLoadingChecker->MakeBitset(mInstance->Nodes.size(), route),
                                                          route,
                                                          items,
@@ -77,7 +39,7 @@ void IteratedLocalSearch::Initialize()
 
             auto relStatus = mLoadingChecker->ConstraintProgrammingSolver(
                 PackingType::NoSupport,
-                containers[0],
+                container,
                 mLoadingChecker->MakeBitset(mInstance->Nodes.size(), route),
                 route,
                 items,
@@ -261,15 +223,7 @@ void IteratedLocalSearch::Solve()
     Serializer::WriteToJson(mInputParameters, mOutputPath, parameterString);
 
     //Test if one of the one customer routes is infeasible
-    Initialize();
-
-    //Sets weights or volumes to 0 depending on the loading problem variant
-    //AdaptWeightsVolumesToLoadingProblem();
-
-    //Determine infeasible arcs and tail paths
-    //InfeasibleArcProcedure();
-
-    //mInstance->LowerBoundVehicles = DetermineLowerBoundVehicles();
+    TestSingleCustomerRoutes();
 
     StartSolutionProcedure();
     mTimer.calculateStartSolutionTime();

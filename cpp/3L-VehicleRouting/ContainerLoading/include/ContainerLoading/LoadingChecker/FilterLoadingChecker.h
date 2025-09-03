@@ -13,8 +13,8 @@ class FilterLoadingChecker : public BaseLoadingChecker
 {
   public:
 
-    explicit FilterLoadingChecker(const ContainerLoadingParams& parameters, const double maxruntime)
-    : BaseLoadingChecker(parameters,maxruntime)
+    explicit FilterLoadingChecker(const ContainerLoadingParams& parameters)
+    : BaseLoadingChecker(parameters)
     {
       switch (Parameters.ModelType){
         case ContainerLoadingParams::ModelTypes::FFNN:

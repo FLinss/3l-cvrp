@@ -20,7 +20,7 @@ class BaseLoadingChecker
   public:
     const ContainerLoadingParams Parameters;
 
-    explicit BaseLoadingChecker(const ContainerLoadingParams& parameters, const double maxruntime) : Parameters(parameters), maxRunTime_CPSolver(maxruntime)
+    explicit BaseLoadingChecker(const ContainerLoadingParams& parameters) : Parameters(parameters)
     {
         using enum LoadingFlag;
 
@@ -75,27 +75,7 @@ class BaseLoadingChecker
                                                                       std::vector<Cuboid>& items,
                                                                       double maxRuntime) const;
 
-    void SetBinPackingModel(GRBEnv* env,
-                            std::vector<Container>& containers,
-                            std::vector<Group>& nodes,
-                            const std::string& outputPath = "");
-
-    [[nodiscard]] int SolveBinPackingApproximation() const;
-
-    [[nodiscard]] int DetermineMinVehicles(bool enableLifting,
-                                           double liftingThreshold,
-                                           const Container& container,
-                                           const boost::dynamic_bitset<>& nodes,
-                                           double weight,
-                                           double volume) const;
-
-    [[nodiscard]] bool CustomerCombinationInfeasible(const boost::dynamic_bitset<>& customersInRoute) const;
-    void AddInfeasibleCombination(const boost::dynamic_bitset<>& customersInRoute);
     [[nodiscard]] double GetElapsedTime();
-
-    [[nodiscard]] Collections::SequenceVector GetFeasibleRoutes() const;
-    [[nodiscard]] size_t GetNumberOfFeasibleRoutes() const;
-    [[nodiscard]] size_t GetSizeInfeasibleCombinations() const;
 
     void AddFeasibleSequenceFromOutside(const Collections::IdVector& route);
 
@@ -107,7 +87,6 @@ class BaseLoadingChecker
 
   private:
     std::unique_ptr<BinPacking1D> mBinPacking1D;
-    const double maxRunTime_CPSolver;
 
     Collections::SequenceVector mCompleteFeasSeq;
     /// Set of customer combinations that are infeasible.
@@ -146,12 +125,5 @@ class BaseLoadingChecker
                    LoadingFlag mask,
                    LoadingStatus status);
 
-    [[nodiscard]] int DetermineMinVehiclesBinPacking(bool enableLifting,
-                                                     double liftingThreshold,
-                                                     const boost::dynamic_bitset<>& nodes,
-                                                     int r,
-                                                     double z) const;
-
-    [[nodiscard]] int ReSolveBinPackingApproximation(const boost::dynamic_bitset<>& selectedGroups) const;
 };
 }

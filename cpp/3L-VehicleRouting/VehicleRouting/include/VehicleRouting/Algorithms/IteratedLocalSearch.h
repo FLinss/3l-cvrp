@@ -26,18 +26,12 @@
 
 namespace VehicleRouting
 {
-using namespace Model;
-using namespace Helper;
-
 namespace Algorithms
 {
-using namespace ContainerLoading;
-using namespace ContainerLoading::Model;
-
 class IteratedLocalSearch
 {
   public:
-  IteratedLocalSearch(Instance* instance,
+  IteratedLocalSearch(Model::Instance* instance,
                       const InputParameters& inputParameters,
                       const std::string& startSolutionFolderPath,
                       const std::string& outputPath,
@@ -55,16 +49,16 @@ class IteratedLocalSearch
         switch (mInputParameters.IteratedLocalSearch.LoadingCheckerType)
         {
             case LoadingCheckerTypes::Filter:          
-                mLoadingChecker = std::make_unique<FilterLoadingChecker>(mInputParameters.ContainerLoading);
+                mLoadingChecker = std::make_unique<ContainerLoading::FilterLoadingChecker>(mInputParameters.ContainerLoading);
                 break;
             case LoadingCheckerTypes::NoClassifier:       
-                mLoadingChecker = std::make_unique<NoClassifierLoadingChecker>(mInputParameters.ContainerLoading);
+                mLoadingChecker = std::make_unique<ContainerLoading::NoClassifierLoadingChecker>(mInputParameters.ContainerLoading);
                 break;
             case LoadingCheckerTypes::SpeedUp:       
-                mLoadingChecker = std::make_unique<SpeedUpLoadingChecker>(mInputParameters.ContainerLoading);
+                mLoadingChecker = std::make_unique<ContainerLoading::SpeedUpLoadingChecker>(mInputParameters.ContainerLoading);
                 break;
             case LoadingCheckerTypes::Hybrid:       
-                mLoadingChecker = std::make_unique<HybridLoadingChecker>(mInputParameters.ContainerLoading);     
+                mLoadingChecker = std::make_unique<ContainerLoading::HybridLoadingChecker>(mInputParameters.ContainerLoading);     
                 break;               
         }
 
@@ -75,34 +69,34 @@ class IteratedLocalSearch
     void Solve();
 
   private:
-    Instance* mInstance;
+    Model::Instance* mInstance;
     InputParameters mInputParameters;
     std::string mStartSolutionFolderPath;
     std::string mOutputPath;
     int mSeedOffset;
 
     std::ofstream mLogFile;
-    Solution mCurrentSolution;
-    Solution mBestSolution;
+    Model::Solution mCurrentSolution;
+    Model::Solution mBestSolution;
 
-    SolutionTracker mSolutionTracker;
+    Model::SolutionTracker mSolutionTracker;
 
     std::mt19937 mRNG;
-    std::unique_ptr<BaseLoadingChecker> mLoadingChecker;
+    std::unique_ptr<ContainerLoading::BaseLoadingChecker> mLoadingChecker;
     std::unique_ptr<Improvement::LocalSearch> mLocalSearch;
     Helper::Timer mTimer = Helper::Timer();
 
     void TestSingleCustomerRoutes();
-    void DeterminePackingSolution(OutputSolution& outputSolution);
-    void PrintSolution(const OutputSolution& outputSolution);
+    void DeterminePackingSolution(Model::OutputSolution& outputSolution);
+    void PrintSolution(const Model::OutputSolution& outputSolution);
 
-    void WriteSolutionSolutionValidator(const OutputSolution& outputSolution);
+    void WriteSolutionSolutionValidator(const Model::OutputSolution& outputSolution);
 
     void StartSolutionProcedure();
     void GenerateStartSolutionSavings();
     void GenerateStartSolutionModifiedSavings();
     void GenerateStartSolutionSPHeuristic();
-    bool IsCurrentSolutionCPValid(const Solution& solution);
+    bool IsCurrentSolutionCPValid(const Model::Solution& solution);
 
 };
 }

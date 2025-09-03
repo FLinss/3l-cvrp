@@ -66,7 +66,7 @@ std::optional<double> InterLocalSearchOperator::GetBestMove(const Model::Instanc
       bool controlFlag = true;
       
 
-      if (loadingChecker->Parameters.LoadingFlags == Algorithms::LoadingFlag::NoneSet)
+      if (loadingChecker->Parameters.LoadingFlags == ContainerLoading::Algorithms::LoadingFlag::NoneSet)
       {
           UpdateRouteVolumeWeight(routes, move);
           return std::get<0>(move);

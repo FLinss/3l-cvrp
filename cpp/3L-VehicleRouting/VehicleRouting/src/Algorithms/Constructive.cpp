@@ -108,7 +108,7 @@ bool Savings::ConcatRoutes(Collections::IdVector& frontSequence,
 {
     frontSequence.insert(std::end(frontSequence), std::begin(backSequence), std::end(backSequence));
 
-    if (mInputParameters->ContainerLoading.LoadingFlags == LoadingFlag::NoneSet)
+    if (mInputParameters->ContainerLoading.LoadingFlags == ContainerLoading::Algorithms::LoadingFlag::NoneSet)
     {
         mLoadingChecker->AddFeasibleSequenceFromOutside(frontSequence);
         return true;
@@ -322,7 +322,7 @@ bool ModifiedSavings::InsertionFeasible(Model::Route& route, size_t nodeToInsert
 
     tmpSequence.insert(std::begin(tmpSequence) + static_cast<int>(position), nodeToInsert);
 
-    if (mInputParameters->ContainerLoading.LoadingFlags == LoadingFlag::NoneSet)
+    if (mInputParameters->ContainerLoading.LoadingFlags == ContainerLoading::Algorithms::LoadingFlag::NoneSet)
     {
         route.Sequence = tmpSequence;
         route.TotalVolume += mInstance->Nodes[nodeToInsert].TotalVolume;

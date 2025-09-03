@@ -9,8 +9,6 @@ namespace VehicleRouting
 {
 namespace Algorithms
 {
-using namespace ContainerLoading;
-using namespace ContainerLoading::Algorithms;
 
 enum class LocalSearchTypes
 {
@@ -86,7 +84,7 @@ class InputParameters
   public:
 
     IteratedLocalSearchParams IteratedLocalSearch;
-    ContainerLoadingParams ContainerLoading;
+    ContainerLoading::ContainerLoadingParams ContainerLoading;
 
     void SetLoadingFlags(){
         ContainerLoading.SetFlags();

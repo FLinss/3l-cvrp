@@ -3,6 +3,7 @@
 #include "Algorithms/BCRoutingParams.h"
 #include "ContainerLoading/LoadingChecker/BaseLoadingChecker.h"
 #include "Model/Instance.h"
+#include "Helper/Timer.h"
 
 #include <random>
 #include <vector>
@@ -23,9 +24,10 @@ class Savings
   public:
     Savings(const Instance* const instance,
             const InputParameters* const inputParameters,
-            BaseLoadingChecker* loadingChecker)
+            BaseLoadingChecker* loadingChecker,
+            const Helper::Timer* timer)
 
-    : mInstance(instance), mInputParameters(inputParameters), mLoadingChecker(loadingChecker){};
+    : mInstance(instance), mInputParameters(inputParameters), mLoadingChecker(loadingChecker), mTimer(timer){};
 
     std::vector<Route> Run();
 
@@ -33,6 +35,7 @@ class Savings
     const Instance* const mInstance;
     const InputParameters* const mInputParameters;
     BaseLoadingChecker* mLoadingChecker;
+    const Helper::Timer* const mTimer;
 
     bool ConcatRoutes(Collections::IdVector& frontSequence,
                       const Collections::IdVector& backSequence,
@@ -47,9 +50,10 @@ class ModifiedSavings
     ModifiedSavings(const Instance* const instance,
                     const InputParameters* const inputParameters,
                     BaseLoadingChecker* loadingChecker,
-                    std::mt19937* rng)
+                    std::mt19937* rng,
+                    const Helper::Timer* timer)
 
-    : mInstance(instance), mInputParameters(inputParameters), mLoadingChecker(loadingChecker), mRNG(rng){};
+    : mInstance(instance), mInputParameters(inputParameters), mLoadingChecker(loadingChecker), mRNG(rng),  mTimer(timer){};
 
     std::vector<Route> Run();
 
@@ -58,6 +62,7 @@ class ModifiedSavings
     const InputParameters* const mInputParameters;
     BaseLoadingChecker* mLoadingChecker;
     std::mt19937* mRNG;
+    const Helper::Timer* const mTimer;
 
     void RepairProcedure(std::vector<Route>& solution);
     std::vector<std::tuple<double, size_t, size_t>> DetermineInsertionCostsAllRoutes(std::vector<Route>& solution,

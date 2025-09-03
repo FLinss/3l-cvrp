@@ -43,12 +43,14 @@ class BaseLoadingChecker
                                 const boost::dynamic_bitset<>& set,
                                 const Collections::IdVector& stopIds,
                                 const std::vector<Cuboid>& items,
-                                const VehicleRouting::Improvement::ImprovementTypes& localsearchtype) = 0;
+                                const VehicleRouting::Improvement::ImprovementTypes& localsearchtype,
+                                double maxRuntime) = 0;
 
     virtual bool CompleteCheckStartSolution(const Container& container,
                             const boost::dynamic_bitset<>& set,
                             const Collections::IdVector& stopIds,
-                            const std::vector<Cuboid>& items) = 0;
+                            const std::vector<Cuboid>& items,
+                            double maxRuntime) = 0;
 
     virtual bool ExactCheckNoClassifier(const Container& container,
                                         const boost::dynamic_bitset<>& set,
@@ -64,7 +66,8 @@ class BaseLoadingChecker
                                                             const boost::dynamic_bitset<>& set,
                                                             const Collections::IdVector& stopIds,
                                                             const std::vector<Cuboid>& items,
-                                                            bool isCallTypeExact);
+                                                            bool isCallTypeExact,
+                                                            double maxRuntime);
 
     [[nodiscard]] LoadingStatus ConstraintProgrammingSolverGetPacking(PackingType packingType,
                                                                       const Container& container,

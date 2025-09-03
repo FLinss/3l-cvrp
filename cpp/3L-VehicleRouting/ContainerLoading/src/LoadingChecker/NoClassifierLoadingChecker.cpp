@@ -8,7 +8,8 @@ using namespace Algorithms;
 bool NoClassifierLoadingChecker::CompleteCheckStartSolution(const Container& container,
                 const boost::dynamic_bitset<>& set,
                 const Collections::IdVector& stopIds,
-                const std::vector<Cuboid>& items)
+                const std::vector<Cuboid>& items,
+                double maxRuntime)
 {    
     if (RouteIsInFeasSequences(stopIds))
     {
@@ -22,11 +23,12 @@ bool NoClassifierLoadingChecker::CompleteCheckStartSolution(const Container& con
     
 
     auto cpStatus = ConstraintProgrammingSolver(PackingType::Complete,
-                                            container,
-                                            set,
-                                            stopIds,
-                                            items,
-                                            false);
+                                                container,
+                                                set,
+                                                stopIds,
+                                                items,
+                                                false,
+                                                maxRuntime);
 
     return cpStatus == LoadingStatus::FeasOpt;
 }
@@ -35,8 +37,8 @@ bool NoClassifierLoadingChecker::CompleteCheck(const Container& container,
                                     const boost::dynamic_bitset<>& set,
                                     const Collections::IdVector& stopIds,
                                     const std::vector<Cuboid>& items,
-                                    const VehicleRouting::Improvement::ImprovementTypes& localsearchtype
-                                    )
+                                    const VehicleRouting::Improvement::ImprovementTypes& localsearchtype,
+                                    double maxRuntime)
 {
     if (RouteIsInFeasSequences(stopIds))
     {
@@ -50,11 +52,12 @@ bool NoClassifierLoadingChecker::CompleteCheck(const Container& container,
     
 
     auto cpStatus = ConstraintProgrammingSolver(PackingType::Complete,
-                                            container,
-                                            set,
-                                            stopIds,
-                                            items,
-                                            false);
+                                                container,
+                                                set,
+                                                stopIds,
+                                                items,
+                                                false,
+                                                maxRuntime);
 
     return cpStatus == LoadingStatus::FeasOpt;
 

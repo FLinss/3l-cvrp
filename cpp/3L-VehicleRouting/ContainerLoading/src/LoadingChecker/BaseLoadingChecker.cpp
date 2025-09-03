@@ -44,7 +44,8 @@ LoadingStatus BaseLoadingChecker::ConstraintProgrammingSolver(PackingType packin
                                                           const boost::dynamic_bitset<>& set,
                                                           const Collections::IdVector& stopIds,
                                                           const std::vector<Cuboid>& items,
-                                                          bool isCallTypeExact)
+                                                          bool isCallTypeExact,
+                                                          double maxRunTime)
 {
     auto loadingMask = BuildMask(packingType);
 
@@ -61,7 +62,7 @@ LoadingStatus BaseLoadingChecker::ConstraintProgrammingSolver(PackingType packin
                                                  numberStops,
                                                  loadingMask,
                                                  Parameters.SupportArea,
-                                                 maxRunTime_CPSolver);
+                                                 maxRunTime);
 
     auto status = containerLoadingCP.Solve();
 

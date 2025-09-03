@@ -73,11 +73,6 @@ class IteratedLocalSearch
     int mSeedOffset;
 
     std::ofstream mLogFile;
-    std::vector<Arc> mInfeasibleArcs;
-    std::vector<Arc> mInfeasibleTailPaths;
-    Collections::SequenceSet mInfeasibleCombinations;
-    //std::vector<Arc> mCurrentSolutionArcs;
-
     Solution mCurrentSolution;
     Solution mBestSolution;
 
@@ -88,19 +83,10 @@ class IteratedLocalSearch
     std::unique_ptr<BaseLoadingChecker> mLoadingChecker;
     std::unique_ptr<Improvement::LocalSearch> mLocalSearch;
 
-    void InfeasibleArcProcedure();
-    void DetermineInfeasiblePaths();
-    bool CheckPath(const Collections::IdVector& path, Container& container, std::vector<Cuboid>& items);
-    void DetermineExtendedInfeasiblePath();
-    void DetermineInfeasibleCustomerCombinations();
-
     Helper::Timer mTimer = Helper::Timer();
-
-    size_t DetermineLowerBoundVehicles();
 
     void Initialize();
     void TestProcedure();
-    void AdaptWeightsVolumesToLoadingProblem();
     void DeterminePackingSolution(OutputSolution& outputSolution);
     void PrintSolution(const OutputSolution& outputSolution);
 

@@ -33,13 +33,15 @@ class FilterLoadingChecker : public BaseLoadingChecker
     [[nodiscard]] bool CompleteCheckStartSolution(const Container& container,
                 const boost::dynamic_bitset<>& set,
                 const Collections::IdVector& stopIds,
-                const std::vector<Cuboid>& items) override;
+                const std::vector<Cuboid>& items,
+                double maxRuntime) override;
 
     [[nodiscard]] bool CompleteCheck(const Container& container,
                                     const boost::dynamic_bitset<>& set,
                                     const Collections::IdVector& stopIds,
                                     const std::vector<Cuboid>& items,
-                                    const VehicleRouting::Improvement::ImprovementTypes& localsearchtype) override;
+                                    const VehicleRouting::Improvement::ImprovementTypes& localsearchtype,
+                                    double maxRuntime) override;
 
     [[nodiscard]] bool ExactCheckNoClassifier(const Container& container,
                                         const boost::dynamic_bitset<>& set,

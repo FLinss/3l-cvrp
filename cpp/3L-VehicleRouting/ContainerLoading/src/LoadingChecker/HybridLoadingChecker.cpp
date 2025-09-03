@@ -7,7 +7,8 @@ using namespace Algorithms;
 bool HybridLoadingChecker::CompleteCheckStartSolution(const Container& container,
                 const boost::dynamic_bitset<>& set,
                 const Collections::IdVector& stopIds,
-                const std::vector<Cuboid>& items)
+                const std::vector<Cuboid>& items,
+                double maxRuntime)
 {  
     if (RouteIsInFeasSequences(stopIds))
     {
@@ -24,11 +25,12 @@ bool HybridLoadingChecker::CompleteCheckStartSolution(const Container& container
         if(mClassifier->classify(items,stopIds,container)){
 
             auto cpStatus = ConstraintProgrammingSolver(PackingType::Complete,
-                                                    container,
-                                                    set,
-                                                    stopIds,
-                                                    items,
-                                                    false);
+                                                        container,
+                                                        set,
+                                                        stopIds,
+                                                        items,
+                                                        false,
+                                                        maxRuntime);
 
             return cpStatus == LoadingStatus::FeasOpt;
         }
@@ -37,11 +39,12 @@ bool HybridLoadingChecker::CompleteCheckStartSolution(const Container& container
    }else{
 
         auto cpStatus = ConstraintProgrammingSolver(PackingType::Complete,
-                                                        container,
-                                                        set,
-                                                        stopIds,
-                                                        items,
-                                                        false);
+                                                    container,
+                                                    set,
+                                                    stopIds,
+                                                    items,
+                                                    false,
+                                                    maxRuntime);
 
         return cpStatus == LoadingStatus::FeasOpt;
 
@@ -52,8 +55,8 @@ bool HybridLoadingChecker::CompleteCheck(const Container& container,
                                     const boost::dynamic_bitset<>& set,
                                     const Collections::IdVector& stopIds,
                                     const std::vector<Cuboid>& items,
-                                    const VehicleRouting::Improvement::ImprovementTypes& localsearchtype
-                                    )
+                                    const VehicleRouting::Improvement::ImprovementTypes& localsearchtype,
+                                    double maxRuntime)
 {
     if (RouteIsInFeasSequences(stopIds))
     {
@@ -78,7 +81,8 @@ bool HybridLoadingChecker::CompleteCheck(const Container& container,
                                                 set,
                                                 stopIds,
                                                 items,
-                                                false);
+                                                false,
+                                                maxRuntime);
 
         return cpStatus == LoadingStatus::FeasOpt;
 
@@ -109,7 +113,8 @@ bool HybridLoadingChecker::ExactCheckNoClassifier(const Container& container,
                                                             set,
                                                             stopIds,
                                                             items,
-                                                            false);
+                                                            false,
+                                                            maxRuntime);
 
     return cpStatus == LoadingStatus::FeasOpt;
 }

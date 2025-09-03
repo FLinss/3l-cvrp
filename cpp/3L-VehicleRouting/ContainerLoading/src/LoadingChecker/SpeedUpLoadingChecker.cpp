@@ -8,7 +8,8 @@ using namespace Algorithms;
 bool SpeedUpLoadingChecker::CompleteCheckStartSolution(const Container& container,
                 const boost::dynamic_bitset<>& set,
                 const Collections::IdVector& stopIds,
-                const std::vector<Cuboid>& items)
+                const std::vector<Cuboid>& items,
+                double maxRuntime)
 {  
     if (RouteIsInFeasSequences(stopIds))
     {
@@ -25,11 +26,12 @@ bool SpeedUpLoadingChecker::CompleteCheckStartSolution(const Container& containe
         if(mClassifier->classify(items,stopIds,container)){
 
             auto cpStatus = ConstraintProgrammingSolver(PackingType::Complete,
-                                                    container,
-                                                    set,
-                                                    stopIds,
-                                                    items,
-                                                    false);
+                                                        container,
+                                                        set,
+                                                        stopIds,
+                                                        items,
+                                                        false,
+                                                        maxRuntime);
 
             return cpStatus == LoadingStatus::FeasOpt;
         }
@@ -38,11 +40,12 @@ bool SpeedUpLoadingChecker::CompleteCheckStartSolution(const Container& containe
    }else{
 
         auto cpStatus = ConstraintProgrammingSolver(PackingType::Complete,
-                                                        container,
-                                                        set,
-                                                        stopIds,
-                                                        items,
-                                                        false);
+                                                    container,
+                                                    set,
+                                                    stopIds,
+                                                    items,
+                                                    false,
+                                                    maxRuntime);
 
         return cpStatus == LoadingStatus::FeasOpt;
 
@@ -53,8 +56,8 @@ bool SpeedUpLoadingChecker::CompleteCheck(const Container& container,
                                     const boost::dynamic_bitset<>& set,
                                     const Collections::IdVector& stopIds,
                                     const std::vector<Cuboid>& items,
-                                    const VehicleRouting::Improvement::ImprovementTypes& localsearchtype
-                                    )
+                                    const VehicleRouting::Improvement::ImprovementTypes& localsearchtype,
+                                    double maxRuntime)
 {
     if (RouteIsInFeasSequences(stopIds))
     {
@@ -91,7 +94,8 @@ bool SpeedUpLoadingChecker::ExactCheckNoClassifier(const Container& container,
                                                             set,
                                                             stopIds,
                                                             items,
-                                                            false);
+                                                            false,
+                                                            maxRuntime);
 
     return cpStatus == LoadingStatus::FeasOpt;
 

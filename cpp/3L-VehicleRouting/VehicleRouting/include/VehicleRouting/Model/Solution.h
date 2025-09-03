@@ -118,21 +118,15 @@ class SolverStatistics
   public:
     size_t ILSIterationCount = 0;
     size_t rejectionCount = 0;
-    size_t DeletedArcs = 0;
     size_t seedOffset = 0;
-    size_t InfeasibleTailPathStart = 0;
     Helper::Timer Timer;
     SolutionTracker solutionTracker;
 
     SolverStatistics(const Helper::Timer& timer,
-                     const SolutionTracker& solTracker,
-                     size_t deletedArcs,
-                     size_t infTailPathStart)
+                     const SolutionTracker& solTracker)
     : ILSIterationCount(solTracker.iterations),
       rejectionCount (solTracker.rejections),
-      DeletedArcs(deletedArcs),
       seedOffset(solTracker.mSeedOffset),
-      InfeasibleTailPathStart(infTailPathStart),
       Timer(timer),
       solutionTracker(solTracker)
     {

@@ -2,17 +2,16 @@
 
 namespace VehicleRouting
 {
-using namespace Model;
-
 namespace Improvement
 {
-using namespace ContainerLoading;
 
-void IntraLocalSearchOperator::Run(const Instance* instance,
-                                    const InputParameters& inputParameters,
-                                    BaseLoadingChecker* loadingChecker,
-                                    Solution& currentSolution) const 
-{
+void IntraLocalSearchOperator::Run(const Instance* const instance,
+            const InputParameters* const inputParameters,
+            ContainerLoading::BaseLoadingChecker* loadingChecker,
+            const Helper::Timer* const mTimer,
+            Model::Solution& currentSolution) const 
+{                                    
+
    for(auto& route : currentSolution.Routes){
 
         if (route.Sequence.size() < 2)
@@ -23,7 +22,7 @@ void IntraLocalSearchOperator::Run(const Instance* instance,
         while(true){
 
             auto moves = DetermineMoves(instance, route.Sequence);
-            auto savings = GetBestMove(instance, inputParameters, loadingChecker, route.Sequence, moves);
+            auto savings = GetBestMove(instance, inputParameters, loadingChecker,mTimer, route.Sequence, moves);
 
             if(!savings){
                 break;
@@ -35,11 +34,13 @@ void IntraLocalSearchOperator::Run(const Instance* instance,
        
 };
 
-std::optional<double> IntraLocalSearchOperator::GetBestMove(const Instance* instance,
-                                const InputParameters& inputParameters,
-                                BaseLoadingChecker* loadingChecker,
-                                Collections::IdVector& route,
-                                std::vector<IntraMove>& moves) const {
+std::optional<double> IntraLocalSearchOperator::GetBestMove(const Instance* const instance,
+                                                            const InputParameters* const inputParameters,
+                                                            ContainerLoading::BaseLoadingChecker* loadingChecker,
+                                                            const Helper::Timer* const mTimer,
+                                                            Collections::IdVector& route,
+                                                            std::vector<IntraMove>& moves) const 
+{
 
     if (moves.size() == 0)
     {
@@ -60,7 +61,8 @@ std::optional<double> IntraLocalSearchOperator::GetBestMove(const Instance* inst
         ChangeRoute(route, std::get<1>(move), std::get<2>(move));
         
         auto selectedItems = InterfaceConversions::SelectItems(route, instance->Nodes, false);
-        if (loadingChecker->CompleteCheck(container, set, route, selectedItems, mType))
+        double maxRuntime = inputParameters->DetermineMaxRuntime(IteratedLocalSearchParams::CallType::Exact, mTimer->getElapsedTime());
+        if (loadingChecker->CompleteCheck(container, set, route, selectedItems, mType, maxRuntime))
         {
             return std::get<0>(move);
         }

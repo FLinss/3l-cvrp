@@ -78,7 +78,7 @@ bool SpeedUpLoadingChecker::ExactCheckNoClassifier(const Container& container,
                                     const Collections::IdVector& stopIds,
                                     const std::vector<Cuboid>& items,
                                     double maxRuntime){
-    
+     
     if (RouteIsInFeasSequences(stopIds))
     {
         return true;

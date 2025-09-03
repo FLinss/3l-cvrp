@@ -82,10 +82,10 @@ LoadingStatus BaseLoadingChecker::ConstraintProgrammingSolver(PackingType packin
 }
 
 LoadingStatus BaseLoadingChecker::ConstraintProgrammingSolverGetPacking(PackingType packingType,
-                                                                    const Container& container,
-                                                                    const Collections::IdVector& stopIds,
-                                                                    std::vector<Cuboid>& items,
-                                                                    double maxRuntime) const
+                                                                        const Container& container,
+                                                                        const Collections::IdVector& stopIds,
+                                                                        std::vector<Cuboid>& items,
+                                                                        double maxRuntime) const
 {
     if (maxRuntime < 0.0 + 1e-5)
     {

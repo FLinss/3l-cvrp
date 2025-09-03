@@ -4,63 +4,62 @@
 
 namespace VehicleRouting
 {
-using namespace Model;
-
 namespace Improvement
 {
 
 // Build operator lists once, from whatever vectors your config provides
-LocalSearch::LocalSearch(const InputParameters& params,
-                        const Instance* inst)
+LocalSearch::LocalSearch(const InputParameters* const params,
+                        const Instance* const inst,
+                        const Helper::Timer* const timer,
+                        ContainerLoading::BaseLoadingChecker* checker,
+                        std::mt19937& rng)
                         : mInstance(inst),
-                        mInputParameters(params)
+                        mInputParameters(params),
+                        mTimer(timer),
+                        mLoadingChecker(checker),
+                        mRNG(rng)
 {   
-    for (auto t : params.IteratedLocalSearch.localSearchTypes)
+    for (auto t : params ->IteratedLocalSearch.localSearchTypes)
         if (auto op = this->CreateLocalSearchOperator(t))
             lsOperators.emplace_back(std::move(op));
 
-    for (auto t : params.IteratedLocalSearch.perturbationTypes)
+    for (auto t : params ->IteratedLocalSearch.perturbationTypes)
         if (auto op = this->CreatePerturbationOperator(t))
             pertOperators.emplace_back(std::move(op));
 }
 
 
 // Run all local‑search moves in order
-void LocalSearch::RunLocalSearch(Model::Solution& sol,
-                                ContainerLoading::BaseLoadingChecker* checker) const
+void LocalSearch::RunLocalSearch(Model::Solution& sol) const
 {
     for (auto& op : lsOperators){
-        op->Run(mInstance, mInputParameters, checker, sol);
+        op->Run(mInstance, mInputParameters, mLoadingChecker, mTimer, sol);
     }
 };
 
 // Run all perturbations in order
-void LocalSearch::RunPerturbation(Model::Solution&                  sol,
-                                  ContainerLoading::BaseLoadingChecker* checker,
-                                  std::mt19937&                     rng) const
+void LocalSearch::RunPerturbation(Model::Solution& sol) const
 {
     for (auto& op : pertOperators){
         //TODO handles nullptr case! 
-        if(op != nullptr){
-            op->Run(mInstance, mInputParameters, checker, sol, rng);
+        if(op){
+            op->Run(mInstance, mInputParameters, mLoadingChecker, mTimer, sol, mRNG);
         }
         break;
     }
 };
 
 // Run all perturbations in order
-void LocalSearch::RunBigPerturbation(Model::Solution&                  sol,
-                                  ContainerLoading::BaseLoadingChecker* checker,
-                                  std::mt19937&                     rng) const 
+void LocalSearch::RunBigPerturbation(Model::Solution&  sol) const 
 {
     for (auto& op : pertOperators)
         //TODO handles nullptr case! 
-        if(op != nullptr){
-            op->Run(mInstance, mInputParameters, checker, sol, rng);
+        if(op){
+            op->Run(mInstance, mInputParameters, mLoadingChecker, mTimer, sol, mRNG);
         }
 };
 
-std::unique_ptr<LocalSearchOperatorBase> LocalSearch::CreateLocalSearchOperator(const LocalSearchTypes& t)
+std::unique_ptr<LocalSearchOperatorBase> LocalSearch::CreateLocalSearchOperator(const LocalSearchTypes& t) const
 {
     switch (t)
     {
@@ -81,7 +80,7 @@ std::unique_ptr<LocalSearchOperatorBase> LocalSearch::CreateLocalSearchOperator(
     }
 }
 
-std::unique_ptr<PerturbationOperatorBase> LocalSearch::CreatePerturbationOperator(const PerturbationTypes& t)
+std::unique_ptr<PerturbationOperatorBase> LocalSearch::CreatePerturbationOperator(const PerturbationTypes& t) const
 {
         switch (t)
         {

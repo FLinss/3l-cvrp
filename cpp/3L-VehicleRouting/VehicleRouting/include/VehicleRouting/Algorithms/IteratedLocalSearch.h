@@ -55,9 +55,6 @@ class IteratedLocalSearch
     {
         mLogFile.open(env->get(GRB_StringParam_LogFile), std::ios::out | std::ios::app);
 
-        //Initialize Local Search
-        mLocalSearch = std::make_unique<Improvement::LocalSearch>(mInputParameters, mInstance);
-
         //Initialize RNG 
         mRNG.seed(42 + seedOffset);
     }

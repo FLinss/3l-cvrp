@@ -3,16 +3,16 @@
 
 namespace VehicleRouting
 {
-using namespace Model;
 namespace Improvement
 {
-using namespace ContainerLoading;
+
+void InterLocalSearchOperator::Run(const Instance* const instance,
+            const InputParameters* const inputParameters,
+            ContainerLoading::BaseLoadingChecker* loadingChecker,
+            const Helper::Timer* const mTimer,
+            Model::Solution& currentSolution) const {
 
 
-void InterLocalSearchOperator::Run(const Instance* instance,
-                    const InputParameters& inputParameters,
-                    BaseLoadingChecker* loadingChecker,
-                    Solution& currentSolution) const {
 
   std::vector<Route>& routes = currentSolution.Routes;
 
@@ -24,7 +24,7 @@ void InterLocalSearchOperator::Run(const Instance* instance,
   while(true){
 
       auto moves = DetermineMoves(instance, routes);
-      auto savings = GetBestMove(instance, inputParameters, loadingChecker, routes, moves);
+      auto savings = GetBestMove(instance, inputParameters, loadingChecker, mTimer, routes, moves);
 
       if(!savings){
           break;
@@ -37,11 +37,15 @@ void InterLocalSearchOperator::Run(const Instance* instance,
 
 }
 
-std::optional<double> InterLocalSearchOperator::GetBestMove(const Instance* instance,
-                                const InputParameters& inputParameters,
-                                BaseLoadingChecker* loadingChecker,
-                                std::vector<Route>& routes,
-                                std::vector<InterMove>& moves) const{
+
+
+std::optional<double> InterLocalSearchOperator::GetBestMove(const Instance* const instance,
+                                                            const InputParameters* const inputParameters,
+                                                            ContainerLoading::BaseLoadingChecker* loadingChecker,
+                                                            const Helper::Timer* const mTimer,
+                                                            std::vector<Route>& routes,
+                                                            std::vector<InterMove>& moves) const
+{
   if (moves.size() == 0)
   {
       return std::nullopt;
@@ -80,8 +84,8 @@ std::optional<double> InterLocalSearchOperator::GetBestMove(const Instance* inst
         
         auto set = loadingChecker->MakeBitset(instance->Nodes.size(), route.Sequence);
         auto selectedItems = Algorithms::InterfaceConversions::SelectItems(route.Sequence, instance->Nodes, false);
-
-        if (!loadingChecker->CompleteCheck(container,  set, route.Sequence, selectedItems, mType)){
+        double maxRuntime = inputParameters->DetermineMaxRuntime(IteratedLocalSearchParams::CallType::Exact, mTimer->getElapsedTime());
+        if (!loadingChecker->CompleteCheck(container,  set, route.Sequence, selectedItems, mType, maxRuntime)){
             controlFlag = false; 
             break;
         }

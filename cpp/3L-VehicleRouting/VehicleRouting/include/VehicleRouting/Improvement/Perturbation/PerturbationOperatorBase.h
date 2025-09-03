@@ -22,11 +22,12 @@ class PerturbationOperatorBase {
 public:
     virtual ~PerturbationOperatorBase() = default;
 
-    void Run(const Model::Instance*            instance,
-            const InputParameters&            params,
+    void Run(const Instance* const instance,
+            const InputParameters* const inputParameters,
             ContainerLoading::BaseLoadingChecker* loadingChecker,
-            Model::Solution&                  solution,
-            std::mt19937&                     rng) const;
+            const Helper::Timer* const mTimer,
+            Model::Solution& currentSolution,
+            std::mt19937& rng) const;
 
 
   private:

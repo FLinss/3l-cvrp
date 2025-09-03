@@ -51,7 +51,9 @@ void IteratedLocalSearch::Initialize()
             mLoadingChecker = std::make_unique<HybridLoadingChecker>(mInputParameters.ContainerLoading, mInputParameters.DetermineMaxRuntime(IteratedLocalSearchParams::CallType::ExactLimit));     
             break;               
     }
-    mLoadingChecker->SetBinPackingModel(mEnv, containers, customerNodes, mOutputPath);
+
+    //Initialize Local Search
+    mLocalSearch = std::make_unique<Improvement::LocalSearch>(&mInputParameters, mInstance, &mTimer, mLoadingChecker.get(), mRNG);
 
     double maxRuntime = mInputParameters.DetermineMaxRuntime(IteratedLocalSearchParams::CallType::Exact);
     for (const auto& customer: mInstance->GetCustomers())
@@ -136,7 +138,7 @@ void IteratedLocalSearch::StartSolutionProcedure()
     //Initital Local Search
     if(mInputParameters.IteratedLocalSearch.RunLS){
 
-       mLocalSearch->RunLocalSearch(mCurrentSolution, mLoadingChecker.get());
+       mLocalSearch->RunLocalSearch(mCurrentSolution);
 
         //Wont be applied, when current = best solution
         if(mInputParameters.IteratedLocalSearch.CP_Check){
@@ -281,12 +283,12 @@ void IteratedLocalSearch::Solve()
 
             std::cout << "Run: " << mSolutionTracker.iterations << " - CurrentCosts: " << mCurrentSolution.Costs << " - BestCosts:" << mBestSolution.Costs << std::endl;
             if(mSolutionTracker.RoundsWithNoImpr > mInputParameters.IteratedLocalSearch.RoundsWithNoImprovement){
-                mLocalSearch->RunBigPerturbation(mCurrentSolution, mLoadingChecker.get(), mRNG);
+                mLocalSearch->RunBigPerturbation(mCurrentSolution);
                 mSolutionTracker.RoundsWithNoImpr = 0;
             }else{
-                mLocalSearch->RunPerturbation(mCurrentSolution, mLoadingChecker.get(), mRNG);
+                mLocalSearch->RunPerturbation(mCurrentSolution);
             }
-            mLocalSearch->RunLocalSearch(mCurrentSolution, mLoadingChecker.get());
+            mLocalSearch->RunLocalSearch(mCurrentSolution);
 
             ++mSolutionTracker.iterations;
             if(mInputParameters.IteratedLocalSearch.CP_Check){

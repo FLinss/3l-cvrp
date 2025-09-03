@@ -4,18 +4,17 @@
 
 namespace VehicleRouting
 {
-using namespace Model;
 
 namespace Improvement
 {
-using namespace ContainerLoading;
 
 class DeleteEmptyRoutes : public LocalSearchOperatorBase
 {
-    void Run(const Instance* instance,
-            const InputParameters& inputParameters,
-            BaseLoadingChecker* loadingChecker,
-            Solution& currentSolution) const override;
+    void Run(const Instance* const instance,
+            const InputParameters* const inputParameters,
+            ContainerLoading::BaseLoadingChecker* loadingChecker,
+            const Helper::Timer* const mTimer,
+            Model::Solution& currentSolution) const override;
 
 };
 

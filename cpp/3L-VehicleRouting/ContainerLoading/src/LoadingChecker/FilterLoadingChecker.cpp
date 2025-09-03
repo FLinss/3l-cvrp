@@ -57,7 +57,7 @@ bool FilterLoadingChecker::CompleteCheck(const Container& container,
                                     const Collections::IdVector& stopIds,
                                     const std::vector<Cuboid>& items,
                                     const VehicleRouting::Improvement::ImprovementTypes& localsearchtype,
-                                    double maxRuntime)
+                                    double maxRuntime) 
 {
     if (RouteIsInFeasSequences(stopIds))
     {

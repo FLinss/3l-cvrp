@@ -4,12 +4,12 @@ namespace VehicleRouting
 {
 namespace Improvement
 {
-using namespace ContainerLoading;
 
-void DeleteEmptyRoutes::Run(const Instance* instance,
-            const InputParameters& inputParameters,
-            BaseLoadingChecker* loadingChecker,
-            Solution& currentSolution) const{
+void DeleteEmptyRoutes::Run(const Instance* const instance,
+                            const InputParameters* const inputParameters,
+                            ContainerLoading::BaseLoadingChecker* loadingChecker,
+                            const Helper::Timer* const mTimer,
+                            Model::Solution& currentSolution) const{
 
     // Remove empty routes
     auto& routes = currentSolution.Routes;

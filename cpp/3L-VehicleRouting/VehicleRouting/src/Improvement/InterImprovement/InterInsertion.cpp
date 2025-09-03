@@ -38,7 +38,7 @@ std::vector<InterMove> InterInsertion::DetermineMoves(const Instance* const inst
                     if(res_weight_route_k - weight_item_delta >= 0)
                         if(res_volume_route_k - volume_item_delta >= 0){
 
-                            auto savings = Evaluator::CalculateInsertionDelta(instance,
+                            auto savings = Algorithms::Evaluator::CalculateInsertionDelta(instance,
                                                     route_i.Sequence,
                                                     route_k.Sequence,
                                                     node_i,

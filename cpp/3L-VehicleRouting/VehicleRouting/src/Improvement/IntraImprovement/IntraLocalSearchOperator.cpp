@@ -6,7 +6,7 @@ namespace Improvement
 {
 
 void IntraLocalSearchOperator::Run(const Instance* const instance,
-            const InputParameters* const inputParameters,
+            const VRP_InputParameters* const inputParameters,
             ContainerLoading::BaseLoadingChecker* loadingChecker,
             const Helper::Timer* const mTimer,
             Model::Solution& currentSolution) const 
@@ -35,7 +35,7 @@ void IntraLocalSearchOperator::Run(const Instance* const instance,
 };
 
 std::optional<double> IntraLocalSearchOperator::GetBestMove(const Instance* const instance,
-                                                            const InputParameters* const inputParameters,
+                                                            const VRP_InputParameters* const inputParameters,
                                                             ContainerLoading::BaseLoadingChecker* loadingChecker,
                                                             const Helper::Timer* const mTimer,
                                                             Collections::IdVector& route,
@@ -60,8 +60,8 @@ std::optional<double> IntraLocalSearchOperator::GetBestMove(const Instance* cons
 
         ChangeRoute(route, std::get<1>(move), std::get<2>(move));
         
-        auto selectedItems = InterfaceConversions::SelectItems(route, instance->Nodes, false);
-        double maxRuntime = inputParameters->DetermineMaxRuntime(IteratedLocalSearchParams::CallType::Exact, mTimer->getElapsedTime());
+        auto selectedItems = Algorithms::InterfaceConversions::SelectItems(route, instance->Nodes, false);
+        double maxRuntime = inputParameters->DetermineMaxRuntime(Algorithms::IteratedLocalSearchParams::CallType::Exact, mTimer->getElapsedTime());
         if (loadingChecker->CompleteCheck(container, set, route, selectedItems, mType, maxRuntime))
         {
             return std::get<0>(move);

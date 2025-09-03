@@ -17,13 +17,14 @@ namespace VehicleRouting {
 namespace Improvement {
 
 using PerturbationMove = std::tuple<double, size_t, size_t, size_t, size_t, int, int>;
+using VRP_InputParameters = VehicleRouting::Algorithms::InputParameters;
 
 class PerturbationOperatorBase {
 public:
     virtual ~PerturbationOperatorBase() = default;
 
     void Run(const Instance* const instance,
-            const InputParameters* const inputParameters,
+            const VRP_InputParameters* const inputParameters,
             ContainerLoading::BaseLoadingChecker* loadingChecker,
             const Helper::Timer* const mTimer,
             Model::Solution& currentSolution,

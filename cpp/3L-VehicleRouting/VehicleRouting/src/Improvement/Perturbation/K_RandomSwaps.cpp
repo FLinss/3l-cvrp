@@ -51,7 +51,7 @@ std::optional<PerturbationMove> K_RandomSwaps::DetermineMoves(const Instance* co
         if(res_weight_route_i + weight_item_delta >= 0 && res_weight_route_k - weight_item_delta >= 0)
             if(res_volume_route_i + volume_item_delta >= 0 && res_volume_route_k - volume_item_delta >= 0){
 
-                auto savings = Evaluator::CalculateInterSwapDelta(instance,
+                auto savings = Algorithms::Evaluator::CalculateInterSwapDelta(instance,
                                                                     route_i.Sequence,
                                                                     route_k.Sequence,
                                                                     node_i,

@@ -18,7 +18,7 @@ std::vector<IntraMove> IntraSwap::DetermineMoves(const Instance* const instance,
         for (size_t k = i + 1; k < route.size(); ++k)
         {
 
-            savings = Evaluator::CalculateIntraSwapDelta(instance, route, i, k);
+            savings = Algorithms::Evaluator::CalculateIntraSwapDelta(instance, route, i, k);
 
             if (savings < -1e-3)
             {

@@ -5,15 +5,10 @@
 #include "CLI11/CLI11.hpp"
 #include <string>
 #include <chrono>
-
 #include <ctime>
 #include <filesystem>
 #include <iomanip>
 
-using namespace VehicleRouting;
-using namespace VehicleRouting::Algorithms;
-using namespace VehicleRouting::Model;
-using namespace VehicleRouting::Helper;
 
 void Run(std::string& inputFilePath,
          std::string& filename,
@@ -27,7 +22,7 @@ void Run(std::string& inputFilePath,
 
     if (parameterFile != "")
     {
-        inputParameters = HelperIO::ReadInputParameters(parameterFile);
+        inputParameters = VehicleRouting::Helper::HelperIO::ReadInputParameters(parameterFile);
     }
     else
     {
@@ -75,7 +70,7 @@ void Run(std::string& inputFilePath,
         return; // or handle the error as needed
     }
 
-    auto instance = HelperIO::ParseInstanceJson(ifs);
+    auto instance = VehicleRouting::Helper::HelperIO::ParseInstanceJson(ifs);
 
     ////std::ofstream ofs("logfile.txt");
     ////std::cout.rdbuf(ofs.rdbuf());
@@ -83,19 +78,16 @@ void Run(std::string& inputFilePath,
     // TODO: parametrize
     std::string startSolutionPath = inputFilePath + "../StartSolutions/Zhang/ConvertedSolutions/";
 
-    for (int i = 0; i < 1; ++i)
+    try
     {
-        try
-        {
-            GRBEnv env = GRBEnv(outputPath + "/" + instance.Name + ".LOG");
-            IteratedLocalSearch ILS_heuristic(&instance, &env, inputParameters, startSolutionPath, outputPath, seedOffset);
-            ILS_heuristic.Solve();
-        }
-        catch (GRBException& e)
-        {
-            std::cout << e.getMessage();
-        }
+        VehicleRouting::Algorithms::IteratedLocalSearch ILS_heuristic(&instance, inputParameters, startSolutionPath, outputPath, seedOffset);
+        ILS_heuristic.Solve();
     }
+    catch (std::exception& e)
+    {
+        std::cout << e.what();
+    }
+
 }
 
 int main(int argc, char** argv)

@@ -7,7 +7,7 @@ namespace Improvement
 {
 
 void InterLocalSearchOperator::Run(const Instance* const instance,
-            const InputParameters* const inputParameters,
+            const VRP_InputParameters* const inputParameters,
             ContainerLoading::BaseLoadingChecker* loadingChecker,
             const Helper::Timer* const mTimer,
             Model::Solution& currentSolution) const {
@@ -40,7 +40,7 @@ void InterLocalSearchOperator::Run(const Instance* const instance,
 
 
 std::optional<double> InterLocalSearchOperator::GetBestMove(const Instance* const instance,
-                                                            const InputParameters* const inputParameters,
+                                                            const VRP_InputParameters* const inputParameters,
                                                             ContainerLoading::BaseLoadingChecker* loadingChecker,
                                                             const Helper::Timer* const mTimer,
                                                             std::vector<Route>& routes,
@@ -66,7 +66,7 @@ std::optional<double> InterLocalSearchOperator::GetBestMove(const Instance* cons
       bool controlFlag = true;
       
 
-      if (loadingChecker->Parameters.LoadingFlags == LoadingFlag::NoneSet)
+      if (loadingChecker->Parameters.LoadingFlags == Algorithms::LoadingFlag::NoneSet)
       {
           UpdateRouteVolumeWeight(routes, move);
           return std::get<0>(move);
@@ -84,7 +84,7 @@ std::optional<double> InterLocalSearchOperator::GetBestMove(const Instance* cons
         
         auto set = loadingChecker->MakeBitset(instance->Nodes.size(), route.Sequence);
         auto selectedItems = Algorithms::InterfaceConversions::SelectItems(route.Sequence, instance->Nodes, false);
-        double maxRuntime = inputParameters->DetermineMaxRuntime(IteratedLocalSearchParams::CallType::Exact, mTimer->getElapsedTime());
+        double maxRuntime = inputParameters->DetermineMaxRuntime(Algorithms::IteratedLocalSearchParams::CallType::Exact, mTimer->getElapsedTime());
         if (!loadingChecker->CompleteCheck(container,  set, route.Sequence, selectedItems, mType, maxRuntime)){
             controlFlag = false; 
             break;

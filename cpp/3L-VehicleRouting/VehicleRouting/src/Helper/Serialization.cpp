@@ -272,7 +272,7 @@ void to_json(json& j, const SolverStatistics& statistics)
 
 void from_json(const json& j, SolutionFile& solution)
 {
-    j.at("InputParameters").get_to<InputParameters>(solution.InputParameters);
+    j.at("InputParameters").get_to<Algorithms::InputParameters>(solution.InputParameters);
     ////j.at("SolverStatistics").get_to<SolverStatistics>(solution.SolverStatistics);
     j.at("Solution").get_to<OutputSolution>(solution.OutputSolution);
 }

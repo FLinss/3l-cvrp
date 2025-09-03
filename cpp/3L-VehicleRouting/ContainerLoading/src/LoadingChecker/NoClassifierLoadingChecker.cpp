@@ -5,10 +5,10 @@ namespace ContainerLoading
 using namespace Algorithms;
 
 
-bool NoClassifierLoadingChecker::CompleteCheckStartSolution(const Container& container,
+bool NoClassifierLoadingChecker::CompleteCheckStartSolution(const Model::Container& container,
                 const boost::dynamic_bitset<>& set,
                 const Collections::IdVector& stopIds,
-                const std::vector<Cuboid>& items,
+                const std::vector<Model::Cuboid>& items,
                 double maxRuntime)
 {    
     if (RouteIsInFeasSequences(stopIds))
@@ -33,10 +33,10 @@ bool NoClassifierLoadingChecker::CompleteCheckStartSolution(const Container& con
     return cpStatus == LoadingStatus::FeasOpt;
 }
 
-bool NoClassifierLoadingChecker::CompleteCheck(const Container& container,
+bool NoClassifierLoadingChecker::CompleteCheck(const Model::Container& container,
                                     const boost::dynamic_bitset<>& set,
                                     const Collections::IdVector& stopIds,
-                                    const std::vector<Cuboid>& items,
+                                    const std::vector<Model::Cuboid>& items,
                                     const VehicleRouting::Improvement::ImprovementTypes& localsearchtype,
                                     double maxRuntime)
 {
@@ -63,10 +63,10 @@ bool NoClassifierLoadingChecker::CompleteCheck(const Container& container,
 
 }
 
-bool NoClassifierLoadingChecker::ExactCheckNoClassifier(const Container& container,
+bool NoClassifierLoadingChecker::ExactCheckNoClassifier(const Model::Container& container,
                                         const boost::dynamic_bitset<>& set,
                                         const Collections::IdVector& stopIds,
-                                        const std::vector<Cuboid>& items,
+                                        const std::vector<Model::Cuboid>& items,
                                         double maxRuntime){
     
     return true;

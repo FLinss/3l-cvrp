@@ -8,7 +8,7 @@ namespace Improvement
 {
 
 // Build operator lists once, from whatever vectors your config provides
-LocalSearch::LocalSearch(const InputParameters* const params,
+LocalSearch::LocalSearch(const VRP_InputParameters* const params,
                         const Instance* const inst,
                         const Helper::Timer* const timer,
                         ContainerLoading::BaseLoadingChecker* checker,
@@ -59,34 +59,34 @@ void LocalSearch::RunBigPerturbation(Model::Solution&  sol) const
         }
 };
 
-std::unique_ptr<LocalSearchOperatorBase> LocalSearch::CreateLocalSearchOperator(const LocalSearchTypes& t) const
+std::unique_ptr<LocalSearchOperatorBase> LocalSearch::CreateLocalSearchOperator(const VRP_LocalSearchtypes& t) const
 {
     switch (t)
     {
-        case LocalSearchTypes::TwoOpt:          
+        case VRP_LocalSearchtypes::TwoOpt:          
             return std::make_unique<TwoOpt>();
-        case LocalSearchTypes::IntraSwap:       
+        case VRP_LocalSearchtypes::IntraSwap:       
             return std::make_unique<IntraSwap>();
-        case LocalSearchTypes::IntraInsertion:       
+        case VRP_LocalSearchtypes::IntraInsertion:       
             return std::make_unique<IntraInsertion>();
-        case LocalSearchTypes::InterSwap:       
+        case VRP_LocalSearchtypes::InterSwap:       
             return std::make_unique<InterSwap>();
-        case LocalSearchTypes::InterInsertion:       
+        case VRP_LocalSearchtypes::InterInsertion:       
             return std::make_unique<InterInsertion>();
-        case LocalSearchTypes::DeleteEmptyRoutes:       
+        case VRP_LocalSearchtypes::DeleteEmptyRoutes:       
             return std::make_unique<DeleteEmptyRoutes>();
         default:                                
             return nullptr;                       
     }
 }
 
-std::unique_ptr<PerturbationOperatorBase> LocalSearch::CreatePerturbationOperator(const PerturbationTypes& t) const
+std::unique_ptr<PerturbationOperatorBase> LocalSearch::CreatePerturbationOperator(const VRP_PerturbationTypes& t) const
 {
         switch (t)
         {
-            case PerturbationTypes::K_RandomSwaps:  
+            case VRP_PerturbationTypes::K_RandomSwaps:  
                 return std::make_unique<K_RandomSwaps>();
-            case PerturbationTypes::K_RandomInsertions:
+            case VRP_PerturbationTypes::K_RandomInsertions:
                 return std::make_unique<K_RandomInsertions>();
             default:                               
                 return nullptr;

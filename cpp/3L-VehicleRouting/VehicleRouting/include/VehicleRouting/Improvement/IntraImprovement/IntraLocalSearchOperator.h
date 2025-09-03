@@ -13,7 +13,7 @@ class IntraLocalSearchOperator : public LocalSearchOperatorBase
 {
   public:
     void Run(const Instance* const instance,
-            const InputParameters* const inputParameters,
+            const VRP_InputParameters* const inputParameters,
             ContainerLoading::BaseLoadingChecker* loadingChecker,
             const Helper::Timer* const mTimer,
             Model::Solution& currentSolution) const override;
@@ -23,7 +23,7 @@ class IntraLocalSearchOperator : public LocalSearchOperatorBase
 
   protected:
     std::optional<double> GetBestMove(const Instance* instance,
-                                      const InputParameters* const inputParameters,
+                                      const VRP_InputParameters* const inputParameters,
                                       ContainerLoading::BaseLoadingChecker* loadingChecker,
                                       const Helper::Timer* const mTimer,  
                                       Collections::IdVector& route,

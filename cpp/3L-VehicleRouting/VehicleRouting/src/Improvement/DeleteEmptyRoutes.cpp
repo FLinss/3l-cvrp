@@ -6,7 +6,7 @@ namespace Improvement
 {
 
 void DeleteEmptyRoutes::Run(const Instance* const instance,
-                            const InputParameters* const inputParameters,
+                            const VRP_InputParameters* const inputParameters,
                             ContainerLoading::BaseLoadingChecker* loadingChecker,
                             const Helper::Timer* const mTimer,
                             Model::Solution& currentSolution) const{

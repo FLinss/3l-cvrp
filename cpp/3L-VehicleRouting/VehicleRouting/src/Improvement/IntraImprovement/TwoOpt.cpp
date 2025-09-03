@@ -17,7 +17,7 @@ std::vector<IntraMove> TwoOpt::DetermineMoves(const Instance* const instance,
         for (size_t k = i + 1; k < route.size(); ++k)
         {
 
-            savings = Evaluator::CalculateTwoOptDelta(instance, route, i, k);
+            savings = Algorithms::Evaluator::CalculateTwoOptDelta(instance, route, i, k);
 
             if (savings < -1e-3)
             {

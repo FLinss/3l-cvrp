@@ -16,11 +16,14 @@ namespace VehicleRouting
 namespace Improvement
 {
 
+using VRP_LocalSearchtypes = VehicleRouting::Algorithms::LocalSearchTypes;
+using VRP_PerturbationTypes = VehicleRouting::Algorithms::PerturbationTypes;
+
 class LocalSearch
 {
 public:
     // Build operator lists once, from whatever vectors your config provides
-    LocalSearch(const InputParameters* const params,
+    LocalSearch(const VRP_InputParameters* const params,
                 const Instance* const inst,
                 const Helper::Timer* const timer,
                 ContainerLoading::BaseLoadingChecker* loadingChecker,
@@ -36,13 +39,13 @@ private:
 
     const Instance* const mInstance = nullptr;
     const Helper::Timer* const mTimer = nullptr;
-    const InputParameters* const mInputParameters = nullptr;
+    const VRP_InputParameters* const mInputParameters = nullptr;
     ContainerLoading::BaseLoadingChecker* mLoadingChecker = nullptr;
 
     std::mt19937& mRNG;
 
-    [[nodiscard]] std::unique_ptr<LocalSearchOperatorBase> CreateLocalSearchOperator(const LocalSearchTypes& t) const;
-    [[nodiscard]] std::unique_ptr<PerturbationOperatorBase> CreatePerturbationOperator(const PerturbationTypes& t) const;
+    [[nodiscard]] std::unique_ptr<LocalSearchOperatorBase> CreateLocalSearchOperator(const VRP_LocalSearchtypes& t) const;
+    [[nodiscard]] std::unique_ptr<PerturbationOperatorBase> CreatePerturbationOperator(const VRP_PerturbationTypes& t) const;
 };
 
 }} // namespace VehicleRouting::Improvement

@@ -4,10 +4,10 @@ namespace ContainerLoading
 {
 using namespace Algorithms;
 
-bool HybridLoadingChecker::CompleteCheckStartSolution(const Container& container,
+bool HybridLoadingChecker::CompleteCheckStartSolution(const Model::Container& container,
                 const boost::dynamic_bitset<>& set,
                 const Collections::IdVector& stopIds,
-                const std::vector<Cuboid>& items,
+                const std::vector<Model::Cuboid>& items,
                 double maxRuntime)
 {  
     if (RouteIsInFeasSequences(stopIds))
@@ -51,10 +51,10 @@ bool HybridLoadingChecker::CompleteCheckStartSolution(const Container& container
    }
 }
 
-bool HybridLoadingChecker::CompleteCheck(const Container& container,
+bool HybridLoadingChecker::CompleteCheck(const Model::Container& container,
                                     const boost::dynamic_bitset<>& set,
                                     const Collections::IdVector& stopIds,
-                                    const std::vector<Cuboid>& items,
+                                    const std::vector<Model::Cuboid>& items,
                                     const VehicleRouting::Improvement::ImprovementTypes& localsearchtype,
                                     double maxRuntime)
 {
@@ -92,10 +92,10 @@ bool HybridLoadingChecker::CompleteCheck(const Container& container,
     }
 }
 
-bool HybridLoadingChecker::ExactCheckNoClassifier(const Container& container,
+bool HybridLoadingChecker::ExactCheckNoClassifier(const Model::Container& container,
                                         const boost::dynamic_bitset<>& set,
                                         const Collections::IdVector& stopIds,
-                                        const std::vector<Cuboid>& items,
+                                        const std::vector<Model::Cuboid>& items,
                                         double maxRuntime){
     
     if (RouteIsInFeasSequences(stopIds))

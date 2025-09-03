@@ -5,10 +5,10 @@ namespace ContainerLoading
 using namespace Algorithms;
 
 
-bool SpeedUpLoadingChecker::CompleteCheckStartSolution(const Container& container,
+bool SpeedUpLoadingChecker::CompleteCheckStartSolution(const Model::Container& container,
                 const boost::dynamic_bitset<>& set,
                 const Collections::IdVector& stopIds,
-                const std::vector<Cuboid>& items,
+                const std::vector<Model::Cuboid>& items,
                 double maxRuntime)
 {  
     if (RouteIsInFeasSequences(stopIds))
@@ -52,10 +52,10 @@ bool SpeedUpLoadingChecker::CompleteCheckStartSolution(const Container& containe
    }
 }
 
-bool SpeedUpLoadingChecker::CompleteCheck(const Container& container,
+bool SpeedUpLoadingChecker::CompleteCheck(const Model::Container& container,
                                     const boost::dynamic_bitset<>& set,
                                     const Collections::IdVector& stopIds,
-                                    const std::vector<Cuboid>& items,
+                                    const std::vector<Model::Cuboid>& items,
                                     const VehicleRouting::Improvement::ImprovementTypes& localsearchtype,
                                     double maxRuntime)
 {
@@ -73,10 +73,10 @@ bool SpeedUpLoadingChecker::CompleteCheck(const Container& container,
     return mClassifier->classify(items,stopIds,container);
 }
 
-bool SpeedUpLoadingChecker::ExactCheckNoClassifier(const Container& container,
+bool SpeedUpLoadingChecker::ExactCheckNoClassifier(const Model::Container& container,
                                     const boost::dynamic_bitset<>& set,
                                     const Collections::IdVector& stopIds,
-                                    const std::vector<Cuboid>& items,
+                                    const std::vector<Model::Cuboid>& items,
                                     double maxRuntime){
      
     if (RouteIsInFeasSequences(stopIds))

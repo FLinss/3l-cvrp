@@ -3,9 +3,8 @@
 #include "CommonBasics/Helper/ModelServices.h"
 
 #include "ProblemParameters.h"
-
-#include "Algorithms/MultiContainer/BP_MIP_1D.h"
 #include "Model/ContainerLoadingInstance.h"
+#include "Model/Container.h"
 
 #include <boost/dynamic_bitset.hpp>
 #include <boost/functional/hash.hpp>
@@ -39,40 +38,40 @@ class BaseLoadingChecker
         }
     }
 
-    virtual bool CompleteCheck(const Container& container,
+    virtual bool CompleteCheck(const Model::Container& container,
                                 const boost::dynamic_bitset<>& set,
                                 const Collections::IdVector& stopIds,
-                                const std::vector<Cuboid>& items,
+                                const std::vector<Model::Cuboid>& items,
                                 const VehicleRouting::Improvement::ImprovementTypes& localsearchtype,
                                 double maxRuntime) = 0;
 
-    virtual bool CompleteCheckStartSolution(const Container& container,
+    virtual bool CompleteCheckStartSolution(const Model::Container& container,
                             const boost::dynamic_bitset<>& set,
                             const Collections::IdVector& stopIds,
-                            const std::vector<Cuboid>& items,
+                            const std::vector<Model::Cuboid>& items,
                             double maxRuntime) = 0;
 
-    virtual bool ExactCheckNoClassifier(const Container& container,
+    virtual bool ExactCheckNoClassifier(const Model::Container& container,
                                         const boost::dynamic_bitset<>& set,
                                         const Collections::IdVector& stopIds,
-                                        const std::vector<Cuboid>& items,
+                                        const std::vector<Model::Cuboid>& items,
                                         double maxRuntime) = 0;
 
-    [[nodiscard]] std::vector<Cuboid>
-        SelectItems(const Collections::IdVector& nodeIds, std::vector<Group>& nodes, bool reversedDirection) const;
+    [[nodiscard]] std::vector<Model::Cuboid>
+        SelectItems(const Collections::IdVector& nodeIds, std::vector<Model::Group>& nodes, bool reversedDirection) const;
 
     [[nodiscard]] LoadingStatus ConstraintProgrammingSolver(PackingType packingType,
-                                                            const Container& container,
+                                                            const Model::Container& container,
                                                             const boost::dynamic_bitset<>& set,
                                                             const Collections::IdVector& stopIds,
-                                                            const std::vector<Cuboid>& items,
+                                                            const std::vector<Model::Cuboid>& items,
                                                             bool isCallTypeExact,
                                                             double maxRuntime);
 
     [[nodiscard]] LoadingStatus ConstraintProgrammingSolverGetPacking(PackingType packingType,
-                                                                      const Container& container,
+                                                                      const Model::Container& container,
                                                                       const Collections::IdVector& stopIds,
-                                                                      std::vector<Cuboid>& items,
+                                                                      std::vector<Model::Cuboid>& items,
                                                                       double maxRuntime) const;
 
     [[nodiscard]] double GetElapsedTime();
@@ -86,8 +85,6 @@ class BaseLoadingChecker
     [[nodiscard]] boost::dynamic_bitset<> MakeBitset(size_t size, const Collections::IdVector& sequence) const;
 
   private:
-    std::unique_ptr<BinPacking1D> mBinPacking1D;
-
     Collections::SequenceVector mCompleteFeasSeq;
     /// Set of customer combinations that are infeasible.
     /// -> There is no path in combination C that respects all constraints

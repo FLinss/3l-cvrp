@@ -13,8 +13,6 @@
 
 namespace VehicleRouting
 {
-using namespace Algorithms;
-
 namespace Model
 {
 
@@ -149,7 +147,7 @@ class Solution
         Costs = 0;
         for (const auto& route: Routes)
         {
-            Costs += Evaluator::CalculateRouteCosts(instance, route.Sequence);
+            Costs += Algorithms::Evaluator::CalculateRouteCosts(instance, route.Sequence);
         }
     };
 
@@ -213,7 +211,7 @@ class OutputSolution
         Costs = 0;
         for (const auto& tour: Tours)
         {
-            Costs += Evaluator::CalculateRouteCosts(instance, tour.Route);
+            Costs += Algorithms::Evaluator::CalculateRouteCosts(instance, tour.Route);
         }
     };
 };
@@ -238,11 +236,11 @@ class OutputSolution
 class SolutionFile
 {
   public:
-    VehicleRouting::InputParameters InputParameters;
+    VehicleRouting::Algorithms::InputParameters InputParameters;
     Model::SolverStatistics SolverStatistics;
     Model::OutputSolution OutputSolution;
 
-    SolutionFile(VehicleRouting::InputParameters& inputParameters,
+    SolutionFile(VehicleRouting::Algorithms::InputParameters& inputParameters,
                  Model::SolverStatistics& statistics,
                  Model::OutputSolution& outputSolution)
     : InputParameters(inputParameters), SolverStatistics(statistics), OutputSolution(outputSolution)

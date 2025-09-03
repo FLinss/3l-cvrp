@@ -3,11 +3,11 @@
 
 namespace ContainerLoading
 {
-std::vector<Cuboid> BaseLoadingChecker::SelectItems(const Collections::IdVector& nodeIds,
-                                                std::vector<Group>& nodes,
+std::vector<Model::Cuboid> BaseLoadingChecker::SelectItems(const Collections::IdVector& nodeIds,
+                                                std::vector<Model::Group>& nodes,
                                                 bool reversedDirection) const
 {
-    std::vector<Cuboid> selectedItems;
+    std::vector<Model::Cuboid> selectedItems;
     selectedItems.reserve(nodes.size() * 3);
     if (!reversedDirection)
     {
@@ -40,10 +40,10 @@ std::vector<Cuboid> BaseLoadingChecker::SelectItems(const Collections::IdVector&
 }
 
 LoadingStatus BaseLoadingChecker::ConstraintProgrammingSolver(PackingType packingType,
-                                                          const Container& container,
+                                                          const Model::Container& container,
                                                           const boost::dynamic_bitset<>& set,
                                                           const Collections::IdVector& stopIds,
-                                                          const std::vector<Cuboid>& items,
+                                                          const std::vector<Model::Cuboid>& items,
                                                           bool isCallTypeExact,
                                                           double maxRunTime)
 {
@@ -82,9 +82,9 @@ LoadingStatus BaseLoadingChecker::ConstraintProgrammingSolver(PackingType packin
 }
 
 LoadingStatus BaseLoadingChecker::ConstraintProgrammingSolverGetPacking(PackingType packingType,
-                                                                        const Container& container,
+                                                                        const Model::Container& container,
                                                                         const Collections::IdVector& stopIds,
-                                                                        std::vector<Cuboid>& items,
+                                                                        std::vector<Model::Cuboid>& items,
                                                                         double maxRuntime) const
 {
     if (maxRuntime < 0.0 + 1e-5)

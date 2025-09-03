@@ -53,7 +53,8 @@ class BaseLoadingChecker
     virtual bool ExactCheckNoClassifier(const Container& container,
                                         const boost::dynamic_bitset<>& set,
                                         const Collections::IdVector& stopIds,
-                                        const std::vector<Cuboid>& items) = 0;
+                                        const std::vector<Cuboid>& items,
+                                        double maxRuntime) = 0;
 
     [[nodiscard]] std::vector<Cuboid>
         SelectItems(const Collections::IdVector& nodeIds, std::vector<Group>& nodes, bool reversedDirection) const;

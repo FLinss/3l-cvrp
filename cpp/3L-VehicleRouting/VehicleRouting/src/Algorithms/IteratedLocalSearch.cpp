@@ -202,7 +202,6 @@ void IteratedLocalSearch::StartSolutionProcedure()
     }
 
     // TODO change, here just for intializing
-    mTimer.calculateElapsedTime();  
     mSolutionTracker.UpdateBothSolutions(mTimer.getElapsedTime(), mBestSolution.Costs);
 
     OutputSolution outputSolution(mCurrentSolution, mInstance);
@@ -552,10 +551,12 @@ bool IteratedLocalSearch::IsCurrentSolutionCPValid(const Solution& solution) {
         if(route.Sequence.size() > 0){
 
             auto items = InterfaceConversions::SelectItems(route.Sequence, mInstance->Nodes, false);
+            double maxRuntime = mInputParameters.DetermineMaxRuntime(IteratedLocalSearchParams::CallType::Exact, mTimer.getElapsedTime());
             if(!(mLoadingChecker->ExactCheckNoClassifier(container,
                                                     mLoadingChecker->MakeBitset(nodeSize, route.Sequence),
                                                     route.Sequence,
-                                                    items))){
+                                                    items,
+                                                    maxRuntime))){
                 //std::cout << "Route was rejected by CPSolver" << std::endl;
                 ++mSolutionTracker.rejections;
                 return false;
@@ -608,9 +609,6 @@ void IteratedLocalSearch::Solve()
             mLocalSearch->RunLocalSearch(mCurrentSolution, mLoadingChecker.get());
 
             ++mSolutionTracker.iterations;
-
-            mTimer.calculateElapsedTime();
-
             if(mInputParameters.IteratedLocalSearch.CP_Check){
                 if((mSolutionTracker.iterations % mInputParameters.IteratedLocalSearch.Interval_CP_Check) == 0){
                     if(!(IsCurrentSolutionCPValid(mCurrentSolution))){
@@ -730,12 +728,12 @@ void IteratedLocalSearch::DeterminePackingSolution(OutputSolution& outputSolutio
             mLogFile << "\n";
             continue;
         }
-
+        double maxRuntime = mInputParameters.DetermineMaxRuntime(IteratedLocalSearchParams::CallType::Exact);
         auto exactStatus = mLoadingChecker->ConstraintProgrammingSolverGetPacking(PackingType::Complete,
-                                                                                container,
-                                                                                stopIds,
-                                                                                selectedItems,
-                                                                                mInputParameters.IteratedLocalSearch.TimeLimits[IteratedLocalSearchParams::CallType::ExactLimit]);
+                                                                                    container,
+                                                                                    stopIds,
+                                                                                    selectedItems,
+                                                                                    maxRuntime);
 
         std::string feasStatusCP = exactStatus == LoadingStatus::FeasOpt ? "feasible" : "infeasible";
         mLogFile << feasStatusCP << " with CP model"

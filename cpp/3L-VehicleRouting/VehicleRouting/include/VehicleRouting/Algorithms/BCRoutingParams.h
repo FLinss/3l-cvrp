@@ -88,7 +88,9 @@ class InputParameters
     IteratedLocalSearchParams IteratedLocalSearch;
     ContainerLoadingParams ContainerLoading;
 
-    void SetLoadingFlags() { ContainerLoading.SetFlags(); };
+    void SetLoadingFlags(){
+        ContainerLoading.SetFlags();
+    };
 
     [[nodiscard]] double DetermineMaxRuntime(IteratedLocalSearchParams::CallType callType,
                                              double residualTime = std::numeric_limits<double>::max()) const

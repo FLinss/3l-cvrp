@@ -73,7 +73,8 @@ bool SpeedUpLoadingChecker::CompleteCheck(const Container& container,
 bool SpeedUpLoadingChecker::ExactCheckNoClassifier(const Container& container,
                                     const boost::dynamic_bitset<>& set,
                                     const Collections::IdVector& stopIds,
-                                    const std::vector<Cuboid>& items){
+                                    const std::vector<Cuboid>& items,
+                                    double maxRuntime){
     
     if (RouteIsInFeasSequences(stopIds))
     {

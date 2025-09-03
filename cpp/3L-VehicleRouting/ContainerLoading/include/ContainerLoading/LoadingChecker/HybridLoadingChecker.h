@@ -44,7 +44,8 @@ class HybridLoadingChecker : public BaseLoadingChecker
     [[nodiscard]] bool ExactCheckNoClassifier(const Container& container,
                                         const boost::dynamic_bitset<>& set,
                                         const Collections::IdVector& stopIds,
-                                        const std::vector<Cuboid>& items) override;
+                                        const std::vector<Cuboid>& items,
+                                        double maxRuntime) override;
 
   private:
     std::unique_ptr<BaseClassifier> mClassifier;

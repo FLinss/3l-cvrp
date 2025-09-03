@@ -5,7 +5,7 @@ namespace VehicleRouting
 namespace Improvement
 {
 
-void IntraLocalSearchOperator::Run(const Instance* const instance,
+void IntraLocalSearchOperator::Run(const Model::Instance* const instance,
             const VRP_InputParameters* const inputParameters,
             ContainerLoading::BaseLoadingChecker* loadingChecker,
             const Helper::Timer* const mTimer,
@@ -34,7 +34,7 @@ void IntraLocalSearchOperator::Run(const Instance* const instance,
        
 };
 
-std::optional<double> IntraLocalSearchOperator::GetBestMove(const Instance* const instance,
+std::optional<double> IntraLocalSearchOperator::GetBestMove(const Model::Instance* const instance,
                                                             const VRP_InputParameters* const inputParameters,
                                                             ContainerLoading::BaseLoadingChecker* loadingChecker,
                                                             const Helper::Timer* const mTimer,

@@ -14,7 +14,7 @@ using namespace ContainerLoading;
 class TwoOpt : public IntraLocalSearchOperator
 {
   private:
-    std::vector<IntraMove> DetermineMoves(const Instance* instance,
+    std::vector<IntraMove> DetermineMoves(const Model::Instance* instance,
                                           const Collections::IdVector& route)const override;
 
     void ChangeRoute(Collections::IdVector& route, const size_t i, const size_t k) const override;

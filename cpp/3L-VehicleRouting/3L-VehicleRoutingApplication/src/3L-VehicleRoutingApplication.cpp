@@ -18,7 +18,7 @@ void Run(std::string& inputFilePath,
          int seedOffset)
 {
 
-    VehicleRouting::InputParameters inputParameters;
+    VehicleRouting::Algorithms::InputParameters inputParameters;
 
     if (parameterFile != "")
     {

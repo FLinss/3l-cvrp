@@ -40,7 +40,7 @@ class IteratedLocalSearch
 {
   public:
   IteratedLocalSearch(Instance* instance,
-                      const VehicleRouting::InputParameters& inputParameters,
+                      const InputParameters& inputParameters,
                       const std::string& startSolutionFolderPath,
                       const std::string& outputPath,
                       const int seedOffset)

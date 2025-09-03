@@ -1,23 +1,17 @@
 #include "Algorithms/Constructive.h"
 
-#include <algorithm>
-
-#include "Algorithms/Evaluation.h"
-#include "Algorithms/LoadingInterfaceServices.h"
-#include "CommonBasics/Helper/ModelServices.h"
-
 namespace VehicleRouting
 {
 namespace Algorithms
 {
 namespace Constructive
 {
-std::vector<Route> Savings::Run()
+std::vector<Model::Route> Savings::Run()
 {
     const auto& container = mInstance->Vehicles[0].Containers[0];
 
     std::vector<std::tuple<double, size_t, size_t>> savingsValues;
-    std::vector<Route> routes;
+    std::vector<Model::Route> routes;
     std::map<size_t, size_t> routeOfNode;
 
     for (const auto& node: mInstance->GetCustomers())
@@ -92,7 +86,7 @@ std::vector<Route> Savings::Run()
                       { return std::get<1>(savingsTuple) == nodeI && std::get<2>(savingsTuple) == nodeJ; });
     }
 
-    std::vector<Route> startSolution;
+    std::vector<Model::Route> startSolution;
     int id = 0;
     for (auto& route: routes)
     {
@@ -110,7 +104,7 @@ std::vector<Route> Savings::Run()
 
 bool Savings::ConcatRoutes(Collections::IdVector& frontSequence,
                            const Collections::IdVector& backSequence,
-                           const Container& container)
+                           const ContainerLoading::Model::Container& container)
 {
     frontSequence.insert(std::end(frontSequence), std::begin(backSequence), std::end(backSequence));
 
@@ -146,7 +140,7 @@ void Savings::DeleteSavings(std::vector<std::tuple<double, size_t, size_t>>& sav
                   });
 }
 
-std::vector<Route> ModifiedSavings::Run()
+std::vector<Model::Route> ModifiedSavings::Run()
 {
     auto startSolution = Savings(mInstance, mInputParameters, mLoadingChecker, mTimer).Run();
 
@@ -158,7 +152,7 @@ std::vector<Route> ModifiedSavings::Run()
     return startSolution;
 }
 
-void ModifiedSavings::RepairProcedure(std::vector<Route>& solution_routes)
+void ModifiedSavings::RepairProcedure(std::vector<Model::Route>& solution_routes)
 {
     std::ranges::sort(solution_routes,
                       [](const auto& routeA, const auto& routeB) { return routeA.TotalVolume > routeB.TotalVolume; });
@@ -219,7 +213,7 @@ void ModifiedSavings::RepairProcedure(std::vector<Route>& solution_routes)
 }
 
 std::vector<std::tuple<double, size_t, size_t>>
-    ModifiedSavings::DetermineInsertionCostsAllRoutes(std::vector<Route>& solution, size_t nodeId)
+    ModifiedSavings::DetermineInsertionCostsAllRoutes(std::vector<Model::Route>& solution, size_t nodeId)
 {
     const auto& container = mInstance->Vehicles[0].Containers[0];
     std::vector<std::tuple<double, size_t, size_t>> insertionCosts;
@@ -244,7 +238,7 @@ std::vector<std::tuple<double, size_t, size_t>>
 }
 
 std::vector<std::tuple<double, size_t, size_t>>
-    ModifiedSavings::DetermineInsertionCosts(const Route& route, size_t routeId, size_t nodeId)
+    ModifiedSavings::DetermineInsertionCosts(const Model::Route& route, size_t routeId, size_t nodeId)
 {
     std::vector<std::tuple<double, size_t, size_t>> insertionCosts;
 
@@ -279,7 +273,7 @@ std::vector<std::tuple<double, size_t, size_t>>
     return insertionCosts;
 }
 
-Collections::IdVector ModifiedSavings::InsertInRandomRoute(Route& route, size_t nodeToInsert)
+Collections::IdVector ModifiedSavings::InsertInRandomRoute(Model::Route& route, size_t nodeToInsert)
 {
     const auto& container = mInstance->Vehicles[0].Containers[0];
     auto removedNodes = Collections::IdVector();
@@ -321,7 +315,7 @@ Collections::IdVector ModifiedSavings::InsertInRandomRoute(Route& route, size_t 
     return removedNodes;
 }
 
-bool ModifiedSavings::InsertionFeasible(Route& route, size_t nodeToInsert, size_t position)
+bool ModifiedSavings::InsertionFeasible(Model::Route& route, size_t nodeToInsert, size_t position)
 {
     auto container = mInstance->Vehicles[0].Containers[0];
     auto tmpSequence = route.Sequence;

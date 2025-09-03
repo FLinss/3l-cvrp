@@ -20,7 +20,7 @@ class LocalSearchOperatorBase {
 public:
     virtual ~LocalSearchOperatorBase() = default;
 
-    virtual void Run(const Instance* const instance,
+    virtual void Run(const Model::Instance* const instance,
                     const VRP_InputParameters* const inputParameters,
                     ContainerLoading::BaseLoadingChecker* loadingChecker,
                     const Helper::Timer* const mTimer,

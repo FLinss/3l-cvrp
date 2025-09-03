@@ -9,17 +9,16 @@ namespace VehicleRouting
 {
 namespace Model
 {
-using namespace ContainerLoading::Model;
 
 class Vehicle
 {
   public:
     int InternId = 0;
     double Volume = 0.0;
-    std::vector<Container> Containers;
+    std::vector<ContainerLoading::Model::Container> Containers;
 
     Vehicle() = default;
-    Vehicle(int id, std::vector<Container> containers) : InternId(id), Containers(std::move(containers)) {}
+    Vehicle(int id, std::vector<ContainerLoading::Model::Container> containers) : InternId(id), Containers(std::move(containers)) {}
 };
 
 }

@@ -6,7 +6,7 @@ namespace Improvement
 {
 using namespace ContainerLoading;
 
-std::vector<IntraMove> TwoOpt::DetermineMoves(const Instance* const instance,
+std::vector<IntraMove> TwoOpt::DetermineMoves(const Model::Instance* const instance,
                                                const Collections::IdVector& route) const 
 {
     std::vector<IntraMove> moves = std::vector<IntraMove>();

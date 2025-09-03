@@ -3,7 +3,7 @@
 namespace VehicleRouting {
 namespace Improvement {
 
-void PerturbationOperatorBase::Run(const Instance* const instance,
+void PerturbationOperatorBase::Run(const Model::Instance* const instance,
                                     const VRP_InputParameters* const inputParameters,
                                     ContainerLoading::BaseLoadingChecker* loadingChecker,
                                     const Helper::Timer* const mTimer,
@@ -13,7 +13,7 @@ void PerturbationOperatorBase::Run(const Instance* const instance,
 
     int succesful_moves = 0;
 
-    std::vector<Route>& routes = currentSolution.Routes;
+    std::vector<Model::Route>& routes = currentSolution.Routes;
 
     if (routes.size() < 2)
     {
@@ -75,7 +75,7 @@ void PerturbationOperatorBase::Run(const Instance* const instance,
     }  
 };
 
-void PerturbationOperatorBase::UpdateRouteVolumeWeight(std::vector<Route>& routes, const PerturbationMove& move) const {
+void PerturbationOperatorBase::UpdateRouteVolumeWeight(std::vector<Model::Route>& routes, const PerturbationMove& move) const {
 
     const auto item_delta = std::get<5>(move);
     const auto volume_delta = std::get<6>(move);

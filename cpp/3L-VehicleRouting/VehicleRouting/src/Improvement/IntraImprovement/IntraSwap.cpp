@@ -6,7 +6,7 @@ namespace Improvement
 {
 using namespace ContainerLoading;
 
-std::vector<IntraMove> IntraSwap::DetermineMoves(const Instance* const instance,
+std::vector<IntraMove> IntraSwap::DetermineMoves(const Model::Instance* const instance,
                                            const Collections::IdVector& route) const 
 {
 

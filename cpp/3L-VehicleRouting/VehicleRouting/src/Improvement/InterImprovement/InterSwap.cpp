@@ -8,8 +8,8 @@ namespace Improvement
 using namespace ContainerLoading;
 
 
-std::vector<InterMove> InterSwap::DetermineMoves(const Instance* const instance,
-                                                     const std::vector<Route>& routes) const
+std::vector<InterMove> InterSwap::DetermineMoves(const Model::Instance* const instance,
+                                                     const std::vector<Model::Route>& routes) const
 {
 
     std::vector<InterMove> moves{};
@@ -65,7 +65,7 @@ std::vector<InterMove> InterSwap::DetermineMoves(const Instance* const instance,
 }
 
 
-void InterSwap::ChangeRoutes(std::vector<Route>& routes, const InterMove& move) const
+void InterSwap::ChangeRoutes(std::vector<Model::Route>& routes, const InterMove& move) const
 {
 
     auto node_i = std::get<3>(move);
@@ -78,7 +78,7 @@ void InterSwap::ChangeRoutes(std::vector<Route>& routes, const InterMove& move) 
     
 };
 
-void InterSwap::RevertChangeRoutes(std::vector<Route>& routes, const InterMove& move) const 
+void InterSwap::RevertChangeRoutes(std::vector<Model::Route>& routes, const InterMove& move) const 
 {
 
     auto node_i = std::get<3>(move);

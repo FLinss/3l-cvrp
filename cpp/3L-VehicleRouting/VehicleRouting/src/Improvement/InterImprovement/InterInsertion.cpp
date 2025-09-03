@@ -8,8 +8,8 @@ namespace Improvement
 using namespace ContainerLoading;
 
 
-std::vector<InterMove> InterInsertion::DetermineMoves(const Instance* const instance,
-                                                 const std::vector<Route>& routes) const
+std::vector<InterMove> InterInsertion::DetermineMoves(const Model::Instance* const instance,
+                                                        const std::vector<Model::Route>& routes) const
 {
 
     std::vector<InterMove> moves{};
@@ -61,7 +61,7 @@ std::vector<InterMove> InterInsertion::DetermineMoves(const Instance* const inst
 }
 
 
-void InterInsertion::ChangeRoutes(std::vector<Route>& routes, const InterMove& move) const
+void InterInsertion::ChangeRoutes(std::vector<Model::Route>& routes, const InterMove& move) const
 {
 
     auto node_i = std::get<3>(move);
@@ -81,7 +81,7 @@ void InterInsertion::ChangeRoutes(std::vector<Route>& routes, const InterMove& m
     
 }
 
-void InterInsertion::RevertChangeRoutes(std::vector<Route>& routes, const InterMove& move) const
+void InterInsertion::RevertChangeRoutes(std::vector<Model::Route>& routes, const InterMove& move) const
 {
     auto node_i     = std::get<3>(move);  // original position in route_i
     auto position_k = std::get<4>(move);  // inserted position in route_k

@@ -23,7 +23,7 @@ class PerturbationOperatorBase {
 public:
     virtual ~PerturbationOperatorBase() = default;
 
-    void Run(const Instance* const instance,
+    void Run(const Model::Instance* const instance,
             const VRP_InputParameters* const inputParameters,
             ContainerLoading::BaseLoadingChecker* loadingChecker,
             const Helper::Timer* const mTimer,
@@ -35,14 +35,14 @@ public:
     ImprovementTypes mType = ImprovementTypes::Perturbation;
 
   protected:
-    virtual std::optional<PerturbationMove> DetermineMoves(const Instance* instance,
-                                                    const std::vector<Route>& routes,
+    virtual std::optional<PerturbationMove> DetermineMoves(const Model::Instance* instance,
+                                                    const std::vector<Model::Route>& routes,
                                                     std::mt19937& rng) const = 0;
 
-    virtual void ChangeRoutes(std::vector<Route>& routes, const PerturbationMove& move) const = 0;
-    virtual void RevertChangeRoutes(std::vector<Route>& routes, const PerturbationMove& move) const = 0;
+    virtual void ChangeRoutes(std::vector<Model::Route>& routes, const PerturbationMove& move) const = 0;
+    virtual void RevertChangeRoutes(std::vector<Model::Route>& routes, const PerturbationMove& move) const = 0;
 
-    void UpdateRouteVolumeWeight(std::vector<Route>& routes, const PerturbationMove& move) const;
+    void UpdateRouteVolumeWeight(std::vector<Model::Route>& routes, const PerturbationMove& move) const;
 
 };
 

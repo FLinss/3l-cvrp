@@ -24,7 +24,7 @@ class LocalSearch
 public:
     // Build operator lists once, from whatever vectors your config provides
     LocalSearch(const VRP_InputParameters* const params,
-                const Instance* const inst,
+                const Model::Instance* const inst,
                 const Helper::Timer* const timer,
                 ContainerLoading::BaseLoadingChecker* loadingChecker,
                 std::mt19937& rng);
@@ -37,7 +37,7 @@ private:
     std::vector<std::unique_ptr<LocalSearchOperatorBase>>  lsOperators;
     std::vector<std::unique_ptr<PerturbationOperatorBase>> pertOperators;
 
-    const Instance* const mInstance = nullptr;
+    const Model::Instance* const mInstance = nullptr;
     const Helper::Timer* const mTimer = nullptr;
     const VRP_InputParameters* const mInputParameters = nullptr;
     ContainerLoading::BaseLoadingChecker* mLoadingChecker = nullptr;

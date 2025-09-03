@@ -5,7 +5,6 @@
 #include "Model/Instance.h"
 #include "Model/Node.h"
 #include "Model/Vehicle.h"
-
 #include <map>
 
 namespace VehicleRouting
@@ -13,39 +12,40 @@ namespace VehicleRouting
 namespace Helper
 {
 using json = nlohmann::json;
+using CLP_Container =  ContainerLoading::Model::Container;
 
-Instance HelperIO::ParseInstanceJson(std::ifstream& ifs)
+Model::Instance HelperIO::ParseInstanceJson(std::ifstream& ifs)
 {
-    nlohmann::json jf = nlohmann::json::parse(ifs);
+    json jf = json::parse(ifs);
 
     std::string name = jf["Name"];
 
     const auto& vehiclesJson = jf["Vehicles"];
 
     int dimensionFactor = 1;
-    std::vector<Vehicle> vehicles;
+    std::vector<Model::Vehicle> vehicles;
     for (size_t v = 0; v < vehiclesJson.size(); ++v)
     {
         const auto& vehicle = vehiclesJson[v];
 
-        Container container = Container(vehicle.at("Length").get<int>() * dimensionFactor,
+        CLP_Container container = CLP_Container(vehicle.at("Length").get<int>() * dimensionFactor,
                                         vehicle.at("Width").get<int>() * dimensionFactor,
                                         vehicle.at("Height").get<int>() * dimensionFactor,
                                         vehicle.at("Capacity").get<double>());
 
         container.Volume = container.Dx * container.Dy * container.Dz;
 
-        vehicles.emplace_back(v, std::vector<Container>({container}));
+        vehicles.emplace_back(v, std::vector<CLP_Container>({container}));
     }
 
-    Container& container = vehicles.front().Containers.front();
+    CLP_Container& container = vehicles.front().Containers.front();
 
     const auto& nodesJson = jf["Nodes"];
-    std::vector<Node> nodes;
+    std::vector<Model::Node> nodes;
     int idItem = 0;
     for (const auto& nodeJson: nodesJson)
     {
-        std::vector<Cuboid> items;
+        std::vector<ContainerLoading::Model::Cuboid> items;
         double totalVolume = 0.0;
         double totalArea = 0.0;
         for (const auto& itemJson: nodeJson["Items"])
@@ -60,7 +60,7 @@ Instance HelperIO::ParseInstanceJson(std::ifstream& ifs)
                                    itemJson.at("Width").get<int>() * dimensionFactor,
                                    itemJson.at("Height").get<int>() * dimensionFactor,
                                    itemJson.at("EnableHorizontalRotation").get<bool>(),
-                                   itemJson.at("Fragility").get<Fragility>(),
+                                   itemJson.at("Fragility").get<ContainerLoading::Model::Fragility>(),
                                    0,
                                    itemJson.at("Weight").get<double>());
 
@@ -94,19 +94,19 @@ Instance HelperIO::ParseInstanceJson(std::ifstream& ifs)
 VehicleRouting::Algorithms::InputParameters HelperIO::ReadInputParameters(std::string& parameterFilePath)
 {
     std::ifstream inputStream(parameterFilePath);
-    nlohmann::json jsonParameters;
+    json jsonParameters;
     inputStream >> jsonParameters;
 
     return jsonParameters.get<VehicleRouting::Algorithms::InputParameters>();
 }
 
-std::vector<Route> HelperIO::ParseSolutionJson(std::ifstream& ifs)
+std::vector<Model::Route> HelperIO::ParseSolutionJson(std::ifstream& ifs)
 {
-    nlohmann::json jf = nlohmann::json::parse(ifs);
+    json jf = json::parse(ifs);
 
     const auto& routesJson = jf["Routes"];
 
-    std::vector<Route> routes;
+    std::vector<Model::Route> routes;
 
     for (const auto& routeJson: routesJson)
     {

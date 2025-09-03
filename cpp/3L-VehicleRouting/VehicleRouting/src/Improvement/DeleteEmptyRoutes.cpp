@@ -5,7 +5,7 @@ namespace VehicleRouting
 namespace Improvement
 {
 
-void DeleteEmptyRoutes::Run(const Instance* const instance,
+void DeleteEmptyRoutes::Run(const Model::Instance* const instance,
                             const VRP_InputParameters* const inputParameters,
                             ContainerLoading::BaseLoadingChecker* loadingChecker,
                             const Helper::Timer* const mTimer,
@@ -15,7 +15,7 @@ void DeleteEmptyRoutes::Run(const Instance* const instance,
     auto& routes = currentSolution.Routes;
 
     routes.erase(std::remove_if(routes.begin(), routes.end(),
-                                [](const Route& route) {
+                                [](const Model::Route& route) {
                                     return route.Sequence.empty();
                                 }),
                  routes.end());
@@ -23,7 +23,7 @@ void DeleteEmptyRoutes::Run(const Instance* const instance,
     // Reassign internal route IDs or reindex if necessary
     for (size_t i = 0; i < routes.size(); ++i)
     {
-        routes[i].Id = static_cast<int>(i); // assuming Route has an Id field
+        routes[i].Id = static_cast<int>(i); // assuming Model::Route has an Id field
     }
     // Update solution metadata
     currentSolution.NumberOfRoutes = routes.size();

@@ -7,8 +7,6 @@
 
 namespace ContainerLoading
 {
-using namespace Algorithms;
-
 class SpeedUpLoadingChecker : public BaseLoadingChecker
 {
   public:

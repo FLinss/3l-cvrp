@@ -2,14 +2,12 @@
 
 #include "Algorithms/BCRoutingParams.h"
 #include "ContainerLoading/LoadingChecker/BaseLoadingChecker.h"
-#include "Model/Instance.h"
 #include "Helper/Timer.h"
 #include "Algorithms/Evaluation.h"
 #include "Algorithms/LoadingInterfaceServices.h"
 #include "CommonBasics/Helper/ModelServices.h"
 
 #include <random>
-#include <vector>
 #include <algorithm>
 
 namespace VehicleRouting

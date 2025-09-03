@@ -2,7 +2,6 @@
 
 namespace ContainerLoading
 {
-using namespace Algorithms;
 
 
 bool SpeedUpLoadingChecker::CompleteCheckStartSolution(const Model::Container& container,
@@ -25,7 +24,7 @@ bool SpeedUpLoadingChecker::CompleteCheckStartSolution(const Model::Container& c
 
         if(mClassifier->classify(items,stopIds,container)){
 
-            auto cpStatus = ConstraintProgrammingSolver(PackingType::Complete,
+            auto cpStatus = ConstraintProgrammingSolver(CLP_PackingType::Complete,
                                                         container,
                                                         set,
                                                         stopIds,
@@ -33,13 +32,13 @@ bool SpeedUpLoadingChecker::CompleteCheckStartSolution(const Model::Container& c
                                                         false,
                                                         maxRuntime);
 
-            return cpStatus == LoadingStatus::FeasOpt;
+            return cpStatus == CLP_LoadingStatus::FeasOpt;
         }
         return false;
 
    }else{
 
-        auto cpStatus = ConstraintProgrammingSolver(PackingType::Complete,
+        auto cpStatus = ConstraintProgrammingSolver(CLP_PackingType::Complete,
                                                     container,
                                                     set,
                                                     stopIds,
@@ -47,7 +46,7 @@ bool SpeedUpLoadingChecker::CompleteCheckStartSolution(const Model::Container& c
                                                     false,
                                                     maxRuntime);
 
-        return cpStatus == LoadingStatus::FeasOpt;
+        return cpStatus == CLP_LoadingStatus::FeasOpt;
 
    }
 }
@@ -89,7 +88,7 @@ bool SpeedUpLoadingChecker::ExactCheckNoClassifier(const Model::Container& conta
         return false;
     }
 
-    auto cpStatus = ConstraintProgrammingSolver(PackingType::Complete,
+    auto cpStatus = ConstraintProgrammingSolver(CLP_PackingType::Complete,
                                                             container,
                                                             set,
                                                             stopIds,
@@ -97,7 +96,7 @@ bool SpeedUpLoadingChecker::ExactCheckNoClassifier(const Model::Container& conta
                                                             false,
                                                             maxRuntime);
 
-    return cpStatus == LoadingStatus::FeasOpt;
+    return cpStatus == CLP_LoadingStatus::FeasOpt;
 
 }
 }

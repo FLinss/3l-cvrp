@@ -4,7 +4,6 @@
 
 namespace ContainerLoading
 {
-using namespace Algorithms;
 
 class NoClassifierLoadingChecker : public BaseLoadingChecker
 {

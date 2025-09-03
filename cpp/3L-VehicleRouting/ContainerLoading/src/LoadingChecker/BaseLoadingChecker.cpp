@@ -3,6 +3,7 @@
 
 namespace ContainerLoading
 {
+
 std::vector<Model::Cuboid> BaseLoadingChecker::SelectItems(const Collections::IdVector& nodeIds,
                                                 std::vector<Model::Group>& nodes,
                                                 bool reversedDirection) const
@@ -39,7 +40,7 @@ std::vector<Model::Cuboid> BaseLoadingChecker::SelectItems(const Collections::Id
     return selectedItems;
 }
 
-LoadingStatus BaseLoadingChecker::ConstraintProgrammingSolver(PackingType packingType,
+CLP_LoadingStatus BaseLoadingChecker::ConstraintProgrammingSolver(CLP_PackingType packingType,
                                                           const Model::Container& container,
                                                           const boost::dynamic_bitset<>& set,
                                                           const Collections::IdVector& stopIds,
@@ -50,13 +51,13 @@ LoadingStatus BaseLoadingChecker::ConstraintProgrammingSolver(PackingType packin
     auto loadingMask = BuildMask(packingType);
 
     auto precheckStatus = GetPrecheckStatusCP(stopIds, set, loadingMask, isCallTypeExact);
-    if (precheckStatus != LoadingStatus::Invalid)
+    if (precheckStatus != CLP_LoadingStatus::Invalid)
     {
         return precheckStatus;
     }
 
     auto numberStops = stopIds.size();
-    auto containerLoadingCP = ContainerLoadingCP(Parameters,
+    auto containerLoadingCP = Algorithms::ContainerLoadingCP(Parameters,
                                                  container,
                                                  items,
                                                  numberStops,
@@ -66,14 +67,14 @@ LoadingStatus BaseLoadingChecker::ConstraintProgrammingSolver(PackingType packin
 
     auto status = containerLoadingCP.Solve();
 
-    if (status == LoadingStatus::Invalid)
+    if (status == CLP_LoadingStatus::Invalid)
     {
         throw std::runtime_error("Loading status invalid in CP model!");
     }
 
-    if (isCallTypeExact && status == LoadingStatus::Unknown)
+    if (isCallTypeExact && status == CLP_LoadingStatus::Unknown)
     {
-        return LoadingStatus::Invalid;
+        return CLP_LoadingStatus::Invalid;
     }
 
     AddStatus(stopIds, set, loadingMask, status);
@@ -81,7 +82,7 @@ LoadingStatus BaseLoadingChecker::ConstraintProgrammingSolver(PackingType packin
     return status;
 }
 
-LoadingStatus BaseLoadingChecker::ConstraintProgrammingSolverGetPacking(PackingType packingType,
+CLP_LoadingStatus BaseLoadingChecker::ConstraintProgrammingSolverGetPacking(CLP_PackingType packingType,
                                                                         const Model::Container& container,
                                                                         const Collections::IdVector& stopIds,
                                                                         std::vector<Model::Cuboid>& items,
@@ -89,14 +90,14 @@ LoadingStatus BaseLoadingChecker::ConstraintProgrammingSolverGetPacking(PackingT
 {
     if (maxRuntime < 0.0 + 1e-5)
     {
-        return LoadingStatus::Invalid;
+        return CLP_LoadingStatus::Invalid;
     }
 
     auto loadingMask = BuildMask(packingType);
 
     auto numberStops = stopIds.size();
 
-    auto containerLoadingCP = ContainerLoadingCP(Parameters,
+    auto containerLoadingCP = Algorithms::ContainerLoadingCP(Parameters,
                                                  container,
                                                  items,
                                                  numberStops,
@@ -106,12 +107,12 @@ LoadingStatus BaseLoadingChecker::ConstraintProgrammingSolverGetPacking(PackingT
 
     auto status = containerLoadingCP.Solve();
 
-    if (status == LoadingStatus::Invalid)
+    if (status == CLP_LoadingStatus::Invalid)
     {
         throw std::runtime_error("Loading status invalid in CP model!");
     }
 
-    if (status == LoadingStatus::FeasOpt)
+    if (status == CLP_LoadingStatus::FeasOpt)
     {
         containerLoadingCP.ExtractPacking(items);
     }
@@ -149,25 +150,25 @@ void BaseLoadingChecker::AddFeasibleRoute(const Collections::IdVector& route)
     mCompleteFeasSeq.push_back(route);
 }
 
-bool BaseLoadingChecker::SequenceIsInfeasibleCP(const Collections::IdVector& sequence, const LoadingFlag mask) const
+bool BaseLoadingChecker::SequenceIsInfeasibleCP(const Collections::IdVector& sequence, const CLP_LoadingFlag mask) const
 {
     return mInfSequences.at(mask).contains(sequence);
 }
 
-bool BaseLoadingChecker::SequenceIsUnknownCP(const Collections::IdVector& sequence, const LoadingFlag mask) const
+bool BaseLoadingChecker::SequenceIsUnknownCP(const Collections::IdVector& sequence, const CLP_LoadingFlag mask) const
 {
     return mUnkSequences.at(mask).contains(sequence);
 }
 
-bool BaseLoadingChecker::SequenceIsFeasible(const Collections::IdVector& sequence, const LoadingFlag mask) const
+bool BaseLoadingChecker::SequenceIsFeasible(const Collections::IdVector& sequence, const CLP_LoadingFlag mask) const
 {
     return mFeasSequences.at(mask).contains(sequence);
 }
 
-bool BaseLoadingChecker::SetIsInfeasibleCP(const boost::dynamic_bitset<>& set, const LoadingFlag mask) const
+bool BaseLoadingChecker::SetIsInfeasibleCP(const boost::dynamic_bitset<>& set, const CLP_LoadingFlag mask) const
 {
     const auto& sets = mInfSets.at(mask);
-    if (!IsSet(mask, LoadingFlag::Support))
+    if (!IsSet(mask, CLP_LoadingFlag::Support))
     {
         // If support is disabled, set S is infeasible when S is a superset of an infeasible set.
         auto setComparer = [set](const boost::dynamic_bitset<>& infeasibleSet)
@@ -194,7 +195,7 @@ bool BaseLoadingChecker::SetIsInfeasibleCP(const boost::dynamic_bitset<>& set, c
     return false;
 }
 
-bool BaseLoadingChecker::SetIsUnknownCP(const boost::dynamic_bitset<>& set, const LoadingFlag mask) const
+bool BaseLoadingChecker::SetIsUnknownCP(const boost::dynamic_bitset<>& set, const CLP_LoadingFlag mask) const
 {
     const auto& sets = mUnknownSets.at(mask);
 
@@ -208,10 +209,10 @@ bool BaseLoadingChecker::SetIsUnknownCP(const boost::dynamic_bitset<>& set, cons
     return false;
 }
 
-bool BaseLoadingChecker::SetIsFeasibleCP(const boost::dynamic_bitset<>& set, const LoadingFlag mask) const
+bool BaseLoadingChecker::SetIsFeasibleCP(const boost::dynamic_bitset<>& set, const CLP_LoadingFlag mask) const
 {
     const auto& sets = mFeasibleSets.at(mask);
-    if (!IsSet(mask, LoadingFlag::Support))
+    if (!IsSet(mask, CLP_LoadingFlag::Support))
     {
         // If support is disabled, set S is feasible when S is a subset of a feasible set.
         auto setComparer = [set](const boost::dynamic_bitset<>& feasibleSet)
@@ -236,46 +237,46 @@ bool BaseLoadingChecker::SetIsFeasibleCP(const boost::dynamic_bitset<>& set, con
     return false;
 }
 
-LoadingFlag BaseLoadingChecker::BuildMask(PackingType type) const
+CLP_LoadingFlag BaseLoadingChecker::BuildMask(CLP_PackingType type) const
 {
     switch (type)
     {
-        case PackingType::Complete:
-            return LoadingFlag::Complete &Parameters.LoadingFlags;
-        case PackingType::NoSupport:
-            return LoadingFlag::NoSupport &Parameters.LoadingFlags;
-        case PackingType::LifoNoSequence:
-            return LoadingFlag::LifoNoSequence &Parameters.LoadingFlags;
+        case CLP_PackingType::Complete:
+            return CLP_LoadingFlag::Complete &Parameters.LoadingFlags;
+        case CLP_PackingType::NoSupport:
+            return CLP_LoadingFlag::NoSupport &Parameters.LoadingFlags;
+        case CLP_PackingType::LifoNoSequence:
+            return CLP_LoadingFlag::LifoNoSequence &Parameters.LoadingFlags;
         default:
-            throw std::runtime_error("PackingType not implemented in mask builder.");
+            throw std::runtime_error("CLP_PackingType not implemented in mask builder.");
     }
 
-    return LoadingFlag();
+    return CLP_LoadingFlag();
 }
 
-LoadingStatus BaseLoadingChecker::GetPrecheckStatusCP(const Collections::IdVector& sequence,
+CLP_LoadingStatus BaseLoadingChecker::GetPrecheckStatusCP(const Collections::IdVector& sequence,
                                                   const boost::dynamic_bitset<>& set,
-                                                  const LoadingFlag mask,
+                                                  const CLP_LoadingFlag mask,
                                                   const bool isCallTypeExact)
 {
-    if (IsSet(mask, LoadingFlag::Sequence))
+    if (IsSet(mask, CLP_LoadingFlag::Sequence))
     {
         if (SequenceIsInfeasibleCP(sequence, mask))
         {
             ////std::cout << "Sequence already stored as infeasible (CP)." << "\n";
-            return LoadingStatus::Infeasible;
+            return CLP_LoadingStatus::Infeasible;
         }
 
         if (SequenceIsFeasible(sequence, mask))
         {
             ////std::cout << "Sequence already stored as feasible (CP)." << "\n";
-            return LoadingStatus::FeasOpt;
+            return CLP_LoadingStatus::FeasOpt;
         }
 
         if (!isCallTypeExact && SequenceIsUnknownCP(sequence, mask))
         {
             ////std::cout << "Sequence already stored as unknown (CP)." << "\n";
-            return LoadingStatus::Unknown;
+            return CLP_LoadingStatus::Unknown;
         }
     }
     else
@@ -283,7 +284,7 @@ LoadingStatus BaseLoadingChecker::GetPrecheckStatusCP(const Collections::IdVecto
         if (SetIsInfeasibleCP(set, mask))
         {
             ////std::cout << "Set already stored as infeasible (CP)." << "\n";
-            return LoadingStatus::Infeasible;
+            return CLP_LoadingStatus::Infeasible;
         }
 
         if (SetIsFeasibleCP(set, mask))
@@ -294,29 +295,29 @@ LoadingStatus BaseLoadingChecker::GetPrecheckStatusCP(const Collections::IdVecto
                 AddFeasibleRoute(sequence);
             }
 
-            return LoadingStatus::FeasOpt;
+            return CLP_LoadingStatus::FeasOpt;
         }
 
         if (!isCallTypeExact && SetIsUnknownCP(set, mask))
         {
             ////std::cout << "Set already stored as unknown (CP)." << "\n";
-            return LoadingStatus::Unknown;
+            return CLP_LoadingStatus::Unknown;
         }
     }
 
-    return LoadingStatus::Invalid;
+    return CLP_LoadingStatus::Invalid;
 }
 
 void BaseLoadingChecker::AddStatus(const Collections::IdVector& sequence,
                                const boost::dynamic_bitset<>& set,
-                               const LoadingFlag mask,
-                               const LoadingStatus status)
+                               const CLP_LoadingFlag mask,
+                               const CLP_LoadingStatus status)
 {
     // Add to feasible sequences although lifo might be disabled; needed for SP heuristic.
-    if (status == LoadingStatus::FeasOpt && mask ==Parameters.LoadingFlags)
+    if (status == CLP_LoadingStatus::FeasOpt && mask ==Parameters.LoadingFlags)
     {
         AddFeasibleRoute(sequence);
-        if (!IsSet(mask, LoadingFlag::Lifo))
+        if (!IsSet(mask, CLP_LoadingFlag::Lifo))
         {
             mFeasibleSets[mask].push_back(set);
         }
@@ -325,27 +326,27 @@ void BaseLoadingChecker::AddStatus(const Collections::IdVector& sequence,
     }
 
     // If lifo is enabled, order of stops is relevant -> sequence of ids.
-    if (IsSet(mask, LoadingFlag::Sequence))
+    if (IsSet(mask, CLP_LoadingFlag::Sequence))
     {
         switch (status)
         {
-            case LoadingStatus::FeasOpt:
+            case CLP_LoadingStatus::FeasOpt:
             {
                 mFeasSequences[mask].insert(sequence);
                 return;
             }
-            case LoadingStatus::Infeasible:
+            case CLP_LoadingStatus::Infeasible:
             {
                 mInfSequences[mask].insert(sequence);
                 return;
             }
-            case LoadingStatus::Unknown:
+            case CLP_LoadingStatus::Unknown:
             {
                 mUnkSequences[mask].insert(sequence);
                 return;
             }
             default:
-                throw std::runtime_error("LoadingStatus invalid!");
+                throw std::runtime_error("CLP_LoadingStatus invalid!");
         }
     }
     // If lifo is disabled, order of stops is not relevant -> set of ids.
@@ -353,23 +354,23 @@ void BaseLoadingChecker::AddStatus(const Collections::IdVector& sequence,
     {
         switch (status)
         {
-            case LoadingStatus::FeasOpt:
+            case CLP_LoadingStatus::FeasOpt:
             {
                 mFeasibleSets[mask].push_back(set);
                 return;
             }
-            case LoadingStatus::Infeasible:
+            case CLP_LoadingStatus::Infeasible:
             {
                 mInfSets[mask].push_back(set);
                 return;
             }
-            case LoadingStatus::Unknown:
+            case CLP_LoadingStatus::Unknown:
             {
                 mUnknownSets[mask].push_back(set);
                 return;
             }
             default:
-                throw std::runtime_error("LoadingStatus invalid!");
+                throw std::runtime_error("CLP_LoadingStatus invalid!");
         }
     }
 }

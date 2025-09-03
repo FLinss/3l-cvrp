@@ -2,7 +2,7 @@
 
 namespace ContainerLoading
 {
-using namespace Algorithms;
+
 
 bool HybridLoadingChecker::CompleteCheckStartSolution(const Model::Container& container,
                 const boost::dynamic_bitset<>& set,
@@ -24,7 +24,7 @@ bool HybridLoadingChecker::CompleteCheckStartSolution(const Model::Container& co
 
         if(mClassifier->classify(items,stopIds,container)){
 
-            auto cpStatus = ConstraintProgrammingSolver(PackingType::Complete,
+            auto cpStatus = ConstraintProgrammingSolver(CLP_PackingType::Complete,
                                                         container,
                                                         set,
                                                         stopIds,
@@ -32,13 +32,13 @@ bool HybridLoadingChecker::CompleteCheckStartSolution(const Model::Container& co
                                                         false,
                                                         maxRuntime);
 
-            return cpStatus == LoadingStatus::FeasOpt;
+            return cpStatus == CLP_LoadingStatus::FeasOpt;
         }
         return false;
 
    }else{
 
-        auto cpStatus = ConstraintProgrammingSolver(PackingType::Complete,
+        auto cpStatus = ConstraintProgrammingSolver(CLP_PackingType::Complete,
                                                     container,
                                                     set,
                                                     stopIds,
@@ -46,7 +46,7 @@ bool HybridLoadingChecker::CompleteCheckStartSolution(const Model::Container& co
                                                     false,
                                                     maxRuntime);
 
-        return cpStatus == LoadingStatus::FeasOpt;
+        return cpStatus == CLP_LoadingStatus::FeasOpt;
 
    }
 }
@@ -76,7 +76,7 @@ bool HybridLoadingChecker::CompleteCheck(const Model::Container& container,
 
         if(mClassifier->classify(items,stopIds,container)){
 
-        auto cpStatus = ConstraintProgrammingSolver(PackingType::Complete,
+        auto cpStatus = ConstraintProgrammingSolver(CLP_PackingType::Complete,
                                                 container,
                                                 set,
                                                 stopIds,
@@ -84,7 +84,7 @@ bool HybridLoadingChecker::CompleteCheck(const Model::Container& container,
                                                 false,
                                                 maxRuntime);
 
-        return cpStatus == LoadingStatus::FeasOpt;
+        return cpStatus == CLP_LoadingStatus::FeasOpt;
 
         }
         return false;
@@ -108,7 +108,7 @@ bool HybridLoadingChecker::ExactCheckNoClassifier(const Model::Container& contai
         return false;
     }
 
-    auto cpStatus = ConstraintProgrammingSolver(PackingType::Complete,
+    auto cpStatus = ConstraintProgrammingSolver(CLP_PackingType::Complete,
                                                             container,
                                                             set,
                                                             stopIds,
@@ -116,7 +116,7 @@ bool HybridLoadingChecker::ExactCheckNoClassifier(const Model::Container& contai
                                                             false,
                                                             maxRuntime);
 
-    return cpStatus == LoadingStatus::FeasOpt;
+    return cpStatus == CLP_LoadingStatus::FeasOpt;
 }
 
 }

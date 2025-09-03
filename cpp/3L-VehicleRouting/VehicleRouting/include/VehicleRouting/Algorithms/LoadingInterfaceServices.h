@@ -3,8 +3,6 @@
 #include "ContainerLoading/Model/ContainerLoadingInstance.h"
 #include "Model/Node.h"
 
-#include <vector>
-
 namespace VehicleRouting
 {
 namespace Algorithms

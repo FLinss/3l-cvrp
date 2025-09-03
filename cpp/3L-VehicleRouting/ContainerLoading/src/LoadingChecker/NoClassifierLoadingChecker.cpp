@@ -2,7 +2,6 @@
 
 namespace ContainerLoading
 {
-using namespace Algorithms;
 
 
 bool NoClassifierLoadingChecker::CompleteCheckStartSolution(const Model::Container& container,
@@ -22,7 +21,7 @@ bool NoClassifierLoadingChecker::CompleteCheckStartSolution(const Model::Contain
     }
     
 
-    auto cpStatus = ConstraintProgrammingSolver(PackingType::Complete,
+    auto cpStatus = ConstraintProgrammingSolver(CLP_PackingType::Complete,
                                                 container,
                                                 set,
                                                 stopIds,
@@ -30,7 +29,7 @@ bool NoClassifierLoadingChecker::CompleteCheckStartSolution(const Model::Contain
                                                 false,
                                                 maxRuntime);
 
-    return cpStatus == LoadingStatus::FeasOpt;
+    return cpStatus == CLP_LoadingStatus::FeasOpt;
 }
 
 bool NoClassifierLoadingChecker::CompleteCheck(const Model::Container& container,
@@ -51,7 +50,7 @@ bool NoClassifierLoadingChecker::CompleteCheck(const Model::Container& container
     }
     
 
-    auto cpStatus = ConstraintProgrammingSolver(PackingType::Complete,
+    auto cpStatus = ConstraintProgrammingSolver(CLP_PackingType::Complete,
                                                 container,
                                                 set,
                                                 stopIds,
@@ -59,7 +58,7 @@ bool NoClassifierLoadingChecker::CompleteCheck(const Model::Container& container
                                                 false,
                                                 maxRuntime);
 
-    return cpStatus == LoadingStatus::FeasOpt;
+    return cpStatus == CLP_LoadingStatus::FeasOpt;
 
 }
 

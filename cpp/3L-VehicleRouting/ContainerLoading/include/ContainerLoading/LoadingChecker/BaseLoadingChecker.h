@@ -12,7 +12,10 @@
 
 namespace ContainerLoading
 {
-using namespace Algorithms;
+
+using CLP_LoadingFlag = Algorithms::LoadingFlag;
+using CLP_PackingType = Algorithms::PackingType;
+using CLP_LoadingStatus = Algorithms::LoadingStatus;
 
 class BaseLoadingChecker
 {
@@ -21,9 +24,10 @@ class BaseLoadingChecker
 
     explicit BaseLoadingChecker(const ContainerLoadingParams& parameters) : Parameters(parameters)
     {
-        using enum LoadingFlag;
 
-        std::vector<LoadingFlag> usedLoadingFlags = {Complete, NoSupport, LifoNoSequence};
+        std::vector<CLP_LoadingFlag> usedLoadingFlags = {CLP_LoadingFlag::Complete,
+                                                          CLP_LoadingFlag::NoSupport,
+                                                          CLP_LoadingFlag::LifoNoSequence};
 
         constexpr size_t reservedSize = 1000;
         for (const auto flag: usedLoadingFlags)
@@ -60,7 +64,7 @@ class BaseLoadingChecker
     [[nodiscard]] std::vector<Model::Cuboid>
         SelectItems(const Collections::IdVector& nodeIds, std::vector<Model::Group>& nodes, bool reversedDirection) const;
 
-    [[nodiscard]] LoadingStatus ConstraintProgrammingSolver(PackingType packingType,
+    [[nodiscard]] CLP_LoadingStatus ConstraintProgrammingSolver(CLP_PackingType packingType,
                                                             const Model::Container& container,
                                                             const boost::dynamic_bitset<>& set,
                                                             const Collections::IdVector& stopIds,
@@ -68,7 +72,7 @@ class BaseLoadingChecker
                                                             bool isCallTypeExact,
                                                             double maxRuntime);
 
-    [[nodiscard]] LoadingStatus ConstraintProgrammingSolverGetPacking(PackingType packingType,
+    [[nodiscard]] CLP_LoadingStatus ConstraintProgrammingSolverGetPacking(CLP_PackingType packingType,
                                                                       const Model::Container& container,
                                                                       const Collections::IdVector& stopIds,
                                                                       std::vector<Model::Cuboid>& items,
@@ -91,36 +95,36 @@ class BaseLoadingChecker
     /// -> At least 2 vehicles are needed to serve all customers in C
     std::vector<boost::dynamic_bitset<>> mInfeasibleCustomerCombinations;
 
-    std::unordered_map<LoadingFlag, std::vector<boost::dynamic_bitset<>>> mFeasibleSets;
-    std::unordered_map<LoadingFlag, Collections::SequenceSet> mFeasSequences;
+    std::unordered_map<CLP_LoadingFlag, std::vector<boost::dynamic_bitset<>>> mFeasibleSets;
+    std::unordered_map<CLP_LoadingFlag, Collections::SequenceSet> mFeasSequences;
 
-    std::unordered_map<LoadingFlag, std::vector<boost::dynamic_bitset<>>> mInfSets;
-    std::unordered_map<LoadingFlag, Collections::SequenceSet> mInfSequences;
+    std::unordered_map<CLP_LoadingFlag, std::vector<boost::dynamic_bitset<>>> mInfSets;
+    std::unordered_map<CLP_LoadingFlag, Collections::SequenceSet> mInfSequences;
 
-    std::unordered_map<LoadingFlag, std::vector<boost::dynamic_bitset<>>> mUnknownSets;
-    std::unordered_map<LoadingFlag, Collections::SequenceSet> mUnkSequences;
+    std::unordered_map<CLP_LoadingFlag, std::vector<boost::dynamic_bitset<>>> mUnknownSets;
+    std::unordered_map<CLP_LoadingFlag, Collections::SequenceSet> mUnkSequences;
 
     void AddFeasibleRoute(const Collections::IdVector& route);
 
-    [[nodiscard]] bool SequenceIsInfeasibleCP(const Collections::IdVector& sequence, LoadingFlag mask) const;
-    [[nodiscard]] bool SequenceIsUnknownCP(const Collections::IdVector& sequence, LoadingFlag mask) const;
-    [[nodiscard]] bool SequenceIsFeasible(const Collections::IdVector& sequence, LoadingFlag mask) const;
+    [[nodiscard]] bool SequenceIsInfeasibleCP(const Collections::IdVector& sequence, CLP_LoadingFlag mask) const;
+    [[nodiscard]] bool SequenceIsUnknownCP(const Collections::IdVector& sequence, CLP_LoadingFlag mask) const;
+    [[nodiscard]] bool SequenceIsFeasible(const Collections::IdVector& sequence, CLP_LoadingFlag mask) const;
 
-    [[nodiscard]] bool SetIsInfeasibleCP(const boost::dynamic_bitset<>& set, LoadingFlag mask) const;
-    [[nodiscard]] bool SetIsUnknownCP(const boost::dynamic_bitset<>& set, LoadingFlag mask) const;
-    [[nodiscard]] bool SetIsFeasibleCP(const boost::dynamic_bitset<>& set, LoadingFlag mask) const;
+    [[nodiscard]] bool SetIsInfeasibleCP(const boost::dynamic_bitset<>& set, CLP_LoadingFlag mask) const;
+    [[nodiscard]] bool SetIsUnknownCP(const boost::dynamic_bitset<>& set, CLP_LoadingFlag mask) const;
+    [[nodiscard]] bool SetIsFeasibleCP(const boost::dynamic_bitset<>& set, CLP_LoadingFlag mask) const;
 
-    [[nodiscard]] LoadingFlag BuildMask(PackingType type) const;
+    [[nodiscard]] CLP_LoadingFlag BuildMask(CLP_PackingType type) const;
 
-    [[nodiscard]] LoadingStatus GetPrecheckStatusCP(const Collections::IdVector& sequence,
+    [[nodiscard]] CLP_LoadingStatus GetPrecheckStatusCP(const Collections::IdVector& sequence,
                                                     const boost::dynamic_bitset<>& set,
-                                                    LoadingFlag mask,
+                                                    CLP_LoadingFlag mask,
                                                     bool isCallTypeExact);
 
     void AddStatus(const Collections::IdVector& sequence,
                    const boost::dynamic_bitset<>& set,
-                   LoadingFlag mask,
-                   LoadingStatus status);
+                   CLP_LoadingFlag mask,
+                   CLP_LoadingStatus status);
 
 };
 }

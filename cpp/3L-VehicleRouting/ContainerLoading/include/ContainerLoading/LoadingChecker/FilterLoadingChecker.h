@@ -7,7 +7,6 @@
 
 namespace ContainerLoading
 {
-using namespace Algorithms;
 
 class FilterLoadingChecker : public BaseLoadingChecker
 {

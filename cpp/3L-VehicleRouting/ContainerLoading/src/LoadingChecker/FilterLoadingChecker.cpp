@@ -2,8 +2,6 @@
 
 namespace ContainerLoading
 {
-using namespace Algorithms;
-
 
 bool FilterLoadingChecker::CompleteCheckStartSolution(const Model::Container& container,
                 const boost::dynamic_bitset<>& set,
@@ -25,7 +23,7 @@ bool FilterLoadingChecker::CompleteCheckStartSolution(const Model::Container& co
 
         if(mClassifier->classify(items,stopIds,container)){
 
-            auto cpStatus = ConstraintProgrammingSolver(PackingType::Complete,
+            auto cpStatus = ConstraintProgrammingSolver(CLP_PackingType::Complete,
                                                     container,
                                                     set,
                                                     stopIds,
@@ -33,13 +31,13 @@ bool FilterLoadingChecker::CompleteCheckStartSolution(const Model::Container& co
                                                     false,
                                                     maxRuntime);
 
-            return cpStatus == LoadingStatus::FeasOpt;
+            return cpStatus == CLP_LoadingStatus::FeasOpt;
         }
         return false;
 
    }else{
 
-        auto cpStatus = ConstraintProgrammingSolver(PackingType::Complete,
+        auto cpStatus = ConstraintProgrammingSolver(CLP_PackingType::Complete,
                                                         container,
                                                         set,
                                                         stopIds,
@@ -47,7 +45,7 @@ bool FilterLoadingChecker::CompleteCheckStartSolution(const Model::Container& co
                                                         false,
                                                         maxRuntime);
 
-        return cpStatus == LoadingStatus::FeasOpt;
+        return cpStatus == CLP_LoadingStatus::FeasOpt;
 
    }
 }
@@ -72,7 +70,7 @@ bool FilterLoadingChecker::CompleteCheck(const Model::Container& container,
     
     if(mClassifier->classify(items,stopIds,container)){
 
-        auto cpStatus = ConstraintProgrammingSolver(PackingType::Complete,
+        auto cpStatus = ConstraintProgrammingSolver(CLP_PackingType::Complete,
                                                 container,
                                                 set,
                                                 stopIds,
@@ -80,7 +78,7 @@ bool FilterLoadingChecker::CompleteCheck(const Model::Container& container,
                                                 false,
                                                 maxRuntime);
 
-        return cpStatus == LoadingStatus::FeasOpt;
+        return cpStatus == CLP_LoadingStatus::FeasOpt;
 
     }else{
         return false;

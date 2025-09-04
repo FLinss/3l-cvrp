@@ -1,18 +1,8 @@
 #include "Classifier/LRClassifier.h"
-#include "Classifier/LRClassifier.h"
-#include <fstream>
-#include <algorithm>
-#include <numeric>
-#include <stdexcept>
-#include <cmath>
-#include <iterator>
-#include <iomanip>
-#include <sstream>
-
 namespace ContainerLoading{
 
+void LRClassifier::loadStandardScalingFromJson(const fs::path& scaler_path) {
 
-void LRClassifier::loadStandardScalingFromJson(const std::string& scaler_path) {
     std::ifstream file(scaler_path);
     if (!file) throw std::runtime_error("Could not open scaling JSON file.");
 
@@ -42,13 +32,14 @@ void LRClassifier::loadStandardScalingFromJson(const std::string& scaler_path) {
     }
 }
 
-LRClassifier::LRClassifier(const ContainerLoadingParams& containerLoadingParams) : 
-    BaseClassifier(containerLoadingParams)
+void LRClassifier::loadModelfromPath(const fs::path& model_path)
 {
-    std::ifstream f(containerLoadingParams.ModelPath);
-    if (!f) throw std::runtime_error("Could not open LR JSON file (weights/bias).");
+    std::ifstream file(model_path);
+    if (!file) {
+        throw std::runtime_error("Could not open model JSON file.");
+    }
 
-    nlohmann::json j; f >> j;
+    nlohmann::json j; file >> j;
 
     std::vector<float> wv;
     if (j.at("w").is_array() && !j.at("w").empty() && j.at("w")[0].is_number_float()) {
@@ -63,15 +54,26 @@ LRClassifier::LRClassifier(const ContainerLoadingParams& containerLoadingParams)
     w_.resize(N);
     for (int i = 0; i < N; ++i) w_[i] = wv[i];
 
-    // Optional: allow threshold override (commented because Base may own it)
-    // if (j.contains("threshold")) mAcceptanceThreshold = j["threshold"].get<float>();
+
+}
+
+LRClassifier::LRClassifier(const ContainerLoadingParams& containerLoadingParams) : 
+    BaseClassifier(containerLoadingParams)
+{
+    fs::path dir (containerLoadingParams.BaseModelPath);
+    fs::path model_file (modelTypeString + "_" + containerLoadingParams.ModelDataSet + "_model.pt");
+    fs::path scaler_file (modelTypeString + "_" + containerLoadingParams.ModelDataSet + "_scaler.json");
+    fs::path  model_path = dir / model_file;
+    fs::path  scaler_path = dir / scaler_file;
+
+    loadModelfromPath(model_path);
 
     // Basic sanity with scaling size
     if (mean_.size() != 0 && mean_.size() != w_.size()) {
         throw std::runtime_error("LR weight size does not match scaler size.");
     }
 
-    loadStandardScalingFromJson(containerLoadingParams.ModelValuesJson);
+    loadStandardScalingFromJson(scaler_path);
 }
 
 float LRClassifier::classifyReturnOutput(const std::vector<Model::Cuboid>& items,

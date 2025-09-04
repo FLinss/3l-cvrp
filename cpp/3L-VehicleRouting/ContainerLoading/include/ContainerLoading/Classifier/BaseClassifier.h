@@ -5,7 +5,7 @@
 #include "Model/ContainerLoadingInstance.h"
 #include "ProblemParameters.h"
 #include "nlohmann/json.hpp"
-
+#include <filesystem>
 #include <numeric>   // std::accumulate
 #include <iterator>  // std::distance
 #include <cmath>     // std::pow, std::sqrt
@@ -13,8 +13,12 @@
 #include <iomanip>   // std::put_time, std::setw, std::setfill
 #include <chrono>    // std::chrono::
 #include <ctime>     // std::tm, std::localtime
+#include <fstream>
+#include <algorithm>
+#include <stdexcept>
 
 using json = nlohmann::json;
+namespace fs = std::filesystem;
 
 namespace ContainerLoading {
     
@@ -44,9 +48,12 @@ public:
 
 protected:
 
-    virtual void loadStandardScalingFromJson(const std::string& scaler_path) = 0;
+    virtual void loadStandardScalingFromJson(const fs::path& scaler_path) = 0;
+    virtual void loadModelfromPath(const fs::path& model_path) = 0;
+
     float mAcceptanceThreshold;
-    std::string mSaveTensorPath;    
+    std::string mSaveTensorPath;
+    std::string modelTypeString{};   
 
     std::string get_timestamp() const;
 

@@ -20,8 +20,9 @@
         ]
     },
     "ContainerLoadingParams": {
-       "TracedModelPath": "",
-        "SerializeJson_MeanStd" : "",
+        "ModelType":"",
+        "ModelDataSet": "",
+        "BaseModelPath": "",
         "SaveTensorData" : false,
         "TensorDataFilePath": "",
         "AcceptanceThreshold": 0.5,

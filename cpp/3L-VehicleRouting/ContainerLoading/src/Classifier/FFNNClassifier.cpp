@@ -2,7 +2,7 @@
 
 namespace ContainerLoading{
 
-void FFNNClassifier::loadStandardScalingFromJson(const std::string& scaler_path){
+void FFNNClassifier::loadStandardScalingFromJson(const fs::path& scaler_path){
 
     std::ifstream file(scaler_path);
     if (!file) {
@@ -20,15 +20,29 @@ void FFNNClassifier::loadStandardScalingFromJson(const std::string& scaler_path)
 
 }
 
+void FFNNClassifier::loadModelfromPath(const fs::path& model_path)
+{
+    std::ifstream file(model_path);
+    if (!file) {
+        throw std::runtime_error("Could not open model JSON file.");
+    }
+
+    model = torch::jit::load(file);
+    model.eval();
+
+}
+
 FFNNClassifier::FFNNClassifier(const ContainerLoadingParams& containerLoadingParams) : 
     BaseClassifier(containerLoadingParams)
 {
-
-    model = torch::jit::load(containerLoadingParams.ModelPath);
-    model.eval();
-
-    loadStandardScalingFromJson(containerLoadingParams.ModelValuesJson);
-
+    fs::path dir (containerLoadingParams.BaseModelPath);
+    fs::path model_file (modelTypeString + "_" + containerLoadingParams.ModelDataSet + "_model.pt");
+    fs::path scaler_file (modelTypeString + "_" + containerLoadingParams.ModelDataSet + "_scaler.json");
+    fs::path  model_path = dir / model_file;
+    fs::path  scaler_path = dir / scaler_file;
+    
+    loadModelfromPath(model_path);
+    loadStandardScalingFromJson(scaler_path);
 }
 
 torch::Tensor FFNNClassifier::applyStandardScaling(const torch::Tensor& input) const{

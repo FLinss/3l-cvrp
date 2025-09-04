@@ -21,8 +21,8 @@
     },
     "ContainerLoadingParams": {
         "ModelType":"FFNN",
-       "ModelPath": "C:/Users/mahu123a/Documents/3l-cvrp-heuristic/data/input/model/Gendreau_14440_inf_1_1/mb_complete_nodupl_mlp_cp_status_model_traced.pt",
-        "ModelValuesJson" : "C:/Users/mahu123a/Documents/3l-cvrp-heuristic/data/input/model/Gendreau_14440_inf_1_1/mb_complete_nodupl_mlp_input_scaling.json",
+        "ModelDataSet": "gendreau_28880_600_60_60",
+        "BaseModelPath": "C://Users//mahu123a//Documents//3l-cvrp-heuristic//data//input//model",
         "SaveTensorData" : false,
         "TensorDataFilePath": "",
         "AcceptanceThreshold": 0.5,

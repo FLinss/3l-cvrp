@@ -80,8 +80,8 @@ NLOHMANN_JSON_SERIALIZE_ENUM(ContainerLoadingParams::ModelTypes,
 void from_json(const json& j, ContainerLoadingParams& params)
 {
     j.at("ModelType").get_to(params.ModelType);
-    j.at("ModelPath").get_to(params.ModelPath);
-    j.at("ModelValuesJson").get_to(params.ModelValuesJson);
+    j.at("ModelDataSet").get_to(params.ModelDataSet);
+    j.at("BaseModelPath").get_to(params.BaseModelPath);
     j.at("SaveTensorData").get_to(params.SaveTensorData);
     j.at("TensorDataFilePath").get_to(params.TensorDataFilePath);
     j.at("AcceptanceThreshold").get_to(params.AcceptanceThreshold);
@@ -104,8 +104,8 @@ void to_json(json& j, const ContainerLoadingParams& params)
              {"LogFlag", params.LogFlag},
              {"Threads", params.Threads},
              {"Seed", params.Seed},
-             {"ModelPath", params.ModelPath},
-             {"ModelValuesJson", params.ModelValuesJson},
+             {"ModelDataSet", params.ModelDataSet},
+             {"BaseModelPath", params.BaseModelPath},
              {"SaveTensorData", params.SaveTensorData},
              {"TensorDataFilePath", params.TensorDataFilePath},
              {"AcceptanceThreshold", params.AcceptanceThreshold},

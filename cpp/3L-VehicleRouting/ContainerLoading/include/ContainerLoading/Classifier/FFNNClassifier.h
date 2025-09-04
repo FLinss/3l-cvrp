@@ -36,7 +36,8 @@ private:
     torch::jit::script::Module model;
 
 
-    void loadStandardScalingFromJson(const std::string& scaler_path) override;
+    void loadStandardScalingFromJson(const fs::path& scaler_path) override;
+    void loadModelfromPath(const fs::path& model_path) override;    
 
     void save_tensor_to_csv(const torch::Tensor& tensor, const int status, const float output)const; 
 

@@ -29,7 +29,8 @@ public:
                                 const Model::Container& container) override;
 
 private:
-    void loadStandardScalingFromJson(const std::string& scaler_path) override;
+    void loadStandardScalingFromJson(const fs::path& scaler_path) override;
+    void loadModelfromPath(const fs::path& model_path) override;
 };
 
 }  // namespace ContainerLaoding

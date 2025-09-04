@@ -2,7 +2,18 @@
 
 namespace ContainerLoading{
 
-void XGBClassifier::loadStandardScalingFromJson(const std::string& scaler_path){
+void XGBClassifier::loadStandardScalingFromJson(const fs::path& scaler_path){
+
+    return;
+
+}
+
+void XGBClassifier::loadModelfromPath(const fs::path& model_path)
+{
+    std::ifstream file(model_path);
+    if (!file) {
+        throw std::runtime_error("Could not open model JSON file.");
+    }
 
     return;
 
@@ -11,7 +22,12 @@ void XGBClassifier::loadStandardScalingFromJson(const std::string& scaler_path){
 XGBClassifier::XGBClassifier(const ContainerLoadingParams& containerLoadingParams) : 
     BaseClassifier(containerLoadingParams)
 {
-    loadStandardScalingFromJson(containerLoadingParams.ModelValuesJson);
+
+    fs::path dir (containerLoadingParams.BaseModelPath);
+    fs::path model_file (modelTypeString + "_" + containerLoadingParams.ModelDataSet + "_model.pt");
+    fs::path  model_path = dir / model_file;
+
+    loadModelfromPath(model_path);
 }
 
 

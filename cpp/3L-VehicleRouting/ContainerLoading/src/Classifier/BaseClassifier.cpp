@@ -7,7 +7,20 @@ namespace ContainerLoading {
 BaseClassifier::BaseClassifier(const ContainerLoadingParams& containerLoadingParams) : 
     mAcceptanceThreshold(containerLoadingParams.AcceptanceThreshold),
     mSaveTensorPath(containerLoadingParams.TensorDataFilePath)
-{}
+{
+    switch (containerLoadingParams.ModelType){
+        case ContainerLoadingParams::ModelTypes::FFNN:
+            modelTypeString = "FFNN";
+            break;
+        case ContainerLoadingParams::ModelTypes::LR:
+            modelTypeString = "LR";
+            break;
+        
+        case ContainerLoadingParams::ModelTypes::XGBOOST:
+            modelTypeString = "XGB";
+            break;
+      }
+}
 
 float BaseClassifier::getMean(std::vector<float>::const_iterator first,
                           std::vector<float>::const_iterator last)

@@ -34,7 +34,7 @@ private:
     torch::Tensor mean_tensor;
     torch::Tensor std_tensor;
     torch::jit::script::Module model;
-
+    float mLogitThreshold = 0.0f;
 
     void loadStandardScalingFromJson(const fs::path& scaler_path) override;
     void loadModelfromPath(const fs::path& model_path) override;    
@@ -48,6 +48,5 @@ private:
                                   const Model::Container& container) const;
 
 };
-
 }  // namespace ContainerLaoding
 

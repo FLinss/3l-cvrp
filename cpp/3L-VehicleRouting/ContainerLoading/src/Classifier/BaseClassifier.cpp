@@ -15,7 +15,6 @@ BaseClassifier::BaseClassifier(const ContainerLoadingParams& containerLoadingPar
         case ContainerLoadingParams::ModelTypes::LR:
             modelTypeString = "LR";
             break;
-        
         case ContainerLoadingParams::ModelTypes::XGBOOST:
             modelTypeString = "XGB";
             break;

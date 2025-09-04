@@ -57,6 +57,7 @@ private:
 
     Eigen::VectorXf w_;      // [N]
     float           b_ = 0.0f;
+    float mLogitThreshold = 0.0f;
 
 };
 

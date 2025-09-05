@@ -168,24 +168,6 @@ void IteratedLocalSearch::GenerateStartSolutionSavings()
     }
 }
 
-/*
-void IteratedLocalSearch::GenerateStartSolutionSPHeuristic()
-{
-    auto spHeuristic = Heuristics::SetBased::SPHeuristic(mInstance, mLoadingChecker.get(), &mInputParameters, mEnv);
-
-    auto sequences = spHeuristic.Run(std::numeric_limits<double>::max());
-
-    //Transform Collections::SequenceVector to std::vector<Route>
-    std::vector<Route> solution;
-    int id = 0;
-    for (auto& sequence: *sequences)
-    {
-        solution.emplace_back(id++, sequence);
-    }
-
-    mCurrentSolution.Routes = std::move(solution);
-}
-*/
 
 bool IteratedLocalSearch::IsCurrentSolutionCPValid(const Model::Solution& solution) {
 
@@ -237,12 +219,8 @@ void IteratedLocalSearch::Solve()
         while(mTimer.getElapsedTime() < maxRuntime && iterations_without_improvement < mInputParameters.IteratedLocalSearch.MaxIterationsWithoutImprovement){
 
             std::cout << "Run: " << mSolutionTracker.iterations << " - CurrentCosts: " << mCurrentSolution.Costs << " - BestCosts:" << mBestSolution.Costs << std::endl;
-            if(mSolutionTracker.RoundsWithNoImpr > mInputParameters.IteratedLocalSearch.RoundsWithNoImprovement){
-                mLocalSearch->RunBigPerturbation(mCurrentSolution);
-                mSolutionTracker.RoundsWithNoImpr = 0;
-            }else{
-                mLocalSearch->RunPerturbation(mCurrentSolution);
-            }
+
+            mLocalSearch->RunPerturbation(mCurrentSolution);
             mLocalSearch->RunLocalSearch(mCurrentSolution);
 
             ++mSolutionTracker.iterations;
@@ -262,7 +240,6 @@ void IteratedLocalSearch::Solve()
                 mBestSolution = mCurrentSolution;
                 mSolutionTracker.NoImpr = 0;
                 iterations_without_improvement = 0;
-                mSolutionTracker.RoundsWithNoImpr = 0;
                 lastValidSolution = mCurrentSolution;
                 continue;
             }
@@ -270,7 +247,6 @@ void IteratedLocalSearch::Solve()
             mSolutionTracker.UpdateCurrSolution(mTimer.getElapsedTime(), mCurrentSolution.Costs);
             if(mSolutionTracker.NoImpr >= mInputParameters.IteratedLocalSearch.NoImprLimit){
                 mCurrentSolution = mBestSolution;
-                ++mSolutionTracker.RoundsWithNoImpr;
                 mSolutionTracker.NoImpr = 0;
             }
 

@@ -45,18 +45,7 @@ void LocalSearch::RunPerturbation(Model::Solution& sol) const
         if(op){
             op->Run(mInstance, mInputParameters, mLoadingChecker, mTimer, sol, mRNG);
         }
-        break;
     }
-};
-
-// Run all perturbations in order
-void LocalSearch::RunBigPerturbation(Model::Solution&  sol) const 
-{
-    for (auto& op : pertOperators)
-        //TODO handles nullptr case! 
-        if(op){
-            op->Run(mInstance, mInputParameters, mLoadingChecker, mTimer, sol, mRNG);
-        }
 };
 
 std::unique_ptr<LocalSearchOperatorBase> LocalSearch::CreateLocalSearchOperator(const VRP_LocalSearchtypes& t) const

@@ -47,7 +47,7 @@ struct ContainerLoadingParams
 
     enum class ModelTypes
     {
-        XGBOOST,
+        XGB,
         FFNN,
         LR
     };

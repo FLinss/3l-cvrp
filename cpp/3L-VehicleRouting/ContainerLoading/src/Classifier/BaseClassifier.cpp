@@ -15,7 +15,7 @@ BaseClassifier::BaseClassifier(const ContainerLoadingParams& containerLoadingPar
         case ContainerLoadingParams::ModelTypes::LR:
             modelTypeString = "LR";
             break;
-        case ContainerLoadingParams::ModelTypes::XGBOOST:
+        case ContainerLoadingParams::ModelTypes::XGB:
             modelTypeString = "XGB";
             break;
       }
@@ -48,11 +48,10 @@ float BaseClassifier::getStd(std::vector<float>::const_iterator first,
 }
 
 std::string BaseClassifier::get_timestamp() const{
-    using namespace std::chrono;
 
-    auto now = system_clock::now();
-    auto now_time_t = system_clock::to_time_t(now);
-    auto now_ms = duration_cast<milliseconds>(now.time_since_epoch()) % 1000;
+    auto now = std::chrono::system_clock::now();
+    auto now_time_t = std::chrono::system_clock::to_time_t(now);
+    auto now_ms = duration_cast<std::chrono::milliseconds>(now.time_since_epoch()) % 1000;
     std::tm* parts = std::localtime(&now_time_t);
 
     std::ostringstream oss;

@@ -20,7 +20,7 @@
         ]
     }, 
     "ContainerLoadingParams": {
-        "ModelType":"FFNN",
+        "ModelType":"XGB",
         "ModelDataSet": "gendreau_28880_600_60_60",
         "BaseModelPath": "C://Users//mahu123a//Documents//3l-cvrp-heuristic//data//input//model",
         "SaveTensorData" : false,

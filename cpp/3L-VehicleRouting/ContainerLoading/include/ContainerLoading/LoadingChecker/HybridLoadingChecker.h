@@ -23,7 +23,7 @@ class HybridLoadingChecker : public BaseLoadingChecker
           mClassifier = std::make_unique<LRClassifier>(Parameters);
           break;
         
-        case ContainerLoadingParams::ModelTypes::XGBOOST:
+        case ContainerLoadingParams::ModelTypes::XGB:
           mClassifier = std::make_unique<XGBClassifier>(Parameters);
           break;
       }

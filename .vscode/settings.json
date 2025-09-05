@@ -5,7 +5,7 @@
         "--parallel", "16"
     ],
     "cmake.configureArgs": [
-        "-DXGBOOST_ROOT=C:/xgboost/install",
+        "-DXGBOOST_ROOT=C:/xgboost/install/",
         "-DORTOOLS_ROOT_WIN:STRING=C:/Program Files/or-tools_9.14",
         "-DGUROBI_ROOT_WIN:STRING=C:/gurobi1100/win64/",
         "-DBOOST_ROOT_WIN:STRING=C:/boost/boost_1_88_0/",
@@ -30,7 +30,7 @@
         "environment": [
             {
                 "name": "PATH",
-                "value": "C:/Program Files/or-tools_9.14/bin;C:/xgboost/install;C:/pytorch/libtorch;C:/boost/boost_1_88_0/;${env:PATH}"
+                "value": "C:/Program Files/or-tools_9.14/bin;C:/xgboost/install/lib;C:/xgboost/install/bin;C:/xgboost/install;C:/pytorch/libtorch;C:/boost/boost_1_88_0/;${env:PATH}"
             }
             ],
     },

@@ -22,8 +22,7 @@ class SpeedUpLoadingChecker : public BaseLoadingChecker
         case ContainerLoadingParams::ModelTypes::LR:
           mClassifier = std::make_unique<LRClassifier>(Parameters);
           break;
-        
-        case ContainerLoadingParams::ModelTypes::XGBOOST:
+        case ContainerLoadingParams::ModelTypes::XGB:
           mClassifier = std::make_unique<XGBClassifier>(Parameters);
           break;
       }

@@ -31,7 +31,6 @@ public:
 
     void RunLocalSearch(Model::Solution& sol) const;
     void RunPerturbation(Model::Solution& sol) const;
-    void RunBigPerturbation(Model::Solution& sol) const;
 
 private:
     std::vector<std::unique_ptr<LocalSearchOperatorBase>>  lsOperators;

@@ -82,7 +82,6 @@ class SolutionTracker
     int iterations{0};
     int rejections{0};
     int NoImpr{0};
-    int RoundsWithNoImpr{0};
     int mSeedOffset{0};
 
 

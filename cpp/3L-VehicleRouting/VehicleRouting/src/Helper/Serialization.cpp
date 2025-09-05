@@ -135,7 +135,6 @@ void from_json(const json& j, IteratedLocalSearchParams& params)
     j.at("LocalSearchTypes").get_to(params.localSearchTypes);
     j.at("PerturbationTypes").get_to(params.perturbationTypes);
     j.at("MaxIterationsWithoutImprovement").get_to(params.MaxIterationsWithoutImprovement);
-    j.at("RoundsWithNoImprovement").get_to(params.RoundsWithNoImprovement);
 }
 
 void to_json(json& j, const IteratedLocalSearchParams& params)
@@ -145,7 +144,6 @@ void to_json(json& j, const IteratedLocalSearchParams& params)
              {"LimitNoImpr", params.NoImprLimit},
              {"K_RandomMoves", params.K_RandomMoves},
              {"MaxIterationsWithoutImprovement", params.MaxIterationsWithoutImprovement},
-             {"RoundsWithNoImprovement", params.RoundsWithNoImprovement},
              {"LoadingCheckerType", params.LoadingCheckerType},
              {"CP_Check",params.CP_Check},
              {"Interval_CP_Check", params.Interval_CP_Check},
@@ -180,14 +178,14 @@ void from_json(const json& j, Helper::Timer& timer) {}
 void to_json(json& j, const Helper::Timer& timer)
 {
     j = json{
-        {"InfeasibleArcs", timer.InfeasibleArcs.count()},
-        {"LowerBoundVehicles", timer.LowerBoundVehicles.count()},
         {"StartSolution", timer.StartSolution.count()},
         {"MetaHeuristic", timer.MetaHeuristic.count()},
     };
 }
 }
 }
+
+
 
 namespace VehicleRouting
 {

@@ -12,11 +12,8 @@ namespace Helper
 class Timer
 {
   public:
-    std::chrono::duration<double> InfeasibleArcs;
-    std::chrono::duration<double> LowerBoundVehicles;
     std::chrono::duration<double> StartSolution;
     std::chrono::duration<double> MetaHeuristic;
-    std::chrono::time_point<std::chrono::system_clock> start;
     std::chrono::time_point<std::chrono::system_clock> overall_start;
     
     Timer() = default;
@@ -39,8 +36,6 @@ class Timer
 
     void Print() const
     {
-        std::cout << "Infeasible Arcs: " << InfeasibleArcs.count() << "\n";
-        std::cout << "Lower bound: " << LowerBoundVehicles.count() << "\n";
         std::cout << "Start solution: " << StartSolution.count() << "\n";
         std::cout << "Branch-and-cut: " << MetaHeuristic.count() << "\n";
     }

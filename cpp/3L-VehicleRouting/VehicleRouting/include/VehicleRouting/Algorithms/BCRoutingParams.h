@@ -62,7 +62,6 @@ struct IteratedLocalSearchParams
     int NoImprLimit = 100;
     int K_RandomMoves = 1;
     int MaxIterationsWithoutImprovement = 10000;
-    int RoundsWithNoImprovement = 3;
     LoadingCheckerTypes LoadingCheckerType = LoadingCheckerTypes::NoClassifier;
     StartSolutionType StartSolution = StartSolutionType::ModifiedSavings;
     bool CP_Check = false;

@@ -11,9 +11,10 @@ public:
     explicit XGBClassifier(const ContainerLoadingParams& containerLoadingParams);
 
     // Body of destructor 
-    ~XGBClassifier(){
-        XGBoosterFree(booster);
+    ~XGBClassifier() {
+        if (booster_) XGBoosterFree(booster_);
     }
+
 
     // Output: classification probability (0–1) - O Infeasible - 1 Feasible
     void saveClassifierResults(const std::vector<Model::Cuboid>& items,
@@ -33,7 +34,9 @@ public:
                                 const Model::Container& container) override;
 
 private:
-    BoosterHandle booster;
+    BoosterHandle booster_;
+
+    inline std::string to_plain_path(const fs::path& p);
 
     void loadStandardScalingFromJson(const fs::path& scaler_path) override;
     void loadModelfromPath(const fs::path& model_path) override;

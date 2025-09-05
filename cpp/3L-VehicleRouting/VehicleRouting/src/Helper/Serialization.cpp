@@ -74,7 +74,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(ContainerLoadingParams::VariantType,
 NLOHMANN_JSON_SERIALIZE_ENUM(ContainerLoadingParams::ModelTypes,
                             {{ContainerLoadingParams::ModelTypes::FFNN, "FFNN"},
                              {ContainerLoadingParams::ModelTypes::LR, "LR"},
-                             {ContainerLoadingParams::ModelTypes::XGBOOST, "XGBOOST"}});
+                             {ContainerLoadingParams::ModelTypes::XGB, "XGB"}});
 
 
 void from_json(const json& j, ContainerLoadingParams& params)

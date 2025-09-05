@@ -1,4 +1,5 @@
 #include "Classifier/LRClassifier.h"
+
 namespace ContainerLoading{
 
 void LRClassifier::loadStandardScalingFromJson(const fs::path& scaler_path) {
@@ -34,9 +35,6 @@ void LRClassifier::loadStandardScalingFromJson(const fs::path& scaler_path) {
     // Optional: load a probability threshold saved from training (fallback 0.5)
     float prob_thr = j.contains("threshold") ? j["threshold"].get<float>() : 0.5f;
     mAcceptanceThreshold = prob_thr;
-
-    // Precompute logit(threshold) so we can compare logits directly
-    mLogitThreshold = std::log(prob_thr / (1.0f - prob_thr)); // logit
 }
 
 void LRClassifier::loadModelfromPath(const fs::path& model_path)

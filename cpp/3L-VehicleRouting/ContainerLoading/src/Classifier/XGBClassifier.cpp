@@ -3,6 +3,12 @@
 
 namespace ContainerLoading{
 
+std::string XGBClassifier::to_plain_path(const fs::path& p) {
+    std::string s = fs::absolute(p).string();
+    for (char& c : s) if (c == '\\') c = '/'; // normalize
+    return s; // e.g. C:/Users/.../model.json
+}
+
 //Dummy function just for overide 
 void XGBClassifier::loadStandardScalingFromJson(const fs::path& scaler_path){}
 
@@ -12,26 +18,38 @@ void XGBClassifier::loadModelfromPath(const fs::path& model_path)
         throw std::runtime_error("Model path does not exist!.");
     }
 
-    std::string outfilename_str = model_path.string(); // or outfilename.u8string()
-    const char *outfilename_ptr = outfilename_str.c_str();
+    // create booster_ handle first
+    int err = XGBoosterCreate(nullptr, 0, &booster_);
+    if (err != 0 || booster_ == nullptr) {
+        std::cerr << "[XGBoost] Create failed: " << XGBGetLastError() << std::endl;
+        throw std::runtime_error("XGBoosterCreate failed");
+    }
 
-    // create booster handle first
-    XGBoosterCreate(NULL, 0, &booster);
+    // Optional but recommended
+    XGBoosterSetParam(booster_, "predictor", "cpu_predictor");
+    XGBoosterSetParam(booster_, "nthread", "4");
+    XGBoosterSetParam(booster_, "seed", "0");
 
-    // by default, the seed will be set 0
-    XGBoosterSetParam(booster, "seed", "0");
+    const std::string plain = to_plain_path(model_path);
+    // Optional: quick sanity check using std::ifstream
+    {
+        std::ifstream test(plain, std::ios::binary);
+        if (!test) throw std::runtime_error("Std ifstream cannot open: " + plain);
+    }
 
-    // load model
-    XGBoosterLoadModel(booster, outfilename_ptr);
-
+    err = XGBoosterLoadModel(booster_, plain.c_str());
+    if (err != 0) {
+        std::cerr << "[XGBoost] LoadModel failed: " << XGBGetLastError() << std::endl;
+        throw std::runtime_error("XGBoosterLoadModel failed");
+    }
 }
 
 XGBClassifier::XGBClassifier(const ContainerLoadingParams& containerLoadingParams) : 
-    BaseClassifier(containerLoadingParams)
+    BaseClassifier(containerLoadingParams),  booster_(nullptr)
 {
 
     fs::path dir (containerLoadingParams.BaseModelPath);
-    fs::path model_file (modelTypeString + "_" + containerLoadingParams.ModelDataSet + "_model.pt");
+    fs::path model_file (modelTypeString + "_" + containerLoadingParams.ModelDataSet + "_model.json");
     fs::path  model_path = dir / model_file;
 
     loadModelfromPath(model_path);
@@ -220,7 +238,7 @@ float XGBClassifier::classifyReturnOutput(const std::vector<Model::Cuboid>& item
     // 3) predict
     bst_ulong out_len = 0;
     const float* out = nullptr;
-    err = XGBoosterPredict(booster, dmat, /*option_mask*/0, /*ntree_limit*/0, 0 /*training*/, &out_len, &out);
+    err = XGBoosterPredict(booster_, dmat, /*option_mask*/0, /*ntree_limit*/0, 0 /*training*/, &out_len, &out);
 
     XGDMatrixFree(dmat);
 
@@ -229,6 +247,7 @@ float XGBClassifier::classifyReturnOutput(const std::vector<Model::Cuboid>& item
     }
 
     // typical binary/prob model -> first score
+
     return out[0];
 }     
 

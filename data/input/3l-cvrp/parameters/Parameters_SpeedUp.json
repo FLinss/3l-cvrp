@@ -11,7 +11,7 @@
         "RoundsWithNoImprovement" : 3,
         "LoadingCheckerType": "SpeedUp",
         "CP_Check" : true,
-        "Interval_CP_Check" : 3,
+        "Interval_CP_Check" : 1,
         "TimeLimit": [
             ["ILS", 15],
             ["Constructive",1],

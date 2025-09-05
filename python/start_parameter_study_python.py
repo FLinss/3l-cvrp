@@ -17,11 +17,15 @@ temporary_parameter_files = r"C:\Users\mahu123a\Documents\Data\ParameterStudy/Pa
 number_of_processes = 6
 MAX_TIME_SEC = 700
 
-PARAMETER_STUDY = {"IteratedLocalSearchParams": {"LimitNoImpr" :  [5,8,12],
+PARAMETER_STUDY = {"IteratedLocalSearchParams": {"LimitNoImpr" :  [3,5,8,12],
                    "K_RandomMoves" : [3,5,8],
-                   "PerturbationTypes": [["K_RandomInsertions","K_RandomSwaps"],["K_RandomSwaps","K_RandomInsertions"]],
-                    "LocalSearchTypes": [["TwoOpt","IntraSwap","IntraInsertion","InterSwap","InterInsertion","DeleteEmptyRoutes"],["InterSwap","InterInsertion","TwoOpt","IntraSwap","IntraInsertion","DeleteEmptyRoutes"]],
-                    "RoundsWithNoImprovement":  [1,3,5,10]}}
+                   "PerturbationTypes": [["K_RandomInsertions"],
+                                         ["K_RandomSwaps"],
+                                         ["K_RandomInsertions","K_RandomSwaps"],
+                                         ["K_RandomSwaps","K_RandomInsertions"]],
+                   "LocalSearchTypes": [["TwoOpt","IntraSwap","IntraInsertion","InterSwap","InterInsertion","DeleteEmptyRoutes"],
+                                        ["InterSwap","InterInsertion","TwoOpt","IntraSwap","IntraInsertion","DeleteEmptyRoutes"]]
+                                        }}
 
 # Navigate to the directorys
 

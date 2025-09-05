@@ -2,7 +2,7 @@
 build/
 
 # results
-data/output/3l-cvrp/test/
+data/output/
 !data/input/model
 data/input/3l-cvrp/Non_executed_parameter_files
 

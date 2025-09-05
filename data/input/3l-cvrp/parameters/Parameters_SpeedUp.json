@@ -6,7 +6,7 @@
         "K_RandomMoves" : 5,
         "StartSolution": "ModifiedSavings",
         "LocalSearchTypes": ["TwoOpt","IntraSwap","IntraInsertion","InterSwap","InterInsertion","DeleteEmptyRoutes"],
-        "PerturbationTypes": ["K_RandomSwaps"],
+        "PerturbationTypes": ["K_RandomInsertions"],
         "MaxIterationsWithoutImprovement" : 10000,
         "LoadingCheckerType": "SpeedUp",
         "CP_Check" : true,
@@ -19,7 +19,7 @@
         ]
     }, 
     "ContainerLoadingParams": {
-        "ModelType":"XGB",
+        "ModelType":"LR",
         "ModelDataSet": "gendreau_28880_600_60_60",
         "BaseModelPath": "C://Users//mahu123a//Documents//3l-cvrp-heuristic//data//input//model",
         "SaveTensorData" : false,

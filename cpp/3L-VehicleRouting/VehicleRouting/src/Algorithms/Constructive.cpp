@@ -120,7 +120,7 @@ bool Savings::ConcatRoutes(Collections::IdVector& frontSequence,
 
     auto selectedItems = InterfaceConversions::SelectItems(frontSequence, mInstance->Nodes, false);
 
-    double maxRuntime = mInputParameters->DetermineMaxRuntime(IteratedLocalSearchParams::CallType::Exact, mTimer->getElapsedTime());
+    double maxRuntime = mInputParameters->DetermineMaxRuntime(IteratedLocalSearchParams::CallType::ILS, mTimer->getResidualTime());
     return mLoadingChecker->CompleteCheckStartSolution(container,
                                                         mLoadingChecker->MakeBitset(mInstance->Nodes.size(), frontSequence),
                                                         frontSequence,
@@ -343,7 +343,7 @@ bool ModifiedSavings::InsertionFeasible(Model::Route& route, size_t nodeToInsert
 
     auto selectedItems = InterfaceConversions::SelectItems(tmpSequence, mInstance->Nodes, false);
     
-    double maxRuntime = mInputParameters->DetermineMaxRuntime(IteratedLocalSearchParams::CallType::Exact, mTimer->getElapsedTime());
+    double maxRuntime = mInputParameters->DetermineMaxRuntime(IteratedLocalSearchParams::CallType::ILS, mTimer->getResidualTime());
     if (!mLoadingChecker->CompleteCheckStartSolution(container, mLoadingChecker->MakeBitset(mInstance->Nodes.size(), tmpSequence), tmpSequence, selectedItems,maxRuntime))
     {
         return false;

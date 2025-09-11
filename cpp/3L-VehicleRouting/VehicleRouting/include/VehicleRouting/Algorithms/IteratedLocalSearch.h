@@ -71,6 +71,7 @@ class IteratedLocalSearch
   private:
     Model::Instance* mInstance;
     InputParameters mInputParameters;
+    Helper::Timer mTimer = Helper::Timer(mInputParameters.IteratedLocalSearch.TimeLimits.at(IteratedLocalSearchParams::CallType::ILS));
     std::string mStartSolutionFolderPath;
     std::string mOutputPath;
     int mSeedOffset;
@@ -84,7 +85,6 @@ class IteratedLocalSearch
     std::mt19937 mRNG;
     std::unique_ptr<ContainerLoading::BaseLoadingChecker> mLoadingChecker;
     std::unique_ptr<Improvement::LocalSearch> mLocalSearch;
-    Helper::Timer mTimer = Helper::Timer();
 
     void TestSingleCustomerRoutes();
     void DeterminePackingSolution(Model::OutputSolution& outputSolution);

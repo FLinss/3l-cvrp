@@ -92,7 +92,7 @@ class InputParameters
     [[nodiscard]] double DetermineMaxRuntime(IteratedLocalSearchParams::CallType callType,
                                              double residualTime = std::numeric_limits<double>::max()) const
     {
-        return std::min(IteratedLocalSearch.TimeLimits.at(callType), residualTime);
+        return std::min(IteratedLocalSearch.TimeLimits.at(callType),residualTime);
     }
 
     [[nodiscard]] bool IsExact(IteratedLocalSearchParams::CallType callType) const

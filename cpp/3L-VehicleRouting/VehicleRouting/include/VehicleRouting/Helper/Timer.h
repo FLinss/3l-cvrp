@@ -9,29 +9,35 @@ namespace VehicleRouting
 {
 namespace Helper
 {
-class Timer
-{
-  public:
+struct Timer
+{   
+    Timer(double timelimit) 
+        : mTimeLimit(timelimit), StartSolution(0), MetaHeuristic(0) {}
+
+
     std::chrono::duration<double> StartSolution;
     std::chrono::duration<double> MetaHeuristic;
-    std::chrono::time_point<std::chrono::system_clock> overall_start;
-    
-    Timer() = default;
+    std::chrono::time_point<std::chrono::steady_clock> overall_start;
+    double mTimeLimit; 
 
     inline void startOverallTime(){
-        overall_start = std::chrono::system_clock::now();
+        overall_start = std::chrono::steady_clock::now();
     }
 
     inline double getElapsedTime() const{
-        return std::chrono::duration<double>(std::chrono::system_clock::now() - overall_start).count();
+        return std::chrono::duration<double>(std::chrono::steady_clock::now() - overall_start).count();
+    }
+
+    inline double getResidualTime() const{
+        return mTimeLimit - std::chrono::duration<double>(std::chrono::steady_clock::now() - overall_start).count();
     }
 
     void calculateMetaHeuristicTime(){
-        MetaHeuristic = std::chrono::system_clock::now() - overall_start - StartSolution;
+        MetaHeuristic = std::chrono::steady_clock::now() - overall_start - StartSolution;
     }
 
     void calculateStartSolutionTime(){
-        StartSolution = std::chrono::system_clock::now() - overall_start;
+        StartSolution = std::chrono::steady_clock::now() - overall_start;
     }
 
     void Print() const

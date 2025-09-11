@@ -84,7 +84,7 @@ std::optional<double> InterLocalSearchOperator::GetBestMove(const Model::Instanc
         
         auto set = loadingChecker->MakeBitset(instance->Nodes.size(), route.Sequence);
         auto selectedItems = Algorithms::InterfaceConversions::SelectItems(route.Sequence, instance->Nodes, false);
-        double maxRuntime = inputParameters->DetermineMaxRuntime(Algorithms::IteratedLocalSearchParams::CallType::Exact, mTimer->getElapsedTime());
+        double maxRuntime = inputParameters->DetermineMaxRuntime(Algorithms::IteratedLocalSearchParams::CallType::Exact, mTimer->getResidualTime());
         if (!loadingChecker->CompleteCheck(container,  set, route.Sequence, selectedItems, mType, maxRuntime)){
             controlFlag = false; 
             break;

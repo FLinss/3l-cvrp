@@ -48,6 +48,11 @@ CLP_LoadingStatus BaseLoadingChecker::ConstraintProgrammingSolver(CLP_PackingTyp
                                                           bool isCallTypeExact,
                                                           double maxRunTime)
 {
+    if(maxRunTime < 0.0 + 1e-5)
+    {
+        return CLP_LoadingStatus::Unknown;
+    }
+
     auto loadingMask = BuildMask(packingType);
 
     auto precheckStatus = GetPrecheckStatusCP(stopIds, set, loadingMask, isCallTypeExact);

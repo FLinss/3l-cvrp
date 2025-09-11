@@ -18,7 +18,7 @@ void IteratedLocalSearch::TestSingleCustomerRoutes()
 
     CLP_Container container =  mInstance->Vehicles.front().Containers.front();
 
-    double maxRuntime = mInputParameters.DetermineMaxRuntime(IteratedLocalSearchParams::CallType::Exact);
+    double maxRuntime = mInputParameters.DetermineMaxRuntime(IteratedLocalSearchParams::CallType::ILS);
     for (const auto& customer: mInstance->GetCustomers())
     {
         Collections::IdVector route = {customer.InternId};
@@ -179,7 +179,7 @@ bool IteratedLocalSearch::IsCurrentSolutionCPValid(const Model::Solution& soluti
         if(route.Sequence.size() > 0){
 
             auto items = InterfaceConversions::SelectItems(route.Sequence, mInstance->Nodes, false);
-            double maxRuntime = mInputParameters.DetermineMaxRuntime(IteratedLocalSearchParams::CallType::Exact, mTimer.getElapsedTime());
+            double maxRuntime = mInputParameters.DetermineMaxRuntime(IteratedLocalSearchParams::CallType::ILS, mTimer.getResidualTime());
             if(!(mLoadingChecker->ExactCheckNoClassifier(container,
                                                     mLoadingChecker->MakeBitset(nodeSize, route.Sequence),
                                                     route.Sequence,
@@ -339,7 +339,7 @@ void IteratedLocalSearch::DeterminePackingSolution(OutputSolution& outputSolutio
             mLogFile << "\n";
             continue;
         }
-        double maxRuntime = mInputParameters.DetermineMaxRuntime(IteratedLocalSearchParams::CallType::Exact);
+        double maxRuntime = mInputParameters.DetermineMaxRuntime(IteratedLocalSearchParams::CallType::ILS);
         auto exactStatus = mLoadingChecker->ConstraintProgrammingSolverGetPacking(CLP_PackingType::Complete,
                                                                                     container,
                                                                                     stopIds,

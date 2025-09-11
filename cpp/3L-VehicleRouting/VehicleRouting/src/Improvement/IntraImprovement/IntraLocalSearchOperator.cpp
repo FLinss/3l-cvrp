@@ -61,7 +61,7 @@ std::optional<double> IntraLocalSearchOperator::GetBestMove(const Model::Instanc
         ChangeRoute(route, std::get<1>(move), std::get<2>(move));
         
         auto selectedItems = Algorithms::InterfaceConversions::SelectItems(route, instance->Nodes, false);
-        double maxRuntime = inputParameters->DetermineMaxRuntime(Algorithms::IteratedLocalSearchParams::CallType::Exact, mTimer->getElapsedTime());
+        double maxRuntime = inputParameters->DetermineMaxRuntime(Algorithms::IteratedLocalSearchParams::CallType::ILS, mTimer->getResidualTime());
         if (loadingChecker->CompleteCheck(container, set, route, selectedItems, mType, maxRuntime))
         {
             return std::get<0>(move);

@@ -18,7 +18,7 @@ number_of_processes = 6
 MAX_TIME_SEC = 700
 
 PARAMETER_STUDY = {"IteratedLocalSearchParams": {"LimitNoImpr" :  [3,5,8,12],
-                   "K_RandomMoves" : [3,5,8],
+                   "K_RandomMoves" : [4,6,8,12],
                    "PerturbationTypes": [["K_RandomInsertions"],
                                          ["K_RandomSwaps"],
                                          ["K_RandomInsertions","K_RandomSwaps"],

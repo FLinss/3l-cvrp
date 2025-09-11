@@ -12,7 +12,7 @@
         "CP_Check" : false,
         "Interval_CP_Check" : 1,
         "TimeLimit": [
-            ["ILS", 30],
+            ["ILS", 600],
             ["Constructive",1],
             ["Exact", 600],
             ["ExactLimit", 60]

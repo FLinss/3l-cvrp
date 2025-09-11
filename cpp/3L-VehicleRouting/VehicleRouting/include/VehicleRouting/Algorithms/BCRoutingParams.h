@@ -39,7 +39,6 @@ enum class PerturbationTypes
 
 struct IteratedLocalSearchParams
 {
-  public:
     enum class StartSolutionType
     {
         None = 0,
@@ -76,6 +75,12 @@ struct IteratedLocalSearchParams
         {CallType::ILS, 120.0},
         {CallType::Constructive, 10.0}
     };
+
+    void SetR_Moves(){
+        if(perturbationTypes.size() > 1){
+            K_RandomMoves /= perturbationTypes.size();
+        }
+    }
 };
 
 class InputParameters
@@ -88,6 +93,10 @@ class InputParameters
     void SetLoadingFlags(){
         ContainerLoading.SetFlags();
     };
+
+    void SetRandomMoves(){
+        IteratedLocalSearch.SetR_Moves();
+    }
 
     [[nodiscard]] double DetermineMaxRuntime(IteratedLocalSearchParams::CallType callType,
                                              double residualTime = std::numeric_limits<double>::max()) const

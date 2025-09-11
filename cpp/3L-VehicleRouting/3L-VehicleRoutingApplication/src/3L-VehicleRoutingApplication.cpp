@@ -19,17 +19,11 @@ void Run(std::string& inputFilePath,
 {
 
     VehicleRouting::Algorithms::InputParameters inputParameters;
-
-    if (parameterFile != "")
-    {
-        inputParameters = VehicleRouting::Helper::HelperIO::ReadInputParameters(parameterFile);
-    }
-    else
-    {
-        inputParameters.ContainerLoading.Variant = ContainerLoading::ContainerLoadingParams::VariantType::AllConstraints;
-    }
-
+    inputParameters = VehicleRouting::Helper::HelperIO::ReadInputParameters(parameterFile);
     inputParameters.SetLoadingFlags();
+    //Adapt size of random moves dependent of number of perturbation neighborhoods
+    inputParameters.SetRandomMoves();
+    
     std::ifstream ifs(inputFilePath + filename);
     ////std::ifstream ifs("data/3LVRP/ConvertedInstances/E016-05m.json");
 

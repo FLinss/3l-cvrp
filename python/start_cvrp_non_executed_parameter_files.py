@@ -13,7 +13,7 @@ output_folder = r"C:\Users\mahu123a\Documents\Data\ParameterStudy\NoClassifier/"
 input_folder = os.path.join(directory_path,"data/input/3l-cvrp/gendreau/")
 parameter_file_list_path = r"C:\Users\mahu123a\Documents\3l-cvrp-heuristic\data\input\3l-cvrp\Non_executed_parameter_files"
 number_of_processes = 6
-MAX_TIME_SEC = 900
+MAX_TIME_SEC = 1200
 
 # Navigate to the directorys
 

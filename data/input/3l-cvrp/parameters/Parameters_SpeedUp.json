@@ -16,7 +16,8 @@
             ["Constructive",1],
             ["Exact", 600],
             ["ExactLimit", 60]
-        ]
+        ],
+        "SaveSequences": false
     }, 
     "ContainerLoadingParams": {
         "ModelType":"LR",

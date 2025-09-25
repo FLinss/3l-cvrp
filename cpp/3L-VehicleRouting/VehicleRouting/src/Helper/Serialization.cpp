@@ -135,6 +135,7 @@ void from_json(const json& j, IteratedLocalSearchParams& params)
     j.at("LocalSearchTypes").get_to(params.localSearchTypes);
     j.at("PerturbationTypes").get_to(params.perturbationTypes);
     j.at("MaxIterationsWithoutImprovement").get_to(params.MaxIterationsWithoutImprovement);
+    j.at("SaveSequences").get_to(params.SaveSequences);
 }
 
 void to_json(json& j, const IteratedLocalSearchParams& params)
@@ -150,7 +151,8 @@ void to_json(json& j, const IteratedLocalSearchParams& params)
              {"LocalSearchTypes",params.localSearchTypes},
              {"PerturbationTypes",params.perturbationTypes},
              {"StartSolution", params.StartSolution},
-             {"TimeLimit", params.TimeLimits}};
+             {"TimeLimit", params.TimeLimits},
+             {"SaveSequences"},params.SaveSequences};
 }
 
 

@@ -9,6 +9,12 @@
 #include <boost/dynamic_bitset.hpp>
 #include <boost/functional/hash.hpp>
 #include <memory>
+#include "Helper/json_bitset_serializers.hpp"
+#include "nlohmann/json.hpp"
+#include <fstream>
+#include <iostream>
+#include <string>
+
 
 namespace ContainerLoading
 {
@@ -87,6 +93,9 @@ class BaseLoadingChecker
     [[nodiscard]] bool RouteIsInInfeasSequences(const Collections::IdVector& route) const;
 
     [[nodiscard]] boost::dynamic_bitset<> MakeBitset(size_t size, const Collections::IdVector& sequence) const;
+
+    void WriteSequencesToFile(const std::string& outputPath,const std::string& saveSequenceString) const;
+
 
   private:
     Collections::SequenceVector mCompleteFeasSeq;

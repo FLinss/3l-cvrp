@@ -380,4 +380,37 @@ void BaseLoadingChecker::AddStatus(const Collections::IdVector& sequence,
     }
 }
 
+void BaseLoadingChecker::WriteSequencesToFile(const std::string& outputPath,const std::string& saveSequenceString) const
+{
+    nlohmann::json jsonObj;
+    jsonObj["AllFeasibleRoutes"] = mFeasSequences;
+    jsonObj["AllInFeasibleRoutes"] = mInfSequences;
+    jsonObj["AllUnknownRoutes"] = mUnkSequences;
+    jsonObj["AllFeasibleSets"] = mFeasibleSets;
+    jsonObj["AllInFeasibleSets"] = mInfSets;
+    jsonObj["AllUnknownSets"] = mUnknownSets;
+
+    std::ofstream outputFile(outputPath + "/" + saveSequenceString + ".json");
+    if (!outputFile.is_open())
+    {
+        std::cerr << "Unable to open the route file!\n";
+        return;
+    }
+
+    // manually write top-level keys with compact value per line
+    outputFile << "{\n";
+    outputFile << "\"Sequences\":{\n";
+    outputFile << "  \"AllFeasible\": " << jsonObj["AllFeasibleRoutes"].dump() << ",\n";
+    outputFile << "  \"AllInFeasibles\": " << jsonObj["AllInFeasibleRoutes"].dump() << ",\n";
+    outputFile << "  \"AllUnknown\": " << jsonObj["AllUnknownRoutes"].dump() << "\n";
+    outputFile << "},\n";
+    outputFile << "\"Sets\":{\n";
+    outputFile << "  \"AllFeasible\": " << jsonObj["AllFeasibleSets"].dump() << ",\n";
+    outputFile << "  \"AllInFeasible\": " << jsonObj["AllInFeasibleSets"].dump() << ",\n";
+    outputFile << "  \"AllUnknown\": " << jsonObj["AllUnknownSets"].dump() << "\n";
+    outputFile << "}\n";
+    outputFile << "}\n";
+}
+
+
 }

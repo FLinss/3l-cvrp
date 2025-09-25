@@ -259,13 +259,18 @@ void IteratedLocalSearch::Solve()
 
     mTimer.calculateMetaHeuristicTime();
     
-    //TODO Add useful metrics here and variable for K Swaps
 
     auto statistics = SolverStatistics(mTimer,
                                        mSolutionTracker);
 
     std::string solutionStatisticsString = "SolutionStatistics-" + mInstance->Name;
     Serializer::WriteToJson(statistics, mOutputPath, solutionStatisticsString);
+
+    //Save Sequences
+    if(mInputParameters.IteratedLocalSearch.SaveSequences){
+        std::string saveSequenceString = "Routes2_" + mInstance->Name;
+        mLoadingChecker->WriteSequencesToFile(mOutputPath, saveSequenceString);
+    }
 
     OutputSolution final_outputSolution(mBestSolution, mInstance);
     DeterminePackingSolution(final_outputSolution);

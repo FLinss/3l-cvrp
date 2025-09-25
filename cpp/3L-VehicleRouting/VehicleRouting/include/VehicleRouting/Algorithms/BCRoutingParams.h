@@ -65,6 +65,7 @@ struct IteratedLocalSearchParams
     StartSolutionType StartSolution = StartSolutionType::ModifiedSavings;
     bool CP_Check = false;
     int Interval_CP_Check = 1;
+    bool SaveSequences = false;
 
     std::vector<PerturbationTypes> perturbationTypes = {PerturbationTypes::None};
     std::vector<LocalSearchTypes> localSearchTypes = {LocalSearchTypes::None};
